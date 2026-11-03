@@ -1,5 +1,5 @@
 const DEFAULT_SERVER = "http://127.0.0.1:19876";
-const activeBgTasks = new Map(); // taskId -> { title, url, serverUrl }
+const activeBgTasks = new Map();
 
 function getServerUrl(callback) {
   chrome.storage.sync.get(["serverUrl"], (res) => {
@@ -17,12 +17,11 @@ function getYouTubeCookies(callback) {
   }
 }
 
-// Show native desktop notification when download completes
 function notifyCompletion(title) {
   try {
     chrome.notifications.create({
       type: "basic",
-      iconUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' rx='12' fill='%230f172a'/><polygon points='24,18 24,46 48,32' fill='%2322c55e'/></svg>",
+      iconUrl: chrome.runtime.getURL("icon.png"),
       title: "OmniGrab 4K: Download Finished!",
       message: `${title || "YouTube Video"} has been saved to your Downloads folder.`,
       priority: 2
@@ -30,7 +29,6 @@ function notifyCompletion(title) {
   } catch (e) {}
 }
 
-// Background polling loop that keeps running even when switching or closing tabs
 function monitorTaskInBackground(taskId, title, serverUrl) {
   if (activeBgTasks.has(taskId)) return;
   activeBgTasks.set(taskId, { title, serverUrl });
@@ -45,12 +43,13 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
           clearInterval(timer);
           activeBgTasks.delete(taskId);
 
-          // If on remote Render server, trigger Chrome native download
           if (!serverUrl.includes("127.0.0.1") && !serverUrl.includes("localhost")) {
-            chrome.downloads.download({
-              url: `${serverUrl}/get_file?id=${encodeURIComponent(taskId)}`,
-              filename: (data.title || title || "video") + ".mp4"
-            });
+            try {
+              chrome.downloads.download({
+                url: `${serverUrl}/get_file?id=${encodeURIComponent(taskId)}`,
+                filename: (data.title || title || "video") + ".mp4"
+              });
+            } catch (e) {}
           }
 
           notifyCompletion(data.title || title);
@@ -59,9 +58,7 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
           activeBgTasks.delete(taskId);
         }
       })
-      .catch(() => {
-        // Retry silently
-      });
+      .catch(() => {});
   }, 1000);
 }
 
@@ -81,12 +78,13 @@ function sendDownloadTrigger(url, title, quality, sendResponse) {
         .then((res) => res.json())
         .then((data) => {
           if (data && data.task_id) {
-            // Register task in persistent background service worker so it continues across tabs!
             monitorTaskInBackground(data.task_id, title, serverUrl);
           }
-          sendResponse({ ok: true, data, serverUrl });
+          try { sendResponse({ ok: true, data, serverUrl }); } catch (e) {}
         })
-        .catch((err) => sendResponse({ ok: false, error: err.message }));
+        .catch((err) => {
+          try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+        });
     });
   });
 }
@@ -101,8 +99,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     getServerUrl((serverUrl) => {
       fetch(`${serverUrl}/progress?id=${encodeURIComponent(message.taskId)}`)
         .then((res) => res.json())
-        .then((data) => sendResponse({ ok: true, data, serverUrl }))
-        .catch((err) => sendResponse({ ok: false, error: err.message }));
+        .then((data) => {
+          try { sendResponse({ ok: true, data, serverUrl }); } catch (e) {}
+        })
+        .catch((err) => {
+          try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+        });
     });
     return true;
   }
@@ -111,8 +113,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     getServerUrl((serverUrl) => {
       fetch(`${serverUrl}/open_folder`)
         .then((res) => res.json())
-        .then((data) => sendResponse({ ok: true, data }))
-        .catch((err) => sendResponse({ ok: false, error: err.message }));
+        .then((data) => {
+          try { sendResponse({ ok: true, data }); } catch (e) {}
+        })
+        .catch((err) => {
+          try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+        });
     });
     return true;
   }
