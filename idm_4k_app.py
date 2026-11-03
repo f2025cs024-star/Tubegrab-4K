@@ -93,14 +93,17 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
     q = (str(quality) if quality else "max").lower().strip()
     is_mp3 = (q == "mp3")
 
-    # Strict resolution targeting: exactly match height=X first!
+    # Strictly enforce requested resolution height
     if is_mp3:
         fmt = "bestaudio/best"
+        out_template = os.path.join(DOWNLOADS_DIR, "%(title)s.%(ext)s")
     elif q.isdigit():
         target_h = int(q)
         fmt = f"bestvideo[height={target_h}]+bestaudio/bestvideo[height<={target_h}]+bestaudio/best"
+        out_template = os.path.join(DOWNLOADS_DIR, f"%(title)s ({target_h}p).%(ext)s")
     else:
         fmt = "bestvideo+bestaudio/best"
+        out_template = os.path.join(DOWNLOADS_DIR, "%(title)s.%(ext)s")
 
     def progress_hook(d):
         if d.get("status") == "downloading":
@@ -120,13 +123,12 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         elif d.get("status") == "finished":
             info_dict["status"] = "merging"
             info_dict["percent"] = 99.0
-            info_dict["speed"] = f"Merging {q}p..."
-
-    out_template = os.path.join(DOWNLOADS_DIR, "%(title)s.%(ext)s")
+            info_dict["speed"] = f"Merging {q}..."
 
     ydl_opts = {
         "format": fmt,
         "outtmpl": out_template,
+        "overwrites": True,
         "noplaylist": True,
         "progress_hooks": [progress_hook],
         "concurrent_fragment_downloads": 8,
