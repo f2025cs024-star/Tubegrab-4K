@@ -227,7 +227,7 @@ class TubeGrabServer(BaseHTTPRequestHandler):
                 "version": "2.2.0",
                 "app": "TubeGrab 4K",
                 "changelog": "Dynamic quality dropdown (144p to 4K), live electric blue progress bar, micro-pill UI.",
-                "release_url": "https://github.com"
+                "release_url": "https://github.com/f2025cs024-star/Tubegrab-4K"
             }).encode("utf-8"))
             return
 
