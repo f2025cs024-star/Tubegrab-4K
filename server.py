@@ -257,6 +257,14 @@ def get_updates():
     raise HTTPException(status_code=404, detail="updates.xml not found")
 
 
+@app.get("/debug")
+def debug():
+    return {
+        "has_yt_cookies": os.path.exists("yt_cookies.txt"),
+        "cookies_size": os.path.getsize("yt_cookies.txt") if os.path.exists("yt_cookies.txt") else 0
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 19876))
