@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: yt-4k-idm
+    name: tubegrab-4k
     env: docker
     plan: free
     region: oregon
