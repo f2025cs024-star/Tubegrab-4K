@@ -10,11 +10,9 @@
   let hasUserDragged = false;
   let isMenuOpen = false;
 
-  // Real detected qualities for the current video
   let detectedHeights = [];
   let maxLabel = "HD";
 
-  // 1. Inject script into webpage context to read actual video stream formats in 0ms
   function injectQualityReader() {
     const s = document.createElement("script");
     s.id = "omnigrab-bridge";
@@ -23,7 +21,6 @@
         function probeQualities() {
           try {
             let heights = new Set();
-            // Check ytInitialPlayerResponse
             let r = window.ytInitialPlayerResponse;
             if (r && r.streamingData && r.streamingData.adaptiveFormats) {
               r.streamingData.adaptiveFormats.forEach(f => {
@@ -32,7 +29,6 @@
                 }
               });
             }
-            // Check player quality levels
             let p = document.getElementById("movie_player");
             if (p && typeof p.getAvailableQualityLevels === "function") {
               let qMap = { "highres": 4320, "hd2880": 2880, "hd2160": 2160, "hd1440": 1440, "hd1080": 1080, "hd720": 720, "large": 480, "medium": 360, "small": 240, "tiny": 144 };
@@ -40,7 +36,6 @@
                 if (qMap[lvl]) heights.add(qMap[lvl]);
               });
             }
-            // Check video element resolution
             let v = document.querySelector("video");
             if (v && v.videoHeight) {
               heights.add(v.videoHeight);
@@ -60,7 +55,6 @@
     }
   }
 
-  // Listen for detected qualities from page
   window.addEventListener("message", (event) => {
     if (event.data && event.data.type === "OMNIGRAB_QUALITIES") {
       const heights = event.data.heights;
@@ -132,14 +126,12 @@
 
     if (detectedHeights.length > 0) {
       const topH = detectedHeights[0];
-      // Only include resolutions that are LESS THAN OR EQUAL to this specific video's max resolution
       known.forEach(item => {
         if (item.h <= topH) {
           list.push(item);
         }
       });
     } else {
-      // Fallback
       list.push(
         { label: "1080p Full HD", val: "1080", badge: "1080p", cls: "omni-badge-hd" },
         { label: "720p HD", val: "720", badge: "720p", cls: "omni-badge-hd" }
@@ -149,7 +141,7 @@
     return list;
   }
 
-  function startProgressTracking(taskId) {
+  function startProgressTracking(taskId, quality) {
     const pill = document.getElementById("omnigrab-pill");
     if (!pill) return;
 
@@ -222,7 +214,7 @@
                   rebuildPill();
                 });
               }
-              showToast("✓ Complete! Saved to Downloads.", false);
+              showToast(`✓ Download complete in ${quality === "mp3" ? "MP3" : quality + "p"}! Saved to Downloads.`, false);
             } else if (d.status === "error") {
               clearInterval(activePollTimer);
               activePollTimer = null;
@@ -238,12 +230,19 @@
     }, 600);
   }
 
-  function triggerDownload(quality = "max") {
+  function triggerDownload(quality) {
     const videoUrl = window.location.href;
     const pageTitle = document.title.replace(/ - YouTube$/i, "").trim();
 
+    // Determine target quality explicitly
+    let targetQ = quality;
+    if (!targetQ || targetQ === "max") {
+      targetQ = detectedHeights.length > 0 ? String(detectedHeights[0]) : "1080";
+    }
+
     closeDropdown();
-    showToast("Downloading in background... (Continues across tabs)", false);
+    const labelTag = targetQ === "mp3" ? "MP3 Audio" : `${targetQ}p`;
+    showToast(`Downloading in ${labelTag}... (Continues across tabs)`, false);
 
     try {
       chrome.runtime.sendMessage(
@@ -251,15 +250,15 @@
           action: "trigger_idm_download",
           url: videoUrl,
           title: pageTitle,
-          quality: quality
+          quality: targetQ
         },
         (response) => {
           if (chrome.runtime.lastError || !response || !response.ok) {
             showToast("Connecting to service...", true);
           } else {
-            showToast("⏬ Downloading in background!", false);
+            showToast(`⏬ Downloading in ${labelTag}!`, false);
             if (response.data && response.data.task_id) {
-              startProgressTracking(response.data.task_id);
+              startProgressTracking(response.data.task_id, targetQ);
             }
           }
         }
@@ -441,7 +440,8 @@
     if (mainBtn) {
       mainBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        triggerDownload("max");
+        const topQuality = detectedHeights.length > 0 ? String(detectedHeights[0]) : "max";
+        triggerDownload(topQuality);
       });
     }
 
@@ -521,7 +521,8 @@
   window.addEventListener("keydown", (e) => {
     if (e.altKey && (e.key === "d" || e.key === "D")) {
       e.preventDefault();
-      triggerDownload("max");
+      const topQuality = detectedHeights.length > 0 ? String(detectedHeights[0]) : "max";
+      triggerDownload(topQuality);
     }
   });
 

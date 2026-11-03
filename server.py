@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import yt_dlp
 
-app = FastAPI(title="OmniGrab 4K Cloud API", version="2.1.0")
+app = FastAPI(title="OmniGrab 4K Cloud API", version="2.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -71,23 +71,14 @@ def write_netscape_cookies(cookies_list, filepath):
 def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Optional[List[dict]]):
     info = ACTIVE_TASKS[task_id]
 
-    q = (quality or "max").lower()
+    q = (str(quality) if quality else "max").lower().strip()
     is_mp3 = (q == "mp3")
 
-    if q == "1080":
-        fmt = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best"
-    elif q == "1440":
-        fmt = "bestvideo[height<=1440]+bestaudio/best[height<=1440]/best"
-    elif q == "720":
-        fmt = "bestvideo[height<=720]+bestaudio/best[height<=720]/best"
-    elif q == "480":
-        fmt = "bestvideo[height<=480]+bestaudio/best[height<=480]/best"
-    elif q == "360":
-        fmt = "bestvideo[height<=360]+bestaudio/best[height<=360]/best"
-    elif q == "2160":
-        fmt = "bestvideo[height<=2160]+bestaudio/best[height<=2160]/best"
-    elif is_mp3:
+    if is_mp3:
         fmt = "bestaudio/best"
+    elif q.isdigit():
+        target_h = int(q)
+        fmt = f"bestvideo[height={target_h}]+bestaudio/bestvideo[height<={target_h}]+bestaudio/best"
     else:
         fmt = "bestvideo+bestaudio/best"
 

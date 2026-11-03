@@ -90,23 +90,15 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         "error": None
     })
 
-    q = (quality or "max").lower()
+    q = (str(quality) if quality else "max").lower().strip()
     is_mp3 = (q == "mp3")
 
-    if q == "1080":
-        fmt = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best"
-    elif q == "1440":
-        fmt = "bestvideo[height<=1440]+bestaudio/best[height<=1440]/best"
-    elif q == "720":
-        fmt = "bestvideo[height<=720]+bestaudio/best[height<=720]/best"
-    elif q == "480":
-        fmt = "bestvideo[height<=480]+bestaudio/best[height<=480]/best"
-    elif q == "360":
-        fmt = "bestvideo[height<=360]+bestaudio/best[height<=360]/best"
-    elif q == "2160":
-        fmt = "bestvideo[height<=2160]+bestaudio/best[height<=2160]/best"
-    elif is_mp3:
+    # Strict resolution targeting: exactly match height=X first!
+    if is_mp3:
         fmt = "bestaudio/best"
+    elif q.isdigit():
+        target_h = int(q)
+        fmt = f"bestvideo[height={target_h}]+bestaudio/bestvideo[height<={target_h}]+bestaudio/best"
     else:
         fmt = "bestvideo+bestaudio/best"
 
@@ -128,7 +120,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         elif d.get("status") == "finished":
             info_dict["status"] = "merging"
             info_dict["percent"] = 99.0
-            info_dict["speed"] = "Merging..."
+            info_dict["speed"] = f"Merging {q}p..."
 
     out_template = os.path.join(DOWNLOADS_DIR, "%(title)s.%(ext)s")
 
