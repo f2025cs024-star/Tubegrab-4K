@@ -105,6 +105,8 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         fmt = "bestvideo+bestaudio/best"
         out_template = os.path.join(DOWNLOADS_DIR, "%(title)s.%(ext)s")
 
+    print(f"[OmniGrab] Download request quality: {q} | fmt: {fmt} | outtmpl: {out_template}", flush=True)
+
     def progress_hook(d):
         if d.get("status") == "downloading":
             total = d.get("total_bytes") or d.get("total_bytes_estimate") or 0
