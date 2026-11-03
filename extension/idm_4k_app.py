@@ -303,6 +303,7 @@ def main():
     print("  Server API: http://127.0.0.1:19876")
     print("=" * 60)
 
+    HTTPServer.allow_reuse_address = True
     server = HTTPServer(("127.0.0.1", PORT), OmniGrabServer)
     server.serve_forever()
 
