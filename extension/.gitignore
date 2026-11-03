@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Downloaded files & temporary caches
+*.mp4
+*.m4a
+*.webm
+*.part
+*.ytdl
+yt_4k_temp/
+download_later_queue.txt
+yt_cookies.txt
+idm_4k_config.json
+idm_4k.log
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
