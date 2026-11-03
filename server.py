@@ -132,6 +132,8 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
     cookie_file = task_folder / "cookies.txt"
     if cookies and write_netscape_cookies(cookies, cookie_file):
         ydl_opts["cookiefile"] = str(cookie_file)
+    elif os.path.exists("yt_cookies.txt"):
+        ydl_opts["cookiefile"] = "yt_cookies.txt"
 
     if is_mp3:
         ydl_opts["postprocessors"] = [{
