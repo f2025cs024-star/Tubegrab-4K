@@ -242,6 +242,14 @@ def get_config():
     }
 
 
+@app.get("/updates.xml")
+def get_updates():
+    xml_path = Path("updates.xml")
+    if xml_path.exists():
+        return FileResponse(str(xml_path), media_type="application/xml")
+    raise HTTPException(status_code=404, detail="updates.xml not found")
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 19876))

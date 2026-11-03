@@ -225,8 +225,27 @@ chrome.notifications.onClicked.addListener((notifId) => {
   }
 });
 
+function reInjectActiveTabs() {
+  try {
+    chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+      for (const tab of (tabs || [])) {
+        if (!tab.id) continue;
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ["content.js"]
+        }).catch(() => {});
+        chrome.scripting.insertCSS({
+          target: { tabId: tab.id },
+          files: ["content.css"]
+        }).catch(() => {});
+      }
+    });
+  } catch (e) {}
+}
+
 // Check for updates on startup, install, and periodically every 2 hours
 chrome.runtime.onInstalled.addListener(() => {
+  reInjectActiveTabs();
   setTimeout(checkForUpdates, 3000);
 });
 
