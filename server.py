@@ -202,6 +202,11 @@ def progress(id: str = Query(...)):
     return task
 
 
+@app.get("/tasks")
+def list_tasks():
+    return list(ACTIVE_TASKS.values())
+
+
 @app.get("/get_file")
 def get_file(id: str = Query(...)):
     task = ACTIVE_TASKS.get(id)
