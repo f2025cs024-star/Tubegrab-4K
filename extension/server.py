@@ -211,6 +211,26 @@ def open_folder():
     return {"ok": True, "message": "Folder open supported on local desktop"}
 
 
+@app.get("/version")
+def get_version():
+    return {
+        "version": "2.2.0",
+        "app": "OmniGrab 4K",
+        "changelog": "Dynamic quality dropdown (144p to 4K), live electric blue progress bar, micro-pill UI.",
+        "release_url": "https://github.com"
+    }
+
+
+@app.get("/config")
+def get_config():
+    return {
+        "version": "2.2.0",
+        "min_version": "2.0.0",
+        "supported_resolutions": ["4320", "2160", "1440", "1080", "720", "480", "360", "240", "144", "mp3"],
+        "notice": ""
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=19876)

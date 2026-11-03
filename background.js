@@ -135,4 +135,79 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
     return true;
   }
+
+  if (message.action === "check_for_updates") {
+    checkForUpdates();
+    sendResponse({ ok: true });
+    return true;
+  }
 });
+
+function isNewerVersion(remote, local) {
+  if (!remote || !local) return false;
+  const r = remote.replace(/^v/i, "").split(".").map(Number);
+  const l = local.replace(/^v/i, "").split(".").map(Number);
+  for (let i = 0; i < Math.max(r.length, l.length); i++) {
+    const rNum = r[i] || 0;
+    const lNum = l[i] || 0;
+    if (rNum > lNum) return true;
+    if (rNum < lNum) return false;
+  }
+  return false;
+}
+
+function checkForUpdates() {
+  getServerUrl((serverUrl) => {
+    fetch(`${serverUrl}/version`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data || !data.version) return;
+        const currentVersion = chrome.runtime.getManifest().version;
+        if (isNewerVersion(data.version, currentVersion)) {
+          chrome.storage.local.get(["lastNotifiedVersion"], (res) => {
+            if (res.lastNotifiedVersion !== data.version) {
+              chrome.storage.local.set({ lastNotifiedVersion: data.version });
+              try {
+                chrome.notifications.create("omnigrab_update_" + data.version, {
+                  type: "basic",
+                  iconUrl: chrome.runtime.getURL("icon.png"),
+                  title: `⚡ OmniGrab 4K Update (v${data.version}) Available!`,
+                  message: data.changelog || "A new update is available. Click to view the update.",
+                  priority: 2
+                });
+              } catch (e) {}
+            }
+          });
+        }
+      })
+      .catch(() => {});
+  });
+}
+
+chrome.notifications.onClicked.addListener((notifId) => {
+  if (notifId && notifId.startsWith("omnigrab_update_")) {
+    getServerUrl((serverUrl) => {
+      fetch(`${serverUrl}/version`)
+        .then((res) => res.json())
+        .then((data) => {
+          const url = data.release_url || "https://github.com";
+          chrome.tabs.create({ url: url });
+        })
+        .catch(() => {
+          chrome.tabs.create({ url: "https://github.com" });
+        });
+    });
+  }
+});
+
+// Check for updates on startup, install, and periodically every 2 hours
+chrome.runtime.onInstalled.addListener(() => {
+  setTimeout(checkForUpdates, 3000);
+});
+
+chrome.runtime.onStartup.addListener(() => {
+  setTimeout(checkForUpdates, 3000);
+});
+
+setInterval(checkForUpdates, 2 * 60 * 60 * 1000);
+setTimeout(checkForUpdates, 5000);
