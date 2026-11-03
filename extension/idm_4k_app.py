@@ -221,6 +221,26 @@ class OmniGrabServer(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({"status": "unknown"}).encode("utf-8"))
             return
 
+        if parsed.path == "/version":
+            self._send_cors(200)
+            self.wfile.write(json.dumps({
+                "version": "2.2.0",
+                "app": "OmniGrab 4K",
+                "changelog": "Dynamic quality dropdown (144p to 4K), live electric blue progress bar, micro-pill UI.",
+                "release_url": "https://github.com"
+            }).encode("utf-8"))
+            return
+
+        if parsed.path == "/config":
+            self._send_cors(200)
+            self.wfile.write(json.dumps({
+                "version": "2.2.0",
+                "min_version": "2.0.0",
+                "supported_resolutions": ["4320", "2160", "1440", "1080", "720", "480", "360", "240", "144", "mp3"],
+                "notice": ""
+            }).encode("utf-8"))
+            return
+
         if parsed.path == "/open_folder":
             try:
                 os.startfile(DOWNLOADS_DIR)

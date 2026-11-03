@@ -1,0 +1,28 @@
+name: Auto Release OmniGrab 4K
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create Extension Zip Package
+        run: |
+          mkdir -p dist
+          zip -r dist/omnigrab-4k-${{ github.ref_name }}.zip \
+            manifest.json background.js content.js content.css \
+            options.html options.js icon.png README.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/omnigrab-4k-${{ github.ref_name }}.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
