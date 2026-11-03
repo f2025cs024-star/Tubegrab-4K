@@ -26,7 +26,7 @@ An ultra-sleek, high-performance **YouTube Video Downloader Extension** featurin
 
 1. Clone or download this repo:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/tubegrab-4k.git
+   git clone https://github.com/f2025cs024-star/Tubegrab-4K.git
    ```
 2. Open **Chrome** or **Edge** and go to `chrome://extensions` (or `edge://extensions`).
 3. Toggle on **Developer mode** (top-right).
@@ -39,7 +39,7 @@ An ultra-sleek, high-performance **YouTube Video Downloader Extension** featurin
 
 1. Push this repository to your **GitHub** account:
    ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/tubegrab-4k.git
+   git remote add origin https://github.com/f2025cs024-star/Tubegrab-4K.git
    git branch -M main
    git push -u origin main
    ```
