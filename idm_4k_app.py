@@ -99,7 +99,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         out_template = os.path.join(DOWNLOADS_DIR, "%(title)s.%(ext)s")
     elif q.isdigit():
         target_h = int(q)
-        fmt = f"bestvideo[height={target_h}]+bestaudio/bestvideo[height<={target_h}]+bestaudio/best"
+        fmt = f"bestvideo[height={target_h}]+bestaudio/best[height={target_h}]/bestvideo[height<={target_h}]+bestaudio/best[height<={target_h}]/best"
         out_template = os.path.join(DOWNLOADS_DIR, f"%(title)s ({target_h}p).%(ext)s")
     else:
         fmt = "bestvideo+bestaudio/best"

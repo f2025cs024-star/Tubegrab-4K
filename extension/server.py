@@ -78,7 +78,7 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         fmt = "bestaudio/best"
     elif q.isdigit():
         target_h = int(q)
-        fmt = f"bestvideo[height={target_h}]+bestaudio/bestvideo[height<={target_h}]+bestaudio/best"
+        fmt = f"bestvideo[height={target_h}]+bestaudio/best[height={target_h}]/bestvideo[height<={target_h}]+bestaudio/best[height<={target_h}]/best"
     else:
         fmt = "bestvideo+bestaudio/best"
 
