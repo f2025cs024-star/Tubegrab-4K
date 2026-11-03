@@ -13,6 +13,24 @@
   let detectedHeights = [];
   let maxLabel = "4K";
 
+  const PILL_ID = "tubegrab-pill";
+  const MENU_ID = "tubegrab-dropdown-menu";
+  const TOAST_ID = "tubegrab-toast";
+  const BRIDGE_ID = "tubegrab-bridge";
+  const STORAGE_KEY = "tubegrab_pos";
+
+  function getPill() {
+    return document.getElementById(PILL_ID) || document.getElementById("omnigrab-pill");
+  }
+
+  function getMenu() {
+    return document.getElementById(MENU_ID) || document.getElementById("omnigrab-dropdown-menu");
+  }
+
+  function getToast() {
+    return document.getElementById(TOAST_ID) || document.getElementById("omnigrab-toast");
+  }
+
   // All standard available YouTube video quality tiers
   const allKnownQualities = [
     { h: 4320, label: "8K Ultra HD", val: "4320", badge: "8K", cls: "omni-badge-4k" },
@@ -27,13 +45,13 @@
   ];
 
   function injectQualityReader() {
-    if (document.getElementById("omnigrab-bridge")) {
+    if (document.getElementById(BRIDGE_ID) || document.getElementById("omnigrab-bridge")) {
       requestImmediateProbe();
       return;
     }
 
     const s = document.createElement("script");
-    s.id = "omnigrab-bridge";
+    s.id = BRIDGE_ID;
     s.textContent = `
       (function() {
         function probeQualities() {
@@ -125,13 +143,14 @@
 
             let sorted = Array.from(heights).sort((a, b) => b - a);
             if (sorted.length > 0) {
+              window.postMessage({ type: "TUBEGRAB_QUALITIES", heights: sorted }, "*");
               window.postMessage({ type: "OMNIGRAB_QUALITIES", heights: sorted }, "*");
             }
           } catch(e) {}
         }
 
         window.addEventListener("message", function(e) {
-          if (e.data && e.data.type === "OMNIGRAB_REQUEST_PROBE") {
+          if (e.data && (e.data.type === "TUBEGRAB_REQUEST_PROBE" || e.data.type === "OMNIGRAB_REQUEST_PROBE")) {
             probeQualities();
           }
         });
@@ -156,11 +175,12 @@
   }
 
   function requestImmediateProbe() {
+    window.postMessage({ type: "TUBEGRAB_REQUEST_PROBE" }, "*");
     window.postMessage({ type: "OMNIGRAB_REQUEST_PROBE" }, "*");
   }
 
   window.addEventListener("message", (event) => {
-    if (event.data && event.data.type === "OMNIGRAB_QUALITIES") {
+    if (event.data && (event.data.type === "TUBEGRAB_QUALITIES" || event.data.type === "OMNIGRAB_QUALITIES")) {
       const heights = event.data.heights;
       if (Array.isArray(heights) && heights.length > 0) {
         detectedHeights = heights;
@@ -210,10 +230,10 @@
 
   function showToast(msg, isError = false) {
     if (!document.body) return;
-    let toast = document.getElementById("omnigrab-toast");
+    let toast = getToast();
     if (!toast) {
       toast = document.createElement("div");
-      toast.id = "omnigrab-toast";
+      toast.id = TOAST_ID;
       document.body.appendChild(toast);
     }
     toast.style.borderColor = isError ? "rgba(239, 68, 68, 0.7)" : "rgba(56, 189, 248, 0.6)";
@@ -246,7 +266,7 @@
   }
 
   function startProgressTracking(taskId, quality) {
-    const pill = document.getElementById("omnigrab-pill");
+    const pill = getPill();
     if (!pill) return;
 
     pill.classList.add("omni-is-downloading");
@@ -398,10 +418,10 @@
   }
 
   function toggleDropdown() {
-    let menu = document.getElementById("omnigrab-dropdown-menu");
+    let menu = getMenu();
     if (!menu) {
       menu = document.createElement("div");
-      menu.id = "omnigrab-dropdown-menu";
+      menu.id = MENU_ID;
       if (document.body) document.body.appendChild(menu);
     }
 
@@ -415,10 +435,10 @@
   }
 
   function renderDropdownItems() {
-    let menu = document.getElementById("omnigrab-dropdown-menu");
+    let menu = getMenu();
     if (!menu) return;
 
-    const pill = document.getElementById("omnigrab-pill");
+    const pill = getPill();
     if (!pill) return;
 
     const rect = pill.getBoundingClientRect();
@@ -458,7 +478,7 @@
   }
 
   function closeDropdown() {
-    const menu = document.getElementById("omnigrab-dropdown-menu");
+    const menu = getMenu();
     if (menu) menu.style.display = "none";
     isMenuOpen = false;
   }
@@ -499,7 +519,7 @@
           document.onmouseup = null;
           try {
             localStorage.setItem(
-              "omnigrab_pos",
+              STORAGE_KEY,
               JSON.stringify({ left: el.style.left, top: el.style.top })
             );
           } catch (e) {}
@@ -511,6 +531,7 @@
       e.stopPropagation();
       hasUserDragged = false;
       try {
+        localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem("omnigrab_pos");
       } catch (err) {}
       positionPillAtVideoSide(el);
@@ -527,7 +548,7 @@
     if (hasUserDragged) return;
 
     try {
-      const saved = localStorage.getItem("omnigrab_pos");
+      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("omnigrab_pos");
       if (saved) {
         const pos = JSON.parse(saved);
         if (pos.left && pos.top) {
@@ -560,7 +581,7 @@
   }
 
   function rebuildPill() {
-    const pill = document.getElementById("omnigrab-pill");
+    const pill = getPill();
     if (!pill) return;
 
     pill.innerHTML = `
@@ -618,11 +639,11 @@
 
   function createPill() {
     if (!document.body) return null;
-    let pill = document.getElementById("omnigrab-pill");
+    let pill = getPill();
     if (pill) return pill;
 
     pill = document.createElement("div");
-    pill.id = "omnigrab-pill";
+    pill.id = PILL_ID;
     document.body.appendChild(pill);
 
     rebuildPill();
@@ -635,7 +656,7 @@
       window.location.pathname.startsWith("/watch") ||
       window.location.pathname.startsWith("/shorts");
 
-    let pill = document.getElementById("omnigrab-pill");
+    let pill = getPill();
 
     if (!isVideoPage || isFullscreen()) {
       if (pill) pill.style.display = "none";
@@ -690,7 +711,7 @@
   });
 
   document.addEventListener("click", (e) => {
-    if (isMenuOpen && !e.target.closest("#omnigrab-dropdown-menu") && !e.target.closest("#omni-chevron-btn")) {
+    if (isMenuOpen && !e.target.closest("#tubegrab-dropdown-menu") && !e.target.closest("#omnigrab-dropdown-menu") && !e.target.closest("#omni-chevron-btn")) {
       closeDropdown();
     }
   });
@@ -700,13 +721,13 @@
   });
 
   window.addEventListener("resize", () => {
-    const pill = document.getElementById("omnigrab-pill");
+    const pill = getPill();
     if (pill && !hasUserDragged) positionPillAtVideoSide(pill);
     closeDropdown();
   });
 
   window.addEventListener("scroll", () => {
-    const pill = document.getElementById("omnigrab-pill");
+    const pill = getPill();
     if (pill && !hasUserDragged) positionPillAtVideoSide(pill);
     closeDropdown();
   }, true);

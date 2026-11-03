@@ -22,7 +22,7 @@ function notifyCompletion(title) {
     chrome.notifications.create({
       type: "basic",
       iconUrl: chrome.runtime.getURL("icon.png"),
-      title: "OmniGrab 4K: Download Finished!",
+      title: "TubeGrab 4K: Download Finished!",
       message: `${title || "YouTube Video"} has been saved to your Downloads folder.`,
       priority: 2
     });
@@ -168,10 +168,10 @@ function checkForUpdates() {
             if (res.lastNotifiedVersion !== data.version) {
               chrome.storage.local.set({ lastNotifiedVersion: data.version });
               try {
-                chrome.notifications.create("omnigrab_update_" + data.version, {
+                chrome.notifications.create("tubegrab_update_" + data.version, {
                   type: "basic",
                   iconUrl: chrome.runtime.getURL("icon.png"),
-                  title: `⚡ OmniGrab 4K Update (v${data.version}) Available!`,
+                  title: `⚡ TubeGrab 4K Update (v${data.version}) Available!`,
                   message: data.changelog || "A new update is available. Click to view the update.",
                   priority: 2
                 });
@@ -185,7 +185,7 @@ function checkForUpdates() {
 }
 
 chrome.notifications.onClicked.addListener((notifId) => {
-  if (notifId && notifId.startsWith("omnigrab_update_")) {
+  if (notifId && (notifId.startsWith("tubegrab_update_") || notifId.startsWith("omnigrab_update_"))) {
     getServerUrl((serverUrl) => {
       fetch(`${serverUrl}/version`)
         .then((res) => res.json())
