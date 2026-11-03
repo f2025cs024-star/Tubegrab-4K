@@ -24,8 +24,15 @@ function getServerUrl(callback) {
 
 function getYouTubeCookies(callback) {
   try {
-    chrome.cookies.getAll({ domain: "youtube.com" }, (cookies) => {
-      callback(cookies || []);
+    chrome.cookies.getAll({ url: "https://www.youtube.com" }, (c1) => {
+      chrome.cookies.getAll({ domain: ".youtube.com" }, (c2) => {
+        const map = new Map();
+        (c1 || []).forEach((c) => map.set(c.name, c));
+        (c2 || []).forEach((c) => {
+          if (!map.has(c.name)) map.set(c.name, c);
+        });
+        callback(Array.from(map.values()));
+      });
     });
   } catch (e) {
     callback([]);

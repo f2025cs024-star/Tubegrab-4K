@@ -314,7 +314,9 @@
 
             if (!fill || !pctLbl) return;
 
-            if (d.status === "downloading") {
+            if (d.status === "starting") {
+              if (metaLbl) metaLbl.textContent = d.speed || "Connecting to cloud...";
+            } else if (d.status === "downloading") {
               const pct = d.percent || 0;
               fill.style.width = pct + "%";
               pctLbl.textContent = Math.round(pct) + "%";

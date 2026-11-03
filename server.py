@@ -26,7 +26,7 @@ TEMP_DIR = Path("/tmp/downloads" if os.name != "nt" else os.path.expanduser("~/D
 TEMP_DIR.mkdir(parents=True, exist_ok=True)
 
 ACTIVE_TASKS = {}
-NODE_PATH = shutil.which("node") or r"C:\Program Files\nodejs\node.exe"
+NODE_PATH = shutil.which("node") or shutil.which("nodejs") or r"C:\Program Files\nodejs\node.exe"
 
 
 class DownloadRequest(BaseModel):
@@ -91,7 +91,7 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
 
             info["status"] = "downloading"
             info["percent"] = round(pct, 1)
-            info["speed"] = f"{format_bytes(speed)}/s" if speed else ""
+            info["speed"] = f"{format_bytes(speed)}/s" if speed else "Downloading..."
             info["downloaded"] = format_bytes(downloaded)
             info["total"] = format_bytes(total)
             if d.get("filename"):
@@ -100,7 +100,7 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         elif d.get("status") == "finished":
             info["status"] = "merging"
             info["percent"] = 99.0
-            info["speed"] = "Merging..."
+            info["speed"] = "Merging streams..."
 
     task_folder = TEMP_DIR / task_id
     task_folder.mkdir(parents=True, exist_ok=True)
@@ -115,11 +115,14 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         "merge_output_format": "mp4",
         "quiet": True,
         "no_warnings": True,
-        "remote_components": ["ejs:github"],
         "extractor_args": {
             "youtube": {
-                "player_client": ["android", "ios", "mweb", "web"]
+                "player_client": ["web", "mweb", "android"]
             }
+        },
+        "http_headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9"
         }
     }
 
@@ -129,8 +132,6 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
     cookie_file = task_folder / "cookies.txt"
     if cookies and write_netscape_cookies(cookies, cookie_file):
         ydl_opts["cookiefile"] = str(cookie_file)
-    elif os.path.exists("yt_cookies.txt") and os.path.getsize("yt_cookies.txt") > 50:
-        ydl_opts["cookiefile"] = "yt_cookies.txt"
 
     if is_mp3:
         ydl_opts["postprocessors"] = [{
@@ -140,6 +141,8 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         }]
 
     try:
+        info["status"] = "downloading"
+        info["speed"] = "Connecting to YouTube..."
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             meta = ydl.extract_info(url, download=True)
             if meta:
@@ -166,7 +169,8 @@ def health():
     return {
         "status": "running",
         "app": "TubeGrab 4K Cloud Server",
-        "active_tasks": len(ACTIVE_TASKS)
+        "active_tasks": len(ACTIVE_TASKS),
+        "version": "2.2.1"
     }
 
 
@@ -180,7 +184,7 @@ def trigger(req: DownloadRequest, background_tasks: BackgroundTasks):
         "quality": req.quality or "max",
         "status": "starting",
         "percent": 0.0,
-        "speed": "",
+        "speed": "Starting...",
         "downloaded": "",
         "total": "",
         "filepath": "",
@@ -221,7 +225,7 @@ def open_folder():
 @app.get("/version")
 def get_version():
     return {
-        "version": "2.2.0",
+        "version": "2.2.1",
         "app": "TubeGrab 4K",
         "changelog": "Dynamic quality dropdown (144p to 4K), live electric blue progress bar, micro-pill UI.",
         "release_url": "https://github.com/f2025cs024-star/Tubegrab-4K"
@@ -231,7 +235,7 @@ def get_version():
 @app.get("/config")
 def get_config():
     return {
-        "version": "2.2.0",
+        "version": "2.2.1",
         "min_version": "2.0.0",
         "supported_resolutions": ["4320", "2160", "1440", "1080", "720", "480", "360", "240", "144", "mp3"],
         "notice": ""
