@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>IDM 4K Downloader Settings</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 24px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    h2 {
+      color: #38bdf8;
+      margin-top: 0;
+    }
+    .field {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px 12px;
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 4px;
+      color: #f8fafc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #38bdf8;
+    }
+    .btn {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn:hover {
+      background: #0369a1;
+    }
+    .btn-secondary {
+      background: #334155;
+      margin-left: 8px;
+    }
+    .btn-secondary:hover {
+      background: #475569;
+    }
+    #msg {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #34d399;
+      display: none;
+    }
+    .card {
+      background: #1e293b;
+      padding: 14px;
+      border-radius: 6px;
+      margin-top: 20px;
+      border: 1px solid #334155;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+  <h2>⚙️ IDM 4K Downloader Settings</h2>
+
+  <div class="field">
+    <label for="serverUrl">Downloader Backend Server URL:</label>
+    <input type="text" id="serverUrl" placeholder="http://127.0.0.1:19876 or https://your-app.onrender.com">
+  </div>
+
+  <div>
+    <button class="btn" id="saveBtn">Save Settings</button>
+    <button class="btn btn-secondary" id="resetLocalBtn">Use Local Server</button>
+  </div>
+
+  <div id="msg">✓ Settings saved successfully!</div>
+
+  <div class="card">
+    <b>💡 Deploying to Render:</b><br>
+    If you deployed the backend on Render (e.g. <code>https://my-idm-4k.onrender.com</code>), paste that URL above. Anyone can then download videos without running Python locally!
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

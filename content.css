@@ -1,0 +1,154 @@
+/* Super Compact IDM Floating Button (Matches Screenshot 1) */
+#idm-4k-floating-bar {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  background: linear-gradient(180deg, #cce2fc 0%, #9cbef5 50%, #85aff0 100%) !important;
+  border: 1px solid #4a75b5 !important;
+  border-radius: 3px !important;
+  padding: 2px 3px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  font-size: 11px !important;
+  user-select: none !important;
+  cursor: default !important;
+  height: 24px !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+/* Hide automatically in Fullscreen */
+:fullscreen #idm-4k-floating-bar,
+:-webkit-full-screen #idm-4k-floating-bar,
+.ytp-fullscreen #idm-4k-floating-bar,
+body.ytp-fullscreen #idm-4k-floating-bar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Tiny Drag Handle */
+.idm-drag-handle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: grab !important;
+  padding: 0 3px !important;
+  color: #2b4c7e !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  opacity: 0.6 !important;
+}
+
+.idm-drag-handle:hover {
+  opacity: 1 !important;
+}
+
+.idm-drag-handle:active {
+  cursor: grabbing !important;
+}
+
+/* Main Action Button (Screenshot 1: Green arrow + reddish title) */
+#idm-4k-main-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  background: linear-gradient(180deg, #f0f6ff 0%, #cce1fd 50%, #b2d3fa 100%) !important;
+  border: 1px solid #5a87c7 !important;
+  border-radius: 2px !important;
+  padding: 2px 7px !important;
+  cursor: pointer !important;
+  color: #8b1e4b !important;
+  font-weight: 700 !important;
+  font-size: 11.5px !important;
+  height: 20px !important;
+  box-sizing: border-box !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+#idm-4k-main-btn:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #e2edfd 50%, #c4ddfa 100%) !important;
+  color: #a51249 !important;
+}
+
+.idm-4k-play-icon {
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 5px solid transparent !important;
+  border-bottom: 5px solid transparent !important;
+  border-left: 8px solid #16a34a !important;
+  filter: drop-shadow(0 1px 0.5px rgba(0,0,0,0.3)) !important;
+}
+
+/* Compact Help & Close Buttons */
+.idm-4k-small-btn {
+  width: 17px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: linear-gradient(180deg, #f0f6ff 0%, #b2d3fa 100%) !important;
+  border: 1px solid #5a87c7 !important;
+  border-radius: 2px !important;
+  color: #2b4c7e !important;
+  font-weight: bold !important;
+  font-size: 10px !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+.idm-4k-small-btn:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Compact In-Button Progress Meter */
+.idm-progress-compact {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  background: #0f172a !important;
+  color: #38bdf8 !important;
+  border: 1px solid #0284c7 !important;
+  border-radius: 2px !important;
+  padding: 1px 6px !important;
+  height: 20px !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  box-sizing: border-box !important;
+}
+
+.idm-progress-compact-bar {
+  width: 45px !important;
+  height: 6px !important;
+  background: #334155 !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+}
+
+.idm-progress-compact-fill {
+  height: 100% !important;
+  background: #22c55e !important;
+  width: 0% !important;
+  transition: width 0.2s ease !important;
+}
+
+/* Subtle Toast */
+#idm-4k-toast {
+  position: fixed !important;
+  top: 65px !important;
+  right: 20px !important;
+  z-index: 2147483647 !important;
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1.5px solid #38bdf8 !important;
+  border-radius: 4px !important;
+  padding: 7px 12px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 12px !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.5) !important;
+  display: none;
+}

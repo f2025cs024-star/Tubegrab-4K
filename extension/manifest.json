@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "IDM 4K YouTube Downloader",
+  "version": "2.0.0",
+  "description": "IDM-style 4K YouTube video downloader with draggable badge, auto-max quality, and Render cloud support.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "cookies",
+    "storage",
+    "downloads"
+  ],
+  "action": {
+    "default_title": "IDM 4K YouTube Downloader"
+  },
+  "options_page": "options.html",
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "http://127.0.0.1:19876/*",
+    "http://localhost:19876/*",
+    "https://*.onrender.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "css": ["content.css"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+const defaultUrl = "http://127.0.0.1:19876";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("serverUrl");
+  const saveBtn = document.getElementById("saveBtn");
+  const resetBtn = document.getElementById("resetLocalBtn");
+  const msg = document.getElementById("msg");
+
+  chrome.storage.sync.get(["serverUrl"], (res) => {
+    input.value = res.serverUrl || defaultUrl;
+  });
+
+  saveBtn.addEventListener("click", () => {
+    let url = input.value.trim().replace(/\/+$/, "");
+    if (!url) url = defaultUrl;
+    chrome.storage.sync.set({ serverUrl: url }, () => {
+      msg.textContent = "✓ Settings saved!";
+      msg.style.display = "block";
+      setTimeout(() => { msg.style.display = "none"; }, 3000);
+    });
+  });
+
+  resetBtn.addEventListener("click", () => {
+    input.value = defaultUrl;
+    chrome.storage.sync.set({ serverUrl: defaultUrl }, () => {
+      msg.textContent = "✓ Reset to local desktop server!";
+      msg.style.display = "block";
+      setTimeout(() => { msg.style.display = "none"; }, 3000);
+    });
+  });
+});
