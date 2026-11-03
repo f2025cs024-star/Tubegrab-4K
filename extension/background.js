@@ -1,4 +1,5 @@
-const DEFAULT_SERVER = "http://127.0.0.1:19876";
+const DEFAULT_SERVER = "https://tubegrab-4k.onrender.com";
+const LOCAL_SERVER = "http://127.0.0.1:19876";
 const activeBgTasks = new Map();
 
 function getServerUrl(callback) {
@@ -9,8 +10,13 @@ function getServerUrl(callback) {
 
 function getYouTubeCookies(callback) {
   try {
-    chrome.cookies.getAll({ domain: "youtube.com" }, (cookies) => {
-      callback(cookies || []);
+    chrome.cookies.getAll({ url: "https://www.youtube.com" }, (c1) => {
+      chrome.cookies.getAll({ domain: ".youtube.com" }, (c2) => {
+        const cookieMap = new Map();
+        (c1 || []).forEach((c) => cookieMap.set(c.name + "@" + c.domain, c));
+        (c2 || []).forEach((c) => cookieMap.set(c.name + "@" + c.domain, c));
+        callback(Array.from(cookieMap.values()));
+      });
     });
   } catch (e) {
     callback([]);
@@ -30,8 +36,8 @@ function notifyCompletion(title) {
 }
 
 function monitorTaskInBackground(taskId, title, serverUrl) {
-  if (activeBgTasks.has(taskId)) return;
-  activeBgTasks.set(taskId, { title, serverUrl });
+  if (activeBgTasks.has(taskId) && activeBgTasks.get(taskId).monitoring) return;
+  activeBgTasks.set(taskId, { title, serverUrl, monitoring: true });
 
   const timer = setInterval(() => {
     fetch(`${serverUrl}/progress?id=${encodeURIComponent(taskId)}`)
@@ -47,7 +53,8 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
             try {
               chrome.downloads.download({
                 url: `${serverUrl}/get_file?id=${encodeURIComponent(taskId)}`,
-                filename: (data.title || title || "video") + ".mp4"
+                filename: (data.title || title || "video").replace(/[\\/:*?"<>|]/g, "_") + ".mp4",
+                saveAs: false
               });
             } catch (e) {}
           }
@@ -78,7 +85,7 @@ function sendDownloadTrigger(url, title, quality, sendResponse) {
         .then((res) => res.json())
         .then((data) => {
           if (data && data.task_id) {
-            activeBgTasks.set(data.task_id, { url, title, quality, serverUrl });
+            activeBgTasks.set(data.task_id, { url, title, quality, serverUrl, monitoring: false });
             monitorTaskInBackground(data.task_id, title, serverUrl);
           }
           try { sendResponse({ ok: true, data, serverUrl }); } catch (e) {}
@@ -184,24 +191,41 @@ function checkForUpdates() {
   });
 }
 
+function reInjectActiveTabs() {
+  chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+    for (const tab of tabs || []) {
+      if (tab.id) {
+        chrome.scripting.insertCSS({
+          target: { tabId: tab.id },
+          files: ["content.css"]
+        }).catch(() => {});
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ["content.js"]
+        }).catch(() => {});
+      }
+    }
+  });
+}
+
 chrome.notifications.onClicked.addListener((notifId) => {
   if (notifId && (notifId.startsWith("tubegrab_update_") || notifId.startsWith("omnigrab_update_"))) {
     getServerUrl((serverUrl) => {
       fetch(`${serverUrl}/version`)
         .then((res) => res.json())
         .then((data) => {
-          const url = data.release_url || "https://github.com";
+          const url = data.release_url || "https://github.com/f2025cs024-star/Tubegrab-4K";
           chrome.tabs.create({ url: url });
         })
         .catch(() => {
-          chrome.tabs.create({ url: "https://github.com" });
+          chrome.tabs.create({ url: "https://github.com/f2025cs024-star/Tubegrab-4K" });
         });
     });
   }
 });
 
-// Check for updates on startup, install, and periodically every 2 hours
 chrome.runtime.onInstalled.addListener(() => {
+  reInjectActiveTabs();
   setTimeout(checkForUpdates, 3000);
 });
 

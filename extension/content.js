@@ -1,4 +1,12 @@
 (function () {
+  if (window.__tubegrab_loaded__) {
+    const ep = document.getElementById("tubegrab-pill") || document.getElementById("omnigrab-pill");
+    if (ep) ep.remove();
+    const em = document.getElementById("tubegrab-dropdown-menu") || document.getElementById("omnigrab-dropdown-menu");
+    if (em) em.remove();
+  }
+  window.__tubegrab_loaded__ = true;
+
   let isPillClosedByUser = false;
   let lastCheckedUrl = "";
   let activePollTimer = null;
@@ -314,7 +322,7 @@
 
             if (!fill || !pctLbl) return;
 
-            if (d.status === "downloading") {
+            if (d.status === "starting" || d.status === "downloading") {
               const pct = d.percent || 0;
               fill.style.width = pct + "%";
               pctLbl.textContent = Math.round(pct) + "%";
@@ -324,7 +332,7 @@
                 } else if (d.speed) {
                   metaLbl.textContent = d.speed;
                 } else {
-                  metaLbl.textContent = "Downloading...";
+                  metaLbl.textContent = d.status === "starting" ? "Connecting to cloud..." : "Downloading...";
                 }
               }
             } else if (d.status === "merging") {

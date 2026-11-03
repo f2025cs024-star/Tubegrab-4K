@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import yt_dlp
 
-app = FastAPI(title="TubeGrab 4K Cloud API", version="2.2.0")
+app = FastAPI(title="TubeGrab 4K Cloud API", version="2.2.1")
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,7 +26,20 @@ TEMP_DIR = Path("/tmp/downloads" if os.name != "nt" else os.path.expanduser("~/D
 TEMP_DIR.mkdir(parents=True, exist_ok=True)
 
 ACTIVE_TASKS = {}
-NODE_PATH = shutil.which("node") or shutil.which("nodejs") or r"C:\Program Files\nodejs\node.exe"
+
+# Locate FFmpeg
+FFMPEG_EXE = None
+try:
+    import imageio_ffmpeg
+    FFMPEG_EXE = imageio_ffmpeg.get_ffmpeg_exe()
+except Exception:
+    pass
+if not FFMPEG_EXE or not os.path.exists(FFMPEG_EXE):
+    FFMPEG_EXE = shutil.which("ffmpeg")
+
+# Locate JS Runtimes (Deno / Node.js)
+DENO_PATH = shutil.which("deno") or (os.path.expanduser("~/.deno/bin/deno") if os.path.exists(os.path.expanduser("~/.deno/bin/deno")) else None)
+NODE_PATH = shutil.which("node") or shutil.which("nodejs") or (r"C:\Program Files\nodejs\node.exe" if os.name == "nt" else None)
 
 
 class DownloadRequest(BaseModel):
@@ -51,42 +64,46 @@ def write_netscape_cookies(cookies_list, filepath):
         return False
     try:
         with open(filepath, "w", encoding="utf-8") as f:
-            f.write("# Netscape HTTP Cookie File\n\n")
+            f.write("# Netscape HTTP Cookie File\n")
             for c in cookies_list:
                 domain = c.get("domain", "")
-                if not domain:
-                    continue
-                flag = "TRUE" if domain.startswith(".") else "FALSE"
+                if domain and not domain.startswith("."):
+                    domain = "." + domain
+                include_subdomains = "TRUE" if domain.startswith(".") else "FALSE"
                 path = c.get("path", "/")
                 secure = "TRUE" if c.get("secure", False) else "FALSE"
-                exp = int(c.get("expirationDate") or (time.time() + 86400 * 30))
+                expires = int(c.get("expirationDate") or (time.time() + 86400 * 30))
                 name = c.get("name", "")
-                val = c.get("value", "")
-                f.write(f"{domain}\t{flag}\t{path}\t{secure}\t{exp}\t{name}\t{val}\n")
+                value = c.get("value", "")
+                if name and value:
+                    f.write(f"{domain}\t{include_subdomains}\t{path}\t{secure}\t{expires}\t{name}\t{value}\n")
         return True
-    except Exception:
+    except Exception as e:
+        print(f"Error writing cookies: {e}")
         return False
 
 
-def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Optional[List[dict]]):
-    info = ACTIVE_TASKS[task_id]
+def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Optional[List[dict]] = None):
+    info = ACTIVE_TASKS.get(task_id)
+    if not info:
+        return
 
-    q = (str(quality) if quality else "max").lower().strip()
-    is_mp3 = (q == "mp3")
-
-    if is_mp3:
+    is_mp3 = False
+    if quality == "mp3":
         fmt = "bestaudio/best"
-    elif q.isdigit():
-        target_h = int(q)
-        fmt = f"bestvideo[height={target_h}]+bestaudio/best[height={target_h}]/bestvideo[height<={target_h}]+bestaudio/best[height<={target_h}]/best"
-    else:
+        is_mp3 = True
+    elif quality == "max":
         fmt = "bestvideo+bestaudio/best"
+        is_mp3 = False
+    else:
+        fmt = f"bestvideo[height<={quality}]+bestaudio/best[height<={quality}]/best"
+        is_mp3 = False
 
     def progress_hook(d):
         if d.get("status") == "downloading":
             total = d.get("total_bytes") or d.get("total_bytes_estimate") or 0
-            downloaded = d.get("downloaded_bytes") or 0
-            speed = d.get("speed") or 0
+            downloaded = d.get("downloaded_bytes", 0)
+            speed = d.get("speed", 0)
             pct = (downloaded / total * 100.0) if total > 0 else 0.0
 
             info["status"] = "downloading"
@@ -100,7 +117,7 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         elif d.get("status") == "finished":
             info["status"] = "merging"
             info["percent"] = 99.0
-            info["speed"] = "Merging streams..."
+            info["speed"] = "Finalizing video..."
 
     task_folder = TEMP_DIR / task_id
     task_folder.mkdir(parents=True, exist_ok=True)
@@ -111,33 +128,35 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         "outtmpl": out_tmpl,
         "noplaylist": True,
         "progress_hooks": [progress_hook],
-        "concurrent_fragment_downloads": 8,
+        "concurrent_fragment_downloads": 4,
         "merge_output_format": "mp4",
         "quiet": True,
         "no_warnings": True,
         "http_headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
             "Accept-Language": "en-US,en;q=0.9"
         }
     }
 
+    if FFMPEG_EXE:
+        ydl_opts["ffmpeg_location"] = FFMPEG_EXE
+
+    js_runtimes = {}
+    if DENO_PATH and os.path.exists(DENO_PATH):
+        js_runtimes["deno"] = {"path": DENO_PATH}
     if NODE_PATH and os.path.exists(NODE_PATH):
-        ydl_opts["js_runtimes"] = {"node": {"path": NODE_PATH}}
+        js_runtimes["node"] = {"path": NODE_PATH}
+    if js_runtimes:
+        ydl_opts["js_runtimes"] = js_runtimes
 
     cookie_file = task_folder / "cookies.txt"
     if cookies and write_netscape_cookies(cookies, cookie_file):
         ydl_opts["cookiefile"] = str(cookie_file)
-        ydl_opts["extractor_args"] = {
-            "youtube": {
-                "player_client": ["web", "mweb", "android"]
-            }
-        }
+        ydl_opts["extractor_args"] = {"youtube": {"player_client": ["web", "mweb", "android"]}}
+    elif os.path.exists("yt_cookies.txt"):
+        ydl_opts["cookiefile"] = "yt_cookies.txt"
+        ydl_opts["extractor_args"] = {"youtube": {"player_client": ["web", "mweb", "android"]}}
     else:
-        ydl_opts["extractor_args"] = {
-            "youtube": {
-                "player_client": ["android", "ios"]
-            }
-        }
+        ydl_opts["extractor_args"] = {"youtube": {"player_client": ["android"]}}
 
     if is_mp3:
         ydl_opts["postprocessors"] = [{
@@ -158,24 +177,66 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
                 cand = os.path.splitext(expected_filename)[0] + ext
                 if os.path.exists(cand):
                     info["filepath"] = cand
-                elif os.path.exists(expected_filename):
-                    info["filepath"] = expected_filename
+    except Exception as primary_err:
+        print(f"Primary extraction failed ({primary_err}), attempting mobile fallback...")
+        try:
+            info["speed"] = "Connecting via mobile engine..."
+            fallback_opts = dict(ydl_opts)
+            fallback_opts["format"] = "best"
+            fallback_opts["extractor_args"] = {"youtube": {"player_client": ["android"]}}
+            fallback_opts.pop("cookiefile", None)
+            with yt_dlp.YoutubeDL(fallback_opts) as ydl:
+                meta = ydl.extract_info(url, download=True)
+                if meta:
+                    info["title"] = meta.get("title") or title
+                    expected_filename = ydl.prepare_filename(meta)
+                    ext = ".mp3" if is_mp3 else ".mp4"
+                    cand = os.path.splitext(expected_filename)[0] + ext
+                    if os.path.exists(cand):
+                        info["filepath"] = cand
+        except Exception as fallback_err:
+            print(f"Fallback extraction failed: {fallback_err}")
+            info["status"] = "error"
+            info["error"] = str(fallback_err)
+            return
 
+    # Verify output file
+    if info.get("filepath") and os.path.exists(info["filepath"]):
         info["status"] = "finished"
         info["percent"] = 100.0
-        info["speed"] = "Done"
-    except Exception as e:
-        info["status"] = "error"
-        info["error"] = str(e)
+        info["speed"] = "Download Complete"
+        info["downloaded"] = format_bytes(os.path.getsize(info["filepath"]))
+        info["total"] = info["downloaded"]
+    else:
+        files = list(task_folder.glob("*.mp*"))
+        if files:
+            info["filepath"] = str(files[0])
+            info["status"] = "finished"
+            info["percent"] = 100.0
+            info["speed"] = "Download Complete"
+            info["downloaded"] = format_bytes(os.path.getsize(files[0]))
+            info["total"] = info["downloaded"]
+        elif not info.get("error"):
+            info["status"] = "error"
+            info["error"] = "Output file not found after download"
 
 
 @app.get("/")
+def home():
+    return {
+        "status": "online",
+        "app": "TubeGrab 4K Cloud Server",
+        "version": "2.2.1",
+        "docs": "/docs"
+    }
+
+
 @app.get("/status")
-def health():
+def status():
     return {
         "status": "running",
         "app": "TubeGrab 4K Cloud Server",
-        "active_tasks": len(ACTIVE_TASKS),
+        "active_tasks": len([t for t in ACTIVE_TASKS.values() if t.get("status") in ["starting", "downloading", "merging"]]),
         "version": "2.2.1"
     }
 
@@ -265,8 +326,34 @@ def get_updates():
 def debug():
     return {
         "has_yt_cookies": os.path.exists("yt_cookies.txt"),
-        "cookies_size": os.path.getsize("yt_cookies.txt") if os.path.exists("yt_cookies.txt") else 0
+        "cookies_size": os.path.getsize("yt_cookies.txt") if os.path.exists("yt_cookies.txt") else 0,
+        "ffmpeg": FFMPEG_EXE,
+        "deno": DENO_PATH,
+        "node": NODE_PATH,
+        "yt_dlp_version": yt_dlp.version.__version__
     }
+
+
+@app.get("/test_extract")
+def test_extract(url: str = "https://www.youtube.com/watch?v=jNQXAC9IVRw", client: str = "android"):
+    opts = {
+        "quiet": True,
+        "format": "best",
+        "extractor_args": {"youtube": {"player_client": [client]}}
+    }
+    if FFMPEG_EXE:
+        opts["ffmpeg_location"] = FFMPEG_EXE
+    try:
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            meta = ydl.extract_info(url, download=False)
+            return {
+                "ok": True,
+                "title": meta.get("title"),
+                "client": client,
+                "formats": len(meta.get("formats", []))
+            }
+    except Exception as e:
+        return {"ok": False, "error": str(e), "client": client}
 
 
 if __name__ == "__main__":
