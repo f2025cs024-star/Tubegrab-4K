@@ -263,33 +263,78 @@ body.ytp-fullscreen #omnigrab-pill {
   border-radius: 4px !important;
 }
 
-/* In-Pill Mini Progress Mode */
-.omni-progress-mode {
+/* ============================================================
+   Live Electric Blue Download Progress Bar Indication
+   ============================================================ */
+
+.omni-is-downloading {
+  border-color: rgba(56, 189, 248, 0.85) !important;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.75), 0 0 16px rgba(56, 189, 248, 0.5) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  min-width: 125px !important;
+  justify-content: space-between !important;
+}
+
+.omni-dl-info {
   display: flex !important;
   align-items: center !important;
   gap: 5px !important;
   padding: 0 4px !important;
+  white-space: nowrap !important;
 }
 
-.omni-progress-track {
-  width: 44px !important;
-  height: 5px !important;
-  background: #334155 !important;
-  border-radius: 3px !important;
-  overflow: hidden !important;
+.omni-dl-icon {
+  width: 13px !important;
+  height: 13px !important;
+  display: block !important;
+  animation: omni-bounce 0.9s infinite alternate ease-in-out !important;
+  filter: drop-shadow(0 0 4px #38bdf8) !important;
+  flex-shrink: 0 !important;
 }
 
-.omni-progress-fill {
-  height: 100% !important;
-  background: linear-gradient(90deg, #38bdf8, #22c55e) !important;
-  width: 0% !important;
-  transition: width 0.2s ease !important;
+@keyframes omni-bounce {
+  0% { transform: translateY(-1px); }
+  100% { transform: translateY(1.5px); }
 }
 
-.omni-progress-text {
-  font-size: 10px !important;
-  font-weight: 700 !important;
+.omni-dl-pct {
+  font-size: 12px !important;
+  font-weight: 800 !important;
   color: #38bdf8 !important;
+  letter-spacing: 0.2px !important;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
+}
+
+.omni-dl-meta {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+  max-width: 95px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Full-width glowing Electric Blue Bar along the bottom of the pill */
+.omni-blue-bar-track {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 3.5px !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  overflow: hidden !important;
+  border-radius: 0 0 14px 14px !important;
+}
+
+.omni-blue-bar-fill {
+  height: 100% !important;
+  width: 0% !important;
+  background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #60a5fa 100%) !important;
+  box-shadow: 0 0 10px #38bdf8, 0 0 4px #60a5fa !important;
+  transition: width 0.25s ease-out !important;
+  border-radius: 0 0 14px 14px !important;
 }
 
 /* Toast */
