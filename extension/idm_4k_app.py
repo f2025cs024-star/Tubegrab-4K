@@ -200,6 +200,7 @@ class OmniGrabServer(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         params = urllib.parse.parse_qs(parsed.query)
+        print(f"[OmniGrab DEBUG] do_GET path: '{self.path}' | parsed: '{parsed.path}'", flush=True)
 
         if parsed.path == "/status":
             self._send_cors(200)
