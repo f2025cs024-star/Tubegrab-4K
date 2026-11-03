@@ -1,5 +1,5 @@
 /* ============================================================
-   OmniGrab 4K: Ultra-Attractive Glassmorphism Floating Pill
+   OmniGrab 4K: Ultra-Compact Glass Micro-Pill (Only ~95px wide)
    ============================================================ */
 
 #omnigrab-pill {
@@ -7,25 +7,27 @@
   z-index: 2147483647 !important;
   display: flex !important;
   align-items: center !important;
-  background: rgba(15, 23, 42, 0.90) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-  border: 1px solid rgba(56, 189, 248, 0.35) !important;
-  border-radius: 22px !important;
-  padding: 3px 5px !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  font-size: 12px !important;
+  gap: 2px !important;
+  background: rgba(15, 23, 42, 0.88) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 14px !important;
+  padding: 2px 4px !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55), 0 0 1px rgba(255, 255, 255, 0.25) inset !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  font-size: 11px !important;
   user-select: none !important;
   cursor: default !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
-  height: 32px !important;
+  height: 25px !important;
   box-sizing: border-box !important;
+  white-space: nowrap !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 #omnigrab-pill:hover {
-  border-color: rgba(56, 189, 248, 0.65) !important;
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.65), 0 0 16px rgba(56, 189, 248, 0.25) !important;
+  border-color: rgba(56, 189, 248, 0.75) !important;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), 0 0 10px rgba(56, 189, 248, 0.3) !important;
 }
 
 /* Hide on Fullscreen */
@@ -39,16 +41,16 @@ body.ytp-fullscreen #omnigrab-pill {
   pointer-events: none !important;
 }
 
-/* Drag Grip */
+/* Tiny Drag Grip */
 .omni-drag-grip {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: grab !important;
-  padding: 0 6px 0 4px !important;
+  padding: 0 3px !important;
   color: #64748b !important;
-  font-size: 13px !important;
-  transition: color 0.15s ease !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
 }
 
 .omni-drag-grip:hover {
@@ -59,72 +61,69 @@ body.ytp-fullscreen #omnigrab-pill {
   cursor: grabbing !important;
 }
 
-/* Main Action Button */
+/* Micro Action Button */
 .omni-main-btn {
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 16px !important;
-  padding: 4px 10px 4px 8px !important;
+  gap: 4px !important;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 11px !important;
+  padding: 2px 7px 2px 5px !important;
   color: #f8fafc !important;
-  font-weight: 600 !important;
-  font-size: 12px !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
   cursor: pointer !important;
   transition: all 0.15s ease !important;
-  height: 24px !important;
+  height: 20px !important;
   box-sizing: border-box !important;
 }
 
 .omni-main-btn:hover {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.35) 100%) !important;
-  border-color: rgba(56, 189, 248, 0.5) !important;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.3) 0%, rgba(14, 165, 233, 0.4) 100%) !important;
+  border-color: rgba(56, 189, 248, 0.6) !important;
   color: #38bdf8 !important;
-  text-shadow: 0 0 8px rgba(56, 189, 248, 0.5) !important;
 }
 
 .omni-play-icon {
   width: 0 !important;
   height: 0 !important;
-  border-top: 5px solid transparent !important;
-  border-bottom: 5px solid transparent !important;
-  border-left: 8px solid #22c55e !important;
-  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.6)) !important;
+  border-top: 4px solid transparent !important;
+  border-bottom: 4px solid transparent !important;
+  border-left: 7px solid #22c55e !important;
+  filter: drop-shadow(0 0 3px rgba(34, 197, 94, 0.6)) !important;
 }
 
-/* Dropdown Trigger Arrow */
+/* Dropdown Arrow */
 .omni-chevron-btn {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 20px !important;
-  height: 24px !important;
-  border-radius: 12px !important;
+  width: 17px !important;
+  height: 20px !important;
+  border-radius: 9px !important;
   cursor: pointer !important;
   color: #94a3b8 !important;
-  font-size: 10px !important;
-  margin-left: 2px !important;
+  font-size: 9px !important;
   transition: all 0.15s ease !important;
 }
 
 .omni-chevron-btn:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
   color: #38bdf8 !important;
 }
 
-/* Close Pill Button */
+/* Close 'x' */
 .omni-close-btn {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 18px !important;
-  height: 24px !important;
-  border-radius: 12px !important;
+  width: 15px !important;
+  height: 20px !important;
+  border-radius: 9px !important;
   cursor: pointer !important;
   color: #64748b !important;
-  font-size: 11px !important;
-  margin-left: 2px !important;
+  font-size: 9.5px !important;
   transition: color 0.15s ease !important;
 }
 
@@ -132,45 +131,45 @@ body.ytp-fullscreen #omnigrab-pill {
   color: #ef4444 !important;
 }
 
-/* Dynamic Quality Dropdown Menu */
+/* Compact Glass Dropdown Menu */
 #omnigrab-dropdown-menu {
   position: fixed !important;
   z-index: 2147483647 !important;
   background: rgba(15, 23, 42, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(56, 189, 248, 0.4) !important;
-  border-radius: 12px !important;
-  padding: 6px !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.15) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+  border-radius: 10px !important;
+  padding: 5px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 14px rgba(56, 189, 248, 0.15) !important;
   display: none;
   flex-direction: column !important;
-  gap: 3px !important;
-  min-width: 185px !important;
+  gap: 2px !important;
+  min-width: 160px !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   user-select: none !important;
 }
 
 .omni-menu-header {
-  font-size: 10px !important;
+  font-size: 9.5px !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.6px !important;
+  letter-spacing: 0.5px !important;
   color: #64748b !important;
-  padding: 4px 8px 2px !important;
+  padding: 3px 6px 2px !important;
 }
 
 .omni-menu-item {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 6px 10px !important;
-  border-radius: 8px !important;
+  padding: 5px 8px !important;
+  border-radius: 6px !important;
   color: #e2e8f0 !important;
-  font-size: 12px !important;
+  font-size: 11px !important;
   font-weight: 500 !important;
   cursor: pointer !important;
-  transition: background 0.12s ease, color 0.12s ease !important;
+  transition: background 0.1s ease, color 0.1s ease !important;
 }
 
 .omni-menu-item:hover {
@@ -178,29 +177,19 @@ body.ytp-fullscreen #omnigrab-pill {
   color: #38bdf8 !important;
 }
 
-.omni-badge-max {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  color: #ffffff !important;
-  font-size: 9.5px !important;
-  font-weight: 700 !important;
-  padding: 1px 6px !important;
-  border-radius: 10px !important;
-  letter-spacing: 0.3px !important;
-}
-
 .omni-badge-4k {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
+  background: #7c3aed !important;
   color: #ffffff !important;
-  font-size: 9.5px !important;
+  font-size: 9px !important;
   font-weight: 700 !important;
-  padding: 1px 6px !important;
-  border-radius: 10px !important;
+  padding: 1px 5px !important;
+  border-radius: 8px !important;
 }
 
 .omni-badge-hd {
   background: rgba(56, 189, 248, 0.25) !important;
   color: #38bdf8 !important;
-  font-size: 9.5px !important;
+  font-size: 9px !important;
   font-weight: 600 !important;
   padding: 1px 5px !important;
   border-radius: 8px !important;
@@ -209,23 +198,23 @@ body.ytp-fullscreen #omnigrab-pill {
 .omni-badge-audio {
   background: rgba(245, 158, 11, 0.25) !important;
   color: #f59e0b !important;
-  font-size: 9.5px !important;
+  font-size: 9px !important;
   font-weight: 600 !important;
   padding: 1px 5px !important;
   border-radius: 8px !important;
 }
 
-/* In-Pill Progress Mode */
+/* In-Pill Mini Progress Mode */
 .omni-progress-mode {
   display: flex !important;
   align-items: center !important;
-  gap: 8px !important;
-  padding: 0 8px !important;
+  gap: 5px !important;
+  padding: 0 4px !important;
 }
 
 .omni-progress-track {
-  width: 60px !important;
-  height: 6px !important;
+  width: 42px !important;
+  height: 5px !important;
   background: #334155 !important;
   border-radius: 3px !important;
   overflow: hidden !important;
@@ -235,11 +224,11 @@ body.ytp-fullscreen #omnigrab-pill {
   height: 100% !important;
   background: linear-gradient(90deg, #38bdf8, #22c55e) !important;
   width: 0% !important;
-  transition: width 0.25s ease !important;
+  transition: width 0.2s ease !important;
 }
 
 .omni-progress-text {
-  font-size: 11px !important;
+  font-size: 10px !important;
   font-weight: 700 !important;
   color: #38bdf8 !important;
 }
@@ -251,13 +240,13 @@ body.ytp-fullscreen #omnigrab-pill {
   right: 20px !important;
   z-index: 2147483647 !important;
   background: rgba(15, 23, 42, 0.95) !important;
-  backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(14px) !important;
   color: #f8fafc !important;
   border: 1px solid rgba(56, 189, 248, 0.5) !important;
-  border-radius: 8px !important;
-  padding: 8px 14px !important;
+  border-radius: 6px !important;
+  padding: 7px 12px !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  font-size: 12px !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+  font-size: 11.5px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
   display: none;
 }

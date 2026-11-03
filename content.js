@@ -10,6 +10,88 @@
   let hasUserDragged = false;
   let isMenuOpen = false;
 
+  // Real detected qualities for the current video
+  let detectedHeights = [];
+  let maxLabel = "HD";
+
+  // 1. Inject script into webpage context to read actual video stream formats in 0ms
+  function injectQualityReader() {
+    const s = document.createElement("script");
+    s.id = "omnigrab-bridge";
+    s.textContent = `
+      (function() {
+        function probeQualities() {
+          try {
+            let heights = new Set();
+            // Check ytInitialPlayerResponse
+            let r = window.ytInitialPlayerResponse;
+            if (r && r.streamingData && r.streamingData.adaptiveFormats) {
+              r.streamingData.adaptiveFormats.forEach(f => {
+                if (f.height && f.vcodec && !f.vcodec.startsWith("none")) {
+                  heights.add(f.height);
+                }
+              });
+            }
+            // Check player quality levels
+            let p = document.getElementById("movie_player");
+            if (p && typeof p.getAvailableQualityLevels === "function") {
+              let qMap = { "highres": 4320, "hd2880": 2880, "hd2160": 2160, "hd1440": 1440, "hd1080": 1080, "hd720": 720, "large": 480, "medium": 360, "small": 240, "tiny": 144 };
+              p.getAvailableQualityLevels().forEach(lvl => {
+                if (qMap[lvl]) heights.add(qMap[lvl]);
+              });
+            }
+            // Check video element resolution
+            let v = document.querySelector("video");
+            if (v && v.videoHeight) {
+              heights.add(v.videoHeight);
+            }
+            let sorted = Array.from(heights).sort((a, b) => b - a);
+            window.postMessage({ type: "OMNIGRAB_QUALITIES", heights: sorted }, "*");
+          } catch(e) {}
+        }
+        probeQualities();
+        document.addEventListener("yt-navigate-finish", probeQualities);
+        document.addEventListener("spfdone", probeQualities);
+        setInterval(probeQualities, 2500);
+      })();
+    `;
+    if (!document.getElementById("omnigrab-bridge")) {
+      (document.head || document.documentElement).appendChild(s);
+    }
+  }
+
+  // Listen for detected qualities from page
+  window.addEventListener("message", (event) => {
+    if (event.data && event.data.type === "OMNIGRAB_QUALITIES") {
+      const heights = event.data.heights;
+      if (Array.isArray(heights) && heights.length > 0) {
+        detectedHeights = heights;
+        updateMaxLabel();
+      }
+    }
+  });
+
+  function updateMaxLabel() {
+    if (detectedHeights.length === 0) return;
+    const topH = detectedHeights[0];
+    if (topH >= 2160) {
+      maxLabel = "4K";
+    } else if (topH >= 1440) {
+      maxLabel = "2K";
+    } else if (topH >= 1080) {
+      maxLabel = "1080p";
+    } else if (topH >= 720) {
+      maxLabel = "720p";
+    } else {
+      maxLabel = topH + "p";
+    }
+
+    const lbl = document.getElementById("omni-lbl-text");
+    if (lbl && !activePollTimer) {
+      lbl.textContent = maxLabel;
+    }
+  }
+
   function isFullscreen() {
     return !!(
       document.fullscreenElement ||
@@ -34,48 +116,37 @@
     clearTimeout(toast._timer);
     toast._timer = setTimeout(() => {
       if (toast) toast.style.display = "none";
-    }, 4000);
+    }, 3500);
   }
 
-  function detectAvailableQualities() {
-    const player = document.getElementById("movie_player");
-    let levels = [];
-    try {
-      if (player && typeof player.getAvailableQualityLevels === "function") {
-        levels = player.getAvailableQualityLevels() || [];
-      }
-    } catch (e) {}
-
-    const qualityMap = [
-      { key: "highres", label: "4K / 8K Ultra HD", val: "2160", badge: "4K", cls: "omni-badge-4k" },
-      { key: "hd2160", label: "4K Ultra HD (2160p)", val: "2160", badge: "4K", cls: "omni-badge-4k" },
-      { key: "hd1440", label: "2K QHD (1440p)", val: "1440", badge: "2K", cls: "omni-badge-hd" },
-      { key: "hd1080", label: "Full HD (1080p)", val: "1080", badge: "FHD", cls: "omni-badge-hd" },
-      { key: "hd720", label: "HD (720p)", val: "720", badge: "HD", cls: "omni-badge-hd" },
-      { key: "large", label: "SD (480p)", val: "480", badge: "480p", cls: "omni-badge-hd" },
-      { key: "medium", label: "SD (360p)", val: "360", badge: "360p", cls: "omni-badge-hd" }
+  function getAvailableItems() {
+    const list = [];
+    const known = [
+      { h: 2160, label: "4K (2160p)", val: "2160", badge: "4K", cls: "omni-badge-4k" },
+      { h: 1440, label: "2K (1440p)", val: "1440", badge: "2K", cls: "omni-badge-hd" },
+      { h: 1080, label: "1080p Full HD", val: "1080", badge: "1080p", cls: "omni-badge-hd" },
+      { h: 720, label: "720p HD", val: "720", badge: "720p", cls: "omni-badge-hd" },
+      { h: 480, label: "480p SD", val: "480", badge: "480p", cls: "omni-badge-hd" },
+      { h: 360, label: "360p", val: "360", badge: "360p", cls: "omni-badge-hd" }
     ];
 
-    let found = [];
-    if (levels && levels.length > 0) {
-      const addedVals = new Set();
-      qualityMap.forEach((q) => {
-        if (levels.includes(q.key) && !addedVals.has(q.val)) {
-          addedVals.add(q.val);
-          found.push(q);
+    if (detectedHeights.length > 0) {
+      const topH = detectedHeights[0];
+      // Only include resolutions that are LESS THAN OR EQUAL to this specific video's max resolution
+      known.forEach(item => {
+        if (item.h <= topH) {
+          list.push(item);
         }
       });
+    } else {
+      // Fallback
+      list.push(
+        { label: "1080p Full HD", val: "1080", badge: "1080p", cls: "omni-badge-hd" },
+        { label: "720p HD", val: "720", badge: "720p", cls: "omni-badge-hd" }
+      );
     }
 
-    if (found.length === 0) {
-      found = [
-        { label: "4K Ultra HD (2160p)", val: "2160", badge: "4K", cls: "omni-badge-4k" },
-        { label: "Full HD (1080p)", val: "1080", badge: "FHD", cls: "omni-badge-hd" },
-        { label: "HD (720p)", val: "720", badge: "HD", cls: "omni-badge-hd" }
-      ];
-    }
-
-    return found;
+    return list;
   }
 
   function startProgressTracking(taskId) {
@@ -83,14 +154,14 @@
     if (!pill) return;
 
     pill.innerHTML = `
-      <div class="omni-drag-grip" title="Drag to move">⠿</div>
+      <div class="omni-drag-grip" title="Drag">⠿</div>
       <div class="omni-progress-mode">
         <span class="omni-progress-text" id="omni-pct-lbl">0%</span>
         <div class="omni-progress-track">
           <div class="omni-progress-fill" id="omni-fill"></div>
         </div>
       </div>
-      <div class="omni-close-btn" id="omni-reset-btn" title="Cancel/Reset">✕</div>
+      <div class="omni-close-btn" id="omni-reset-btn" title="Cancel">✕</div>
     `;
 
     const rBtn = document.getElementById("omni-reset-btn");
@@ -98,6 +169,7 @@
       rBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         clearInterval(activePollTimer);
+        activePollTimer = null;
         rebuildPill();
       });
     }
@@ -127,11 +199,12 @@
               pctLbl.textContent = "99%";
             } else if (d.status === "finished") {
               clearInterval(activePollTimer);
+              activePollTimer = null;
               fill.style.width = "100%";
               pill.innerHTML = `
-                <div class="omni-drag-grip" title="Drag to move">⠿</div>
-                <div class="omni-main-btn" style="background:rgba(16,185,129,0.25);border-color:#10b981;color:#34d399;" id="omni-open-folder" title="Click to open Downloads folder">
-                  <span>✓ Complete! [Open]</span>
+                <div class="omni-drag-grip" title="Drag">⠿</div>
+                <div class="omni-main-btn" style="background:rgba(16,185,129,0.25);border-color:#10b981;color:#34d399;" id="omni-open-folder" title="Click to open Downloads">
+                  <span>✓ Done</span>
                 </div>
                 <div class="omni-close-btn" id="omni-reset-btn" title="Back">✕</div>
               `;
@@ -149,16 +222,18 @@
                   rebuildPill();
                 });
               }
-              showToast("✓ Download complete! Saved to Downloads.", false);
+              showToast("✓ Complete! Saved to Downloads.", false);
             } else if (d.status === "error") {
               clearInterval(activePollTimer);
-              showToast("Notice: " + (d.error || "Error"), true);
+              activePollTimer = null;
+              showToast("Download error: " + (d.error || "Failed"), true);
               setTimeout(rebuildPill, 3000);
             }
           }
         );
       } catch (e) {
         clearInterval(activePollTimer);
+        activePollTimer = null;
       }
     }, 600);
   }
@@ -168,7 +243,7 @@
     const pageTitle = document.title.replace(/ - YouTube$/i, "").trim();
 
     closeDropdown();
-    showToast("Starting download... Continues in background across tabs!", false);
+    showToast("Downloading in background... (Continues across tabs)", false);
 
     try {
       chrome.runtime.sendMessage(
@@ -190,7 +265,7 @@
         }
       );
     } catch (e) {
-      showToast("Please refresh tab to reconnect.", true);
+      showToast("Please refresh tab.", true);
     }
   }
 
@@ -211,20 +286,14 @@
     if (!pill) return;
 
     const rect = pill.getBoundingClientRect();
-    menu.style.top = `${rect.bottom + 6}px`;
-    menu.style.left = `${Math.min(window.innerWidth - 200, rect.left)}px`;
+    menu.style.top = `${rect.bottom + 5}px`;
+    menu.style.left = `${Math.min(window.innerWidth - 170, Math.max(10, rect.left))}px`;
 
-    const qualities = detectAvailableQualities();
+    const items = getAvailableItems();
 
-    let itemsHtml = `
-      <div class="omni-menu-header">Available for this video</div>
-      <div class="omni-menu-item" data-val="max">
-        <span>✨ Auto Max Quality</span>
-        <span class="omni-badge-max">BEST</span>
-      </div>
-    `;
+    let itemsHtml = `<div class="omni-menu-header">Available Qualities</div>`;
 
-    qualities.forEach((q) => {
+    items.forEach((q) => {
       itemsHtml += `
         <div class="omni-menu-item" data-val="${q.val}">
           <span>${q.label}</span>
@@ -235,7 +304,7 @@
 
     itemsHtml += `
       <div class="omni-menu-item" data-val="mp3">
-        <span>🎵 Audio (MP3 320k)</span>
+        <span>Audio (MP3 320k)</span>
         <span class="omni-badge-audio">MP3</span>
       </div>
     `;
@@ -279,8 +348,8 @@
         if (!isDragging) return;
         const dx = ev.clientX - dragStartX;
         const dy = ev.clientY - dragStartY;
-        const newLeft = Math.max(8, Math.min(window.innerWidth - el.offsetWidth - 8, initialPillX + dx));
-        const newTop = Math.max(8, Math.min(window.innerHeight - el.offsetHeight - 8, initialPillY + dy));
+        const newLeft = Math.max(6, Math.min(window.innerWidth - el.offsetWidth - 6, initialPillX + dx));
+        const newTop = Math.max(6, Math.min(window.innerHeight - el.offsetHeight - 6, initialPillY + dy));
 
         el.style.left = `${newLeft}px`;
         el.style.top = `${newTop}px`;
@@ -309,7 +378,7 @@
         localStorage.removeItem("omnigrab_pos");
       } catch (err) {}
       positionPillAtVideoSide(el);
-      showToast("Position reset to video side.");
+      showToast("Position reset.");
     };
   }
 
@@ -342,8 +411,8 @@
     if (player) {
       const rect = player.getBoundingClientRect();
       if (rect.width > 200 && rect.height > 100) {
-        const topPos = Math.max(62, rect.top + 10);
-        const leftPos = Math.max(10, rect.right - pill.offsetWidth - 14);
+        const topPos = Math.max(60, rect.top + 10);
+        const leftPos = Math.max(10, rect.right - pill.offsetWidth - 12);
         pill.style.top = `${topPos}px`;
         pill.style.left = `${leftPos}px`;
         return;
@@ -351,7 +420,7 @@
     }
 
     pill.style.top = "66px";
-    pill.style.right = "20px";
+    pill.style.right = "16px";
   }
 
   function rebuildPill() {
@@ -359,13 +428,13 @@
     if (!pill) return;
 
     pill.innerHTML = `
-      <div class="omni-drag-grip" title="Drag to move (Double-click to reset)">⠿</div>
-      <div class="omni-main-btn" id="omni-main-btn" title="Download in Max Quality (Shortcut: Alt+D)">
+      <div class="omni-drag-grip" title="Drag">⠿</div>
+      <div class="omni-main-btn" id="omni-main-btn" title="Click to Download">
         <span class="omni-play-icon"></span>
-        <span>Download</span>
+        <span id="omni-lbl-text">${maxLabel}</span>
       </div>
-      <div class="omni-chevron-btn" id="omni-chevron-btn" title="Choose specific video quality">▾</div>
-      <div class="omni-close-btn" id="omni-close-btn" title="Hide button for this video">✕</div>
+      <div class="omni-chevron-btn" id="omni-chevron-btn" title="Choose quality">▾</div>
+      <div class="omni-close-btn" id="omni-close-btn" title="Hide">✕</div>
     `;
 
     const mainBtn = document.getElementById("omni-main-btn");
@@ -428,8 +497,14 @@
     if (curr !== lastCheckedUrl) {
       lastCheckedUrl = curr;
       isPillClosedByUser = false;
+      detectedHeights = [];
+      maxLabel = "HD";
       closeDropdown();
-      if (activePollTimer) clearInterval(activePollTimer);
+      if (activePollTimer) {
+        clearInterval(activePollTimer);
+        activePollTimer = null;
+      }
+      injectQualityReader();
     }
 
     if (!isPillClosedByUser) {
@@ -440,6 +515,8 @@
       }
     }
   }
+
+  injectQualityReader();
 
   window.addEventListener("keydown", (e) => {
     if (e.altKey && (e.key === "d" || e.key === "D")) {
