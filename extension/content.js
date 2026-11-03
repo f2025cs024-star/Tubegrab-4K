@@ -249,15 +249,21 @@
     const pill = document.getElementById("omnigrab-pill");
     if (!pill) return;
 
+    pill.classList.add("omni-is-downloading");
     pill.innerHTML = `
       <div class="omni-drag-grip" title="Drag">⠿</div>
-      <div class="omni-progress-mode">
-        <span class="omni-progress-text" id="omni-pct-lbl">0%</span>
-        <div class="omni-progress-track">
-          <div class="omni-progress-fill" id="omni-fill"></div>
-        </div>
+      <div class="omni-dl-info">
+        <svg class="omni-dl-icon" viewBox="0 0 24 24" width="13" height="13" fill="none">
+          <path d="M12 3V15M12 15L7.5 10.5M12 15L16.5 10.5" stroke="#38bdf8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 19H20" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <span class="omni-dl-pct" id="omni-pct-lbl">0%</span>
+        <span class="omni-dl-meta" id="omni-meta-lbl">Connecting...</span>
       </div>
       <div class="omni-close-btn" id="omni-reset-btn" title="Cancel">✕</div>
+      <div class="omni-blue-bar-track">
+        <div class="omni-blue-bar-fill" id="omni-blue-fill"></div>
+      </div>
     `;
 
     const rBtn = document.getElementById("omni-reset-btn");
@@ -266,6 +272,7 @@
         e.stopPropagation();
         clearInterval(activePollTimer);
         activePollTimer = null;
+        pill.classList.remove("omni-is-downloading");
         rebuildPill();
       });
     }
@@ -281,47 +288,66 @@
           (res) => {
             if (chrome.runtime.lastError || !res || !res.ok || !res.data) return;
             const d = res.data;
-            const fill = document.getElementById("omni-fill");
+            const fill = document.getElementById("omni-blue-fill");
             const pctLbl = document.getElementById("omni-pct-lbl");
+            const metaLbl = document.getElementById("omni-meta-lbl");
 
             if (!fill || !pctLbl) return;
 
             if (d.status === "downloading") {
               const pct = d.percent || 0;
               fill.style.width = pct + "%";
-              pctLbl.textContent = pct + "%";
+              pctLbl.textContent = Math.round(pct) + "%";
+              if (metaLbl) {
+                if (d.downloaded && d.total) {
+                  metaLbl.textContent = `${d.downloaded}/${d.total}`;
+                } else if (d.speed) {
+                  metaLbl.textContent = d.speed;
+                } else {
+                  metaLbl.textContent = "Downloading...";
+                }
+              }
             } else if (d.status === "merging") {
               fill.style.width = "99%";
               pctLbl.textContent = "99%";
+              if (metaLbl) metaLbl.textContent = `Merging ${quality === "mp3" ? "MP3" : quality + "p"}...`;
             } else if (d.status === "finished") {
               clearInterval(activePollTimer);
               activePollTimer = null;
               fill.style.width = "100%";
-              pill.innerHTML = `
-                <div class="omni-drag-grip" title="Drag">⠿</div>
-                <div class="omni-main-btn" style="background:rgba(16,185,129,0.25);border-color:#10b981;color:#34d399;" id="omni-open-folder" title="Click to open Downloads">
-                  <span>✓ Done</span>
-                </div>
-                <div class="omni-close-btn" id="omni-reset-btn" title="Back">✕</div>
-              `;
-              makeDraggable(pill);
-              const ofBtn = document.getElementById("omni-open-folder");
-              if (ofBtn) {
-                ofBtn.addEventListener("click", () => {
-                  try { chrome.runtime.sendMessage({ action: "open_downloads_folder" }); } catch (e) {}
-                });
-              }
-              const rsBtn = document.getElementById("omni-reset-btn");
-              if (rsBtn) {
-                rsBtn.addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  rebuildPill();
-                });
-              }
+              fill.style.background = "#10b981";
+              fill.style.boxShadow = "0 0 10px #10b981";
+
+              setTimeout(() => {
+                pill.classList.remove("omni-is-downloading");
+                pill.innerHTML = `
+                  <div class="omni-drag-grip" title="Drag">⠿</div>
+                  <div class="omni-main-btn" style="background:rgba(16,185,129,0.25);border-color:#10b981;color:#34d399;" id="omni-open-folder" title="Click to open Downloads">
+                    <span>✓ Done</span>
+                  </div>
+                  <div class="omni-close-btn" id="omni-reset-btn" title="Back">✕</div>
+                `;
+                makeDraggable(pill);
+                const ofBtn = document.getElementById("omni-open-folder");
+                if (ofBtn) {
+                  ofBtn.addEventListener("click", () => {
+                    try { chrome.runtime.sendMessage({ action: "open_downloads_folder" }); } catch (e) {}
+                  });
+                }
+                const rsBtn = document.getElementById("omni-reset-btn");
+                if (rsBtn) {
+                  rsBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    rebuildPill();
+                  });
+                }
+              }, 600);
+
               showToast(`✓ Download complete in ${quality === "mp3" ? "MP3" : quality + "p"}! Saved to Downloads.`, false);
             } else if (d.status === "error") {
               clearInterval(activePollTimer);
               activePollTimer = null;
+              pill.classList.remove("omni-is-downloading");
               showToast("Download error: " + (d.error || "Failed"), true);
               setTimeout(rebuildPill, 3000);
             }
@@ -331,7 +357,7 @@
         clearInterval(activePollTimer);
         activePollTimer = null;
       }
-    }, 600);
+    }, 500);
   }
 
   function triggerDownload(quality) {
@@ -636,6 +662,19 @@
       if (pill) {
         pill.style.display = "flex";
         positionPillAtVideoSide(pill);
+      }
+
+      if (!activePollTimer && isVideoPage) {
+        try {
+          chrome.runtime.sendMessage(
+            { action: "get_active_task_for_url", url: window.location.href },
+            (res) => {
+              if (!chrome.runtime.lastError && res && res.task && !activePollTimer) {
+                startProgressTracking(res.task.taskId, res.task.quality);
+              }
+            }
+          );
+        } catch (e) {}
       }
     }
   }

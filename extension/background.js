@@ -78,6 +78,7 @@ function sendDownloadTrigger(url, title, quality, sendResponse) {
         .then((res) => res.json())
         .then((data) => {
           if (data && data.task_id) {
+            activeBgTasks.set(data.task_id, { url, title, quality, serverUrl });
             monitorTaskInBackground(data.task_id, title, serverUrl);
           }
           try { sendResponse({ ok: true, data, serverUrl }); } catch (e) {}
@@ -106,6 +107,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
         });
     });
+    return true;
+  }
+
+  if (message.action === "get_active_task_for_url") {
+    let match = null;
+    for (const [taskId, info] of activeBgTasks.entries()) {
+      if (info.url === message.url) {
+        match = { taskId, ...info };
+        break;
+      }
+    }
+    try { sendResponse({ task: match }); } catch (e) {}
     return true;
   }
 
