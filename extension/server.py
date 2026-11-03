@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import yt_dlp
 
-app = FastAPI(title="OmniGrab 4K Cloud API", version="2.2.0")
+app = FastAPI(title="TubeGrab 4K Cloud API", version="2.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -158,7 +158,7 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
 def health():
     return {
         "status": "running",
-        "app": "OmniGrab 4K Cloud Server",
+        "app": "TubeGrab 4K Cloud Server",
         "active_tasks": len(ACTIVE_TASKS)
     }
 
@@ -215,7 +215,7 @@ def open_folder():
 def get_version():
     return {
         "version": "2.2.0",
-        "app": "OmniGrab 4K",
+        "app": "TubeGrab 4K",
         "changelog": "Dynamic quality dropdown (144p to 4K), live electric blue progress bar, micro-pill UI.",
         "release_url": "https://github.com"
     }

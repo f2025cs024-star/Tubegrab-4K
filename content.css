@@ -1,7 +1,8 @@
 /* ============================================================
-   OmniGrab 4K: Ultra-Compact Glass Micro-Pill (~98px wide)
+   TubeGrab 4K: Ultra-Compact Glass Micro-Pill (~98px wide)
    ============================================================ */
 
+#tubegrab-pill,
 #omnigrab-pill {
   position: fixed !important;
   z-index: 2147483647 !important;
@@ -24,12 +25,17 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
+#tubegrab-pill:hover,
 #omnigrab-pill:hover {
   border-color: rgba(56, 189, 248, 0.8) !important;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.7), 0 0 10px rgba(56, 189, 248, 0.35) !important;
 }
 
 /* Hide on Fullscreen */
+:fullscreen #tubegrab-pill,
+:-webkit-full-screen #tubegrab-pill,
+.ytp-fullscreen #tubegrab-pill,
+body.ytp-fullscreen #tubegrab-pill,
 :fullscreen #omnigrab-pill,
 :-webkit-full-screen #omnigrab-pill,
 .ytp-fullscreen #omnigrab-pill,
@@ -137,6 +143,7 @@ body.ytp-fullscreen #omnigrab-pill {
 }
 
 /* Compact Glass Dropdown Menu with Slim Scrollbar */
+#tubegrab-dropdown-menu,
 #omnigrab-dropdown-menu {
   position: fixed !important;
   z-index: 2147483647 !important;
@@ -160,20 +167,24 @@ body.ytp-fullscreen #omnigrab-pill {
 }
 
 /* Custom Scrollbar for Dropdown */
+#tubegrab-dropdown-menu::-webkit-scrollbar,
 #omnigrab-dropdown-menu::-webkit-scrollbar {
   width: 4px !important;
 }
 
+#tubegrab-dropdown-menu::-webkit-scrollbar-track,
 #omnigrab-dropdown-menu::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.6) !important;
   border-radius: 4px !important;
 }
 
+#tubegrab-dropdown-menu::-webkit-scrollbar-thumb,
 #omnigrab-dropdown-menu::-webkit-scrollbar-thumb {
   background: rgba(56, 189, 248, 0.45) !important;
   border-radius: 4px !important;
 }
 
+#tubegrab-dropdown-menu::-webkit-scrollbar-thumb:hover,
 #omnigrab-dropdown-menu::-webkit-scrollbar-thumb:hover {
   background: rgba(56, 189, 248, 0.8) !important;
 }
@@ -338,6 +349,7 @@ body.ytp-fullscreen #omnigrab-pill {
 }
 
 /* Toast */
+#tubegrab-toast,
 #omnigrab-toast {
   position: fixed !important;
   top: 65px !important;

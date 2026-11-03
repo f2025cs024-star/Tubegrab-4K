@@ -1,4 +1,4 @@
-name: Auto Release OmniGrab 4K
+name: Auto Release TubeGrab 4K
 
 on:
   push:
@@ -15,14 +15,14 @@ jobs:
       - name: Create Extension Zip Package
         run: |
           mkdir -p dist
-          zip -r dist/omnigrab-4k-${{ github.ref_name }}.zip \
+          zip -r dist/tubegrab-4k-${{ github.ref_name }}.zip \
             manifest.json background.js content.js content.css \
             options.html options.js icon.png README.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/omnigrab-4k-${{ github.ref_name }}.zip
+          files: dist/tubegrab-4k-${{ github.ref_name }}.zip
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

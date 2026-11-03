@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "OmniGrab 4K - YouTube Downloader",
+  "name": "TubeGrab 4K - YouTube Video Downloader Extension",
   "version": "2.2.0",
-  "description": "Ultra-sleek 4K YouTube downloader with dynamic quality dropdown, draggable glassmorphism pill, and background tab-independent downloading.",
+  "description": "High-performance YouTube video downloader extension with dynamic 4K quality dropdown, live electric blue progress bar, and background downloading.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -17,7 +17,7 @@
     "128": "icon.png"
   },
   "action": {
-    "default_title": "OmniGrab 4K Downloader",
+    "default_title": "TubeGrab 4K Downloader",
     "default_icon": "icon.png"
   },
   "options_ui": {

@@ -182,7 +182,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         print(f"[OmniGrab] Error downloading {url}: {e}")
 
 
-class OmniGrabServer(BaseHTTPRequestHandler):
+class TubeGrabServer(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         return
 
@@ -200,13 +200,12 @@ class OmniGrabServer(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         params = urllib.parse.parse_qs(parsed.query)
-        print(f"[OmniGrab DEBUG] do_GET path: '{self.path}' | parsed: '{parsed.path}'", flush=True)
 
         if parsed.path == "/status":
             self._send_cors(200)
             self.wfile.write(json.dumps({
                 "status": "running",
-                "app": "OmniGrab 4K Downloader",
+                "app": "TubeGrab 4K Downloader",
                 "save_dir": DOWNLOADS_DIR,
                 "active_tasks": len(ACTIVE_TASKS)
             }).encode("utf-8"))
@@ -226,7 +225,7 @@ class OmniGrabServer(BaseHTTPRequestHandler):
             self._send_cors(200)
             self.wfile.write(json.dumps({
                 "version": "2.2.0",
-                "app": "OmniGrab 4K",
+                "app": "TubeGrab 4K",
                 "changelog": "Dynamic quality dropdown (144p to 4K), live electric blue progress bar, micro-pill UI.",
                 "release_url": "https://github.com"
             }).encode("utf-8"))
@@ -253,7 +252,7 @@ class OmniGrabServer(BaseHTTPRequestHandler):
             return
 
         self._send_cors(200)
-        self.wfile.write(json.dumps({"status": "running", "app": "OmniGrab 4K Downloader"}).encode("utf-8"))
+        self.wfile.write(json.dumps({"status": "running", "app": "TubeGrab 4K Downloader"}).encode("utf-8"))
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -299,13 +298,13 @@ class OmniGrabServer(BaseHTTPRequestHandler):
 
 def main():
     print("=" * 60)
-    print("  OmniGrab 4K Turbo Downloader Service")
+    print("  TubeGrab 4K Turbo Downloader Service")
     print(f"  Target Destination: {DOWNLOADS_DIR}")
     print("  Server API: http://127.0.0.1:19876")
     print("=" * 60)
 
     HTTPServer.allow_reuse_address = True
-    server = HTTPServer(("127.0.0.1", PORT), OmniGrabServer)
+    server = HTTPServer(("127.0.0.1", PORT), TubeGrabServer)
     server.serve_forever()
 
 
