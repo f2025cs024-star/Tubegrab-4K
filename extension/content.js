@@ -11,9 +11,27 @@
   let isMenuOpen = false;
 
   let detectedHeights = [];
-  let maxLabel = "HD";
+  let maxLabel = "4K";
+
+  // All standard available YouTube video quality tiers
+  const allKnownQualities = [
+    { h: 4320, label: "8K Ultra HD", val: "4320", badge: "8K", cls: "omni-badge-4k" },
+    { h: 2160, label: "4K (2160p)", val: "2160", badge: "4K", cls: "omni-badge-4k" },
+    { h: 1440, label: "2K (1440p)", val: "1440", badge: "2K", cls: "omni-badge-hd" },
+    { h: 1080, label: "1080p Full HD", val: "1080", badge: "1080p", cls: "omni-badge-hd" },
+    { h: 720, label: "720p HD", val: "720", badge: "720p", cls: "omni-badge-hd" },
+    { h: 480, label: "480p SD", val: "480", badge: "480p", cls: "omni-badge-sd" },
+    { h: 360, label: "360p", val: "360", badge: "360p", cls: "omni-badge-sd" },
+    { h: 240, label: "240p", val: "240", badge: "240p", cls: "omni-badge-low" },
+    { h: 144, label: "144p", val: "144", badge: "144p", cls: "omni-badge-low" }
+  ];
 
   function injectQualityReader() {
+    if (document.getElementById("omnigrab-bridge")) {
+      requestImmediateProbe();
+      return;
+    }
+
     const s = document.createElement("script");
     s.id = "omnigrab-bridge";
     s.textContent = `
@@ -21,38 +39,124 @@
         function probeQualities() {
           try {
             let heights = new Set();
-            let r = window.ytInitialPlayerResponse;
-            if (r && r.streamingData && r.streamingData.adaptiveFormats) {
-              r.streamingData.adaptiveFormats.forEach(f => {
-                if (f.height && f.vcodec && !f.vcodec.startsWith("none")) {
-                  heights.add(f.height);
-                }
-              });
-            }
+
+            // 1. YouTube Player API - getPlayerResponse (most reliable & current)
             let p = document.getElementById("movie_player");
-            if (p && typeof p.getAvailableQualityLevels === "function") {
-              let qMap = { "highres": 4320, "hd2880": 2880, "hd2160": 2160, "hd1440": 1440, "hd1080": 1080, "hd720": 720, "large": 480, "medium": 360, "small": 240, "tiny": 144 };
-              p.getAvailableQualityLevels().forEach(lvl => {
-                if (qMap[lvl]) heights.add(qMap[lvl]);
+            if (p) {
+              if (typeof p.getPlayerResponse === "function") {
+                let pr = p.getPlayerResponse();
+                if (pr && pr.streamingData) {
+                  (pr.streamingData.adaptiveFormats || []).forEach(f => {
+                    if (f.height) heights.add(f.height);
+                  });
+                  (pr.streamingData.formats || []).forEach(f => {
+                    if (f.height) heights.add(f.height);
+                  });
+                }
+              }
+
+              if (typeof p.getAvailableQualityData === "function") {
+                let qd = p.getAvailableQualityData();
+                if (Array.isArray(qd)) {
+                  qd.forEach(item => {
+                    if (item.qualityLabel) {
+                      let m = item.qualityLabel.match(/(\\d+)p/);
+                      if (m) heights.add(parseInt(m[1]));
+                    }
+                  });
+                }
+              }
+
+              if (typeof p.getAvailableQualityLevels === "function") {
+                let qMap = {
+                  "highres": 4320, "hd2880": 2880, "hd2160": 2160,
+                  "hd1440": 1440, "hd1080": 1080, "hd720": 720,
+                  "large": 480, "medium": 360, "small": 240, "tiny": 144
+                };
+                let lvls = p.getAvailableQualityLevels();
+                if (Array.isArray(lvls)) {
+                  lvls.forEach(lvl => {
+                    if (qMap[lvl]) heights.add(qMap[lvl]);
+                  });
+                }
+              }
+            }
+
+            // 2. ytd-watch-flexy DOM component
+            let flexy = document.querySelector("ytd-watch-flexy");
+            if (flexy && flexy.playerData && flexy.playerData.streamingData) {
+              (flexy.playerData.streamingData.adaptiveFormats || []).forEach(f => {
+                if (f.height) heights.add(f.height);
+              });
+              (flexy.playerData.streamingData.formats || []).forEach(f => {
+                if (f.height) heights.add(f.height);
               });
             }
+
+            // 3. window.ytInitialPlayerResponse
+            let r = window.ytInitialPlayerResponse;
+            if (r && r.streamingData) {
+              (r.streamingData.adaptiveFormats || []).forEach(f => {
+                if (f.height) heights.add(f.height);
+              });
+              (r.streamingData.formats || []).forEach(f => {
+                if (f.height) heights.add(f.height);
+              });
+            }
+
+            // 4. ytplayer raw config
+            if (window.ytplayer && window.ytplayer.config && window.ytplayer.config.args) {
+              try {
+                let raw = window.ytplayer.config.args.raw_player_response;
+                if (typeof raw === "string") raw = JSON.parse(raw);
+                if (raw && raw.streamingData) {
+                  (raw.streamingData.adaptiveFormats || []).forEach(f => {
+                    if (f.height) heights.add(f.height);
+                  });
+                }
+              } catch (err) {}
+            }
+
+            // 5. Active video element
             let v = document.querySelector("video");
-            if (v && v.videoHeight) {
+            if (v && v.videoHeight && v.videoHeight > 0) {
               heights.add(v.videoHeight);
             }
+
             let sorted = Array.from(heights).sort((a, b) => b - a);
-            window.postMessage({ type: "OMNIGRAB_QUALITIES", heights: sorted }, "*");
+            if (sorted.length > 0) {
+              window.postMessage({ type: "OMNIGRAB_QUALITIES", heights: sorted }, "*");
+            }
           } catch(e) {}
         }
+
+        window.addEventListener("message", function(e) {
+          if (e.data && e.data.type === "OMNIGRAB_REQUEST_PROBE") {
+            probeQualities();
+          }
+        });
+
         probeQualities();
-        document.addEventListener("yt-navigate-finish", probeQualities);
+        setTimeout(probeQualities, 200);
+        setTimeout(probeQualities, 600);
+        setTimeout(probeQualities, 1200);
+        setTimeout(probeQualities, 2200);
+
+        document.addEventListener("yt-navigate-finish", function() {
+          probeQualities();
+          setTimeout(probeQualities, 300);
+          setTimeout(probeQualities, 800);
+          setTimeout(probeQualities, 1600);
+        });
         document.addEventListener("spfdone", probeQualities);
-        setInterval(probeQualities, 2500);
+        setInterval(probeQualities, 1500);
       })();
     `;
-    if (!document.getElementById("omnigrab-bridge")) {
-      (document.head || document.documentElement).appendChild(s);
-    }
+    (document.head || document.documentElement).appendChild(s);
+  }
+
+  function requestImmediateProbe() {
+    window.postMessage({ type: "OMNIGRAB_REQUEST_PROBE" }, "*");
   }
 
   window.addEventListener("message", (event) => {
@@ -61,23 +165,31 @@
       if (Array.isArray(heights) && heights.length > 0) {
         detectedHeights = heights;
         updateMaxLabel();
+        if (isMenuOpen) {
+          renderDropdownItems();
+        }
       }
     }
   });
 
   function updateMaxLabel() {
-    if (detectedHeights.length === 0) return;
-    const topH = detectedHeights[0];
-    if (topH >= 2160) {
-      maxLabel = "4K";
-    } else if (topH >= 1440) {
-      maxLabel = "2K";
-    } else if (topH >= 1080) {
-      maxLabel = "1080p";
-    } else if (topH >= 720) {
-      maxLabel = "720p";
+    if (detectedHeights.length > 0) {
+      const topH = detectedHeights[0];
+      if (topH >= 4320) {
+        maxLabel = "8K";
+      } else if (topH >= 2160) {
+        maxLabel = "4K";
+      } else if (topH >= 1440) {
+        maxLabel = "2K";
+      } else if (topH >= 1080) {
+        maxLabel = "1080p";
+      } else if (topH >= 720) {
+        maxLabel = "720p";
+      } else {
+        maxLabel = topH + "p";
+      }
     } else {
-      maxLabel = topH + "p";
+      maxLabel = "4K";
     }
 
     const lbl = document.getElementById("omni-lbl-text");
@@ -115,29 +227,21 @@
 
   function getAvailableItems() {
     const list = [];
-    const known = [
-      { h: 2160, label: "4K (2160p)", val: "2160", badge: "4K", cls: "omni-badge-4k" },
-      { h: 1440, label: "2K (1440p)", val: "1440", badge: "2K", cls: "omni-badge-hd" },
-      { h: 1080, label: "1080p Full HD", val: "1080", badge: "1080p", cls: "omni-badge-hd" },
-      { h: 720, label: "720p HD", val: "720", badge: "720p", cls: "omni-badge-hd" },
-      { h: 480, label: "480p SD", val: "480", badge: "480p", cls: "omni-badge-hd" },
-      { h: 360, label: "360p", val: "360", badge: "360p", cls: "omni-badge-hd" }
-    ];
-
     if (detectedHeights.length > 0) {
       const topH = detectedHeights[0];
-      known.forEach(item => {
+      allKnownQualities.forEach((item) => {
         if (item.h <= topH) {
           list.push(item);
         }
       });
     } else {
-      list.push(
-        { label: "1080p Full HD", val: "1080", badge: "1080p", cls: "omni-badge-hd" },
-        { label: "720p HD", val: "720", badge: "720p", cls: "omni-badge-hd" }
-      );
+      // Default to 4K and below if probe not finished yet so 4K is never hidden
+      allKnownQualities.forEach((item) => {
+        if (item.h <= 2160) {
+          list.push(item);
+        }
+      });
     }
-
     return list;
   }
 
@@ -234,10 +338,9 @@
     const videoUrl = window.location.href;
     const pageTitle = document.title.replace(/ - YouTube$/i, "").trim();
 
-    // Determine target quality explicitly
     let targetQ = quality;
     if (!targetQ || targetQ === "max") {
-      targetQ = detectedHeights.length > 0 ? String(detectedHeights[0]) : "1080";
+      targetQ = detectedHeights.length > 0 ? String(detectedHeights[0]) : "max";
     }
 
     closeDropdown();
@@ -281,12 +384,20 @@
       return;
     }
 
+    requestImmediateProbe();
+    renderDropdownItems();
+  }
+
+  function renderDropdownItems() {
+    let menu = document.getElementById("omnigrab-dropdown-menu");
+    if (!menu) return;
+
     const pill = document.getElementById("omnigrab-pill");
     if (!pill) return;
 
     const rect = pill.getBoundingClientRect();
-    menu.style.top = `${rect.bottom + 5}px`;
-    menu.style.left = `${Math.min(window.innerWidth - 170, Math.max(10, rect.left))}px`;
+    menu.style.top = `${rect.bottom + 4}px`;
+    menu.style.left = `${Math.min(window.innerWidth - 185, Math.max(8, rect.left))}px`;
 
     const items = getAvailableItems();
 
@@ -295,7 +406,7 @@
     items.forEach((q) => {
       itemsHtml += `
         <div class="omni-menu-item" data-val="${q.val}">
-          <span>${q.label}</span>
+          <span class="omni-item-name">${q.label}</span>
           <span class="${q.cls}">${q.badge}</span>
         </div>
       `;
@@ -303,7 +414,7 @@
 
     itemsHtml += `
       <div class="omni-menu-item" data-val="mp3">
-        <span>Audio (MP3 320k)</span>
+        <span class="omni-item-name">Audio (MP3 320k)</span>
         <span class="omni-badge-audio">MP3</span>
       </div>
     `;
@@ -429,10 +540,17 @@
     pill.innerHTML = `
       <div class="omni-drag-grip" title="Drag">⠿</div>
       <div class="omni-main-btn" id="omni-main-btn" title="Click to Download">
-        <span class="omni-play-icon"></span>
+        <svg class="omni-btn-icon" viewBox="0 0 24 24" width="13" height="13" fill="none">
+          <path d="M12 3V15M12 15L7.5 10.5M12 15L16.5 10.5" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 19H20" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
         <span id="omni-lbl-text">${maxLabel}</span>
       </div>
-      <div class="omni-chevron-btn" id="omni-chevron-btn" title="Choose quality">▾</div>
+      <div class="omni-chevron-btn" id="omni-chevron-btn" title="Choose quality">
+        <svg class="omni-chev-icon" viewBox="0 0 10 6" width="9" height="6" fill="none">
+          <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
       <div class="omni-close-btn" id="omni-close-btn" title="Hide">✕</div>
     `;
 
@@ -443,6 +561,9 @@
         const topQuality = detectedHeights.length > 0 ? String(detectedHeights[0]) : "max";
         triggerDownload(topQuality);
       });
+      mainBtn.addEventListener("mouseenter", () => {
+        requestImmediateProbe();
+      });
     }
 
     const chevBtn = document.getElementById("omni-chevron-btn");
@@ -450,6 +571,9 @@
       chevBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         toggleDropdown();
+      });
+      chevBtn.addEventListener("mouseenter", () => {
+        requestImmediateProbe();
       });
     }
 
@@ -498,7 +622,7 @@
       lastCheckedUrl = curr;
       isPillClosedByUser = false;
       detectedHeights = [];
-      maxLabel = "HD";
+      maxLabel = "4K";
       closeDropdown();
       if (activePollTimer) {
         clearInterval(activePollTimer);

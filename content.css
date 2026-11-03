@@ -1,5 +1,5 @@
 /* ============================================================
-   OmniGrab 4K: Ultra-Compact Glass Micro-Pill (Only ~95px wide)
+   OmniGrab 4K: Ultra-Compact Glass Micro-Pill (~98px wide)
    ============================================================ */
 
 #omnigrab-pill {
@@ -8,26 +8,25 @@
   display: flex !important;
   align-items: center !important;
   gap: 2px !important;
-  background: rgba(15, 23, 42, 0.88) !important;
-  backdrop-filter: blur(14px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
-  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  backdrop-filter: blur(16px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(190%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
   border-radius: 14px !important;
-  padding: 2px 4px !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55), 0 0 1px rgba(255, 255, 255, 0.25) inset !important;
+  padding: 2px 3px !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.25) inset !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-  font-size: 11px !important;
   user-select: none !important;
   cursor: default !important;
-  height: 25px !important;
+  height: 26px !important;
   box-sizing: border-box !important;
   white-space: nowrap !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 #omnigrab-pill:hover {
-  border-color: rgba(56, 189, 248, 0.75) !important;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), 0 0 10px rgba(56, 189, 248, 0.3) !important;
+  border-color: rgba(56, 189, 248, 0.8) !important;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.7), 0 0 10px rgba(56, 189, 248, 0.35) !important;
 }
 
 /* Hide on Fullscreen */
@@ -47,9 +46,9 @@ body.ytp-fullscreen #omnigrab-pill {
   align-items: center !important;
   justify-content: center !important;
   cursor: grab !important;
-  padding: 0 3px !important;
+  padding: 0 2px !important;
   color: #64748b !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
   line-height: 1 !important;
 }
 
@@ -61,37 +60,37 @@ body.ytp-fullscreen #omnigrab-pill {
   cursor: grabbing !important;
 }
 
-/* Micro Action Button */
+/* Main Action Button - larger icon & text, snug container */
 .omni-main-btn {
   display: flex !important;
   align-items: center !important;
-  gap: 4px !important;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  gap: 5px !important;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 11px !important;
-  padding: 2px 7px 2px 5px !important;
-  color: #f8fafc !important;
-  font-weight: 700 !important;
-  font-size: 11px !important;
+  padding: 0 6px 0 5px !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 12.5px !important;
+  letter-spacing: 0.3px !important;
   cursor: pointer !important;
   transition: all 0.15s ease !important;
-  height: 20px !important;
+  height: 22px !important;
   box-sizing: border-box !important;
 }
 
 .omni-main-btn:hover {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.3) 0%, rgba(14, 165, 233, 0.4) 100%) !important;
-  border-color: rgba(56, 189, 248, 0.6) !important;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.35) 0%, rgba(14, 165, 233, 0.45) 100%) !important;
+  border-color: rgba(56, 189, 248, 0.7) !important;
   color: #38bdf8 !important;
 }
 
-.omni-play-icon {
-  width: 0 !important;
-  height: 0 !important;
-  border-top: 4px solid transparent !important;
-  border-bottom: 4px solid transparent !important;
-  border-left: 7px solid #22c55e !important;
+.omni-btn-icon {
+  width: 13px !important;
+  height: 13px !important;
+  display: block !important;
   filter: drop-shadow(0 0 3px rgba(34, 197, 94, 0.6)) !important;
+  flex-shrink: 0 !important;
 }
 
 /* Dropdown Arrow */
@@ -100,17 +99,22 @@ body.ytp-fullscreen #omnigrab-pill {
   align-items: center !important;
   justify-content: center !important;
   width: 17px !important;
-  height: 20px !important;
+  height: 22px !important;
   border-radius: 9px !important;
   cursor: pointer !important;
   color: #94a3b8 !important;
-  font-size: 9px !important;
   transition: all 0.15s ease !important;
 }
 
 .omni-chevron-btn:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
   color: #38bdf8 !important;
+}
+
+.omni-chev-icon {
+  width: 9px !important;
+  height: 6px !important;
+  display: block !important;
 }
 
 /* Close 'x' */
@@ -118,12 +122,13 @@ body.ytp-fullscreen #omnigrab-pill {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 15px !important;
-  height: 20px !important;
+  width: 14px !important;
+  height: 22px !important;
   border-radius: 9px !important;
   cursor: pointer !important;
   color: #64748b !important;
-  font-size: 9.5px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
   transition: color 0.15s ease !important;
 }
 
@@ -131,32 +136,57 @@ body.ytp-fullscreen #omnigrab-pill {
   color: #ef4444 !important;
 }
 
-/* Compact Glass Dropdown Menu */
+/* Compact Glass Dropdown Menu with Slim Scrollbar */
 #omnigrab-dropdown-menu {
   position: fixed !important;
   z-index: 2147483647 !important;
-  background: rgba(15, 23, 42, 0.95) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-  border: 1px solid rgba(56, 189, 248, 0.35) !important;
-  border-radius: 10px !important;
-  padding: 5px !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 14px rgba(56, 189, 248, 0.15) !important;
+  background: rgba(15, 23, 42, 0.96) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 12px !important;
+  padding: 6px 5px !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.75), 0 0 16px rgba(56, 189, 248, 0.2) !important;
   display: none;
   flex-direction: column !important;
   gap: 2px !important;
-  min-width: 160px !important;
+  min-width: 175px !important;
+  max-height: 250px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   user-select: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Custom Scrollbar for Dropdown */
+#omnigrab-dropdown-menu::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+#omnigrab-dropdown-menu::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-radius: 4px !important;
+}
+
+#omnigrab-dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.45) !important;
+  border-radius: 4px !important;
+}
+
+#omnigrab-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.8) !important;
 }
 
 .omni-menu-header {
-  font-size: 9.5px !important;
+  font-size: 10px !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
   color: #64748b !important;
-  padding: 3px 6px 2px !important;
+  padding: 2px 7px 4px 7px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin-bottom: 3px !important;
 }
 
 .omni-menu-item {
@@ -164,44 +194,73 @@ body.ytp-fullscreen #omnigrab-pill {
   align-items: center !important;
   justify-content: space-between !important;
   padding: 5px 8px !important;
-  border-radius: 6px !important;
-  color: #e2e8f0 !important;
-  font-size: 11px !important;
-  font-weight: 500 !important;
+  border-radius: 7px !important;
   cursor: pointer !important;
-  transition: background 0.1s ease, color 0.1s ease !important;
+  color: #e2e8f0 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.12s ease !important;
 }
 
 .omni-menu-item:hover {
-  background: rgba(56, 189, 248, 0.2) !important;
+  background: rgba(56, 189, 248, 0.18) !important;
   color: #38bdf8 !important;
 }
 
+.omni-item-name {
+  white-space: nowrap !important;
+}
+
+/* Badges */
 .omni-badge-4k {
-  background: #7c3aed !important;
-  color: #ffffff !important;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.35) 0%, rgba(236, 72, 153, 0.35) 100%) !important;
+  border: 1px solid rgba(217, 70, 239, 0.8) !important;
+  color: #f0abfc !important;
   font-size: 9px !important;
-  font-weight: 700 !important;
+  font-weight: 800 !important;
   padding: 1px 5px !important;
-  border-radius: 8px !important;
+  border-radius: 4px !important;
+  letter-spacing: 0.3px !important;
 }
 
 .omni-badge-hd {
-  background: rgba(56, 189, 248, 0.25) !important;
+  background: rgba(56, 189, 248, 0.2) !important;
+  border: 1px solid rgba(56, 189, 248, 0.7) !important;
   color: #38bdf8 !important;
   font-size: 9px !important;
-  font-weight: 600 !important;
+  font-weight: 800 !important;
   padding: 1px 5px !important;
-  border-radius: 8px !important;
+  border-radius: 4px !important;
+}
+
+.omni-badge-sd {
+  background: rgba(245, 158, 11, 0.2) !important;
+  border: 1px solid rgba(245, 158, 11, 0.7) !important;
+  color: #fbbf24 !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+}
+
+.omni-badge-low {
+  background: rgba(100, 116, 139, 0.2) !important;
+  border: 1px solid rgba(100, 116, 139, 0.6) !important;
+  color: #94a3b8 !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
 }
 
 .omni-badge-audio {
-  background: rgba(245, 158, 11, 0.25) !important;
-  color: #f59e0b !important;
+  background: rgba(244, 63, 94, 0.2) !important;
+  border: 1px solid rgba(244, 63, 94, 0.7) !important;
+  color: #fb7185 !important;
   font-size: 9px !important;
-  font-weight: 600 !important;
+  font-weight: 800 !important;
   padding: 1px 5px !important;
-  border-radius: 8px !important;
+  border-radius: 4px !important;
 }
 
 /* In-Pill Mini Progress Mode */
@@ -213,7 +272,7 @@ body.ytp-fullscreen #omnigrab-pill {
 }
 
 .omni-progress-track {
-  width: 42px !important;
+  width: 44px !important;
   height: 5px !important;
   background: #334155 !important;
   border-radius: 3px !important;
