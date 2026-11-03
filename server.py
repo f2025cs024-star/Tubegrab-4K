@@ -117,7 +117,7 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         "no_warnings": True,
         "extractor_args": {
             "youtube": {
-                "player_client": ["web", "mweb", "android"]
+                "player_client": ["android", "ios"]
             }
         },
         "http_headers": {
