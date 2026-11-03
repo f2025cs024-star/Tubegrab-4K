@@ -115,7 +115,12 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         "merge_output_format": "mp4",
         "quiet": True,
         "no_warnings": True,
-        "remote_components": ["ejs:github"]
+        "remote_components": ["ejs:github"],
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["android", "ios", "mweb", "web"]
+            }
+        }
     }
 
     if NODE_PATH and os.path.exists(NODE_PATH):
@@ -124,6 +129,8 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
     cookie_file = task_folder / "cookies.txt"
     if cookies and write_netscape_cookies(cookies, cookie_file):
         ydl_opts["cookiefile"] = str(cookie_file)
+    elif os.path.exists("yt_cookies.txt") and os.path.getsize("yt_cookies.txt") > 50:
+        ydl_opts["cookiefile"] = "yt_cookies.txt"
 
     if is_mp3:
         ydl_opts["postprocessors"] = [{

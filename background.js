@@ -1,9 +1,24 @@
-const DEFAULT_SERVER = "http://127.0.0.1:19876";
+const DEFAULT_LOCAL = "http://127.0.0.1:19876";
+const DEFAULT_CLOUD = "https://tubegrab-4k.onrender.com";
 const activeBgTasks = new Map();
 
 function getServerUrl(callback) {
   chrome.storage.sync.get(["serverUrl"], (res) => {
-    callback(res.serverUrl || DEFAULT_SERVER);
+    if (res.serverUrl) {
+      return callback(res.serverUrl);
+    }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 350);
+    fetch(`${DEFAULT_LOCAL}/status`, { signal: controller.signal })
+      .then((r) => r.json())
+      .then(() => {
+        clearTimeout(timeoutId);
+        callback(DEFAULT_LOCAL);
+      })
+      .catch(() => {
+        clearTimeout(timeoutId);
+        callback(DEFAULT_CLOUD);
+      });
   });
 }
 
