@@ -1,17 +1,18 @@
 {
   "manifest_version": 3,
-  "name": "IDM 4K YouTube Downloader",
-  "version": "2.0.0",
-  "description": "IDM-style 4K YouTube video downloader with draggable badge, auto-max quality, and Render cloud support.",
+  "name": "OmniGrab 4K - YouTube Downloader",
+  "version": "2.1.0",
+  "description": "Ultra-sleek 4K YouTube downloader with dynamic quality dropdown, draggable glassmorphism pill, and background tab-independent downloading.",
   "permissions": [
     "activeTab",
     "scripting",
     "cookies",
     "storage",
-    "downloads"
+    "downloads",
+    "notifications"
   ],
   "action": {
-    "default_title": "IDM 4K YouTube Downloader"
+    "default_title": "OmniGrab 4K Downloader"
   },
   "options_page": "options.html",
   "host_permissions": [

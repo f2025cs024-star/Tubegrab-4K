@@ -1,154 +1,263 @@
-/* Super Compact IDM Floating Button (Matches Screenshot 1) */
-#idm-4k-floating-bar {
+/* ============================================================
+   OmniGrab 4K: Ultra-Attractive Glassmorphism Floating Pill
+   ============================================================ */
+
+#omnigrab-pill {
   position: fixed !important;
   z-index: 2147483647 !important;
   display: flex !important;
   align-items: center !important;
-  gap: 2px !important;
-  background: linear-gradient(180deg, #cce2fc 0%, #9cbef5 50%, #85aff0 100%) !important;
-  border: 1px solid #4a75b5 !important;
-  border-radius: 3px !important;
-  padding: 2px 3px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-  font-size: 11px !important;
+  background: rgba(15, 23, 42, 0.90) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+  border-radius: 22px !important;
+  padding: 3px 5px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 12px !important;
   user-select: none !important;
   cursor: default !important;
-  height: 24px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+  height: 32px !important;
   box-sizing: border-box !important;
-  white-space: nowrap !important;
 }
 
-/* Hide automatically in Fullscreen */
-:fullscreen #idm-4k-floating-bar,
-:-webkit-full-screen #idm-4k-floating-bar,
-.ytp-fullscreen #idm-4k-floating-bar,
-body.ytp-fullscreen #idm-4k-floating-bar {
+#omnigrab-pill:hover {
+  border-color: rgba(56, 189, 248, 0.65) !important;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.65), 0 0 16px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* Hide on Fullscreen */
+:fullscreen #omnigrab-pill,
+:-webkit-full-screen #omnigrab-pill,
+.ytp-fullscreen #omnigrab-pill,
+body.ytp-fullscreen #omnigrab-pill {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-/* Tiny Drag Handle */
-.idm-drag-handle {
+/* Drag Grip */
+.omni-drag-grip {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: grab !important;
-  padding: 0 3px !important;
-  color: #2b4c7e !important;
-  font-size: 11px !important;
-  line-height: 1 !important;
-  opacity: 0.6 !important;
+  padding: 0 6px 0 4px !important;
+  color: #64748b !important;
+  font-size: 13px !important;
+  transition: color 0.15s ease !important;
 }
 
-.idm-drag-handle:hover {
-  opacity: 1 !important;
+.omni-drag-grip:hover {
+  color: #38bdf8 !important;
 }
 
-.idm-drag-handle:active {
+.omni-drag-grip:active {
   cursor: grabbing !important;
 }
 
-/* Main Action Button (Screenshot 1: Green arrow + reddish title) */
-#idm-4k-main-btn {
+/* Main Action Button */
+.omni-main-btn {
   display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  background: linear-gradient(180deg, #f0f6ff 0%, #cce1fd 50%, #b2d3fa 100%) !important;
-  border: 1px solid #5a87c7 !important;
-  border-radius: 2px !important;
-  padding: 2px 7px !important;
+  gap: 6px !important;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  padding: 4px 10px 4px 8px !important;
+  color: #f8fafc !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
   cursor: pointer !important;
-  color: #8b1e4b !important;
-  font-weight: 700 !important;
-  font-size: 11.5px !important;
-  height: 20px !important;
+  transition: all 0.15s ease !important;
+  height: 24px !important;
   box-sizing: border-box !important;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) !important;
 }
 
-#idm-4k-main-btn:hover {
-  background: linear-gradient(180deg, #ffffff 0%, #e2edfd 50%, #c4ddfa 100%) !important;
-  color: #a51249 !important;
+.omni-main-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.35) 100%) !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  color: #38bdf8 !important;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.5) !important;
 }
 
-.idm-4k-play-icon {
+.omni-play-icon {
   width: 0 !important;
   height: 0 !important;
   border-top: 5px solid transparent !important;
   border-bottom: 5px solid transparent !important;
-  border-left: 8px solid #16a34a !important;
-  filter: drop-shadow(0 1px 0.5px rgba(0,0,0,0.3)) !important;
+  border-left: 8px solid #22c55e !important;
+  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.6)) !important;
 }
 
-/* Compact Help & Close Buttons */
-.idm-4k-small-btn {
-  width: 17px !important;
-  height: 20px !important;
+/* Dropdown Trigger Arrow */
+.omni-chevron-btn {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background: linear-gradient(180deg, #f0f6ff 0%, #b2d3fa 100%) !important;
-  border: 1px solid #5a87c7 !important;
-  border-radius: 2px !important;
-  color: #2b4c7e !important;
-  font-weight: bold !important;
-  font-size: 10px !important;
+  width: 20px !important;
+  height: 24px !important;
+  border-radius: 12px !important;
   cursor: pointer !important;
-  box-sizing: border-box !important;
+  color: #94a3b8 !important;
+  font-size: 10px !important;
+  margin-left: 2px !important;
+  transition: all 0.15s ease !important;
 }
 
-.idm-4k-small-btn:hover {
-  background: #ffffff !important;
-  color: #000000 !important;
+.omni-chevron-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #38bdf8 !important;
 }
 
-/* Compact In-Button Progress Meter */
-.idm-progress-compact {
+/* Close Pill Button */
+.omni-close-btn {
   display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  background: #0f172a !important;
-  color: #38bdf8 !important;
-  border: 1px solid #0284c7 !important;
-  border-radius: 2px !important;
-  padding: 1px 6px !important;
-  height: 20px !important;
-  font-size: 10.5px !important;
-  font-weight: 700 !important;
-  box-sizing: border-box !important;
+  justify-content: center !important;
+  width: 18px !important;
+  height: 24px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  color: #64748b !important;
+  font-size: 11px !important;
+  margin-left: 2px !important;
+  transition: color 0.15s ease !important;
 }
 
-.idm-progress-compact-bar {
-  width: 45px !important;
+.omni-close-btn:hover {
+  color: #ef4444 !important;
+}
+
+/* Dynamic Quality Dropdown Menu */
+#omnigrab-dropdown-menu {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 12px !important;
+  padding: 6px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.15) !important;
+  display: none;
+  flex-direction: column !important;
+  gap: 3px !important;
+  min-width: 185px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  user-select: none !important;
+}
+
+.omni-menu-header {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  color: #64748b !important;
+  padding: 4px 8px 2px !important;
+}
+
+.omni-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  color: #e2e8f0 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background 0.12s ease, color 0.12s ease !important;
+}
+
+.omni-menu-item:hover {
+  background: rgba(56, 189, 248, 0.2) !important;
+  color: #38bdf8 !important;
+}
+
+.omni-badge-max {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  padding: 1px 6px !important;
+  border-radius: 10px !important;
+  letter-spacing: 0.3px !important;
+}
+
+.omni-badge-4k {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
+  color: #ffffff !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  padding: 1px 6px !important;
+  border-radius: 10px !important;
+}
+
+.omni-badge-hd {
+  background: rgba(56, 189, 248, 0.25) !important;
+  color: #38bdf8 !important;
+  font-size: 9.5px !important;
+  font-weight: 600 !important;
+  padding: 1px 5px !important;
+  border-radius: 8px !important;
+}
+
+.omni-badge-audio {
+  background: rgba(245, 158, 11, 0.25) !important;
+  color: #f59e0b !important;
+  font-size: 9.5px !important;
+  font-weight: 600 !important;
+  padding: 1px 5px !important;
+  border-radius: 8px !important;
+}
+
+/* In-Pill Progress Mode */
+.omni-progress-mode {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 0 8px !important;
+}
+
+.omni-progress-track {
+  width: 60px !important;
   height: 6px !important;
   background: #334155 !important;
   border-radius: 3px !important;
   overflow: hidden !important;
 }
 
-.idm-progress-compact-fill {
+.omni-progress-fill {
   height: 100% !important;
-  background: #22c55e !important;
+  background: linear-gradient(90deg, #38bdf8, #22c55e) !important;
   width: 0% !important;
-  transition: width 0.2s ease !important;
+  transition: width 0.25s ease !important;
 }
 
-/* Subtle Toast */
-#idm-4k-toast {
+.omni-progress-text {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #38bdf8 !important;
+}
+
+/* Toast */
+#omnigrab-toast {
   position: fixed !important;
   top: 65px !important;
   right: 20px !important;
   z-index: 2147483647 !important;
-  background: #0f172a !important;
-  color: #ffffff !important;
-  border: 1.5px solid #38bdf8 !important;
-  border-radius: 4px !important;
-  padding: 7px 12px !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  border-radius: 8px !important;
+  padding: 8px 14px !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   font-size: 12px !important;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.5) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
   display: none;
 }

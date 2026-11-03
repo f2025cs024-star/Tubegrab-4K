@@ -1,4 +1,5 @@
 const DEFAULT_SERVER = "http://127.0.0.1:19876";
+const activeBgTasks = new Map(); // taskId -> { title, url, serverUrl }
 
 function getServerUrl(callback) {
   chrome.storage.sync.get(["serverUrl"], (res) => {
@@ -16,6 +17,54 @@ function getYouTubeCookies(callback) {
   }
 }
 
+// Show native desktop notification when download completes
+function notifyCompletion(title) {
+  try {
+    chrome.notifications.create({
+      type: "basic",
+      iconUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' rx='12' fill='%230f172a'/><polygon points='24,18 24,46 48,32' fill='%2322c55e'/></svg>",
+      title: "OmniGrab 4K: Download Finished!",
+      message: `${title || "YouTube Video"} has been saved to your Downloads folder.`,
+      priority: 2
+    });
+  } catch (e) {}
+}
+
+// Background polling loop that keeps running even when switching or closing tabs
+function monitorTaskInBackground(taskId, title, serverUrl) {
+  if (activeBgTasks.has(taskId)) return;
+  activeBgTasks.set(taskId, { title, serverUrl });
+
+  const timer = setInterval(() => {
+    fetch(`${serverUrl}/progress?id=${encodeURIComponent(taskId)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data || data.status === "unknown") return;
+
+        if (data.status === "finished") {
+          clearInterval(timer);
+          activeBgTasks.delete(taskId);
+
+          // If on remote Render server, trigger Chrome native download
+          if (!serverUrl.includes("127.0.0.1") && !serverUrl.includes("localhost")) {
+            chrome.downloads.download({
+              url: `${serverUrl}/get_file?id=${encodeURIComponent(taskId)}`,
+              filename: (data.title || title || "video") + ".mp4"
+            });
+          }
+
+          notifyCompletion(data.title || title);
+        } else if (data.status === "error") {
+          clearInterval(timer);
+          activeBgTasks.delete(taskId);
+        }
+      })
+      .catch(() => {
+        // Retry silently
+      });
+  }, 1000);
+}
+
 function sendDownloadTrigger(url, title, quality, sendResponse) {
   getServerUrl((serverUrl) => {
     getYouTubeCookies((cookies) => {
@@ -30,7 +79,13 @@ function sendDownloadTrigger(url, title, quality, sendResponse) {
         })
       })
         .then((res) => res.json())
-        .then((data) => sendResponse({ ok: true, data, serverUrl }))
+        .then((data) => {
+          if (data && data.task_id) {
+            // Register task in persistent background service worker so it continues across tabs!
+            monitorTaskInBackground(data.task_id, title, serverUrl);
+          }
+          sendResponse({ ok: true, data, serverUrl });
+        })
         .catch((err) => sendResponse({ ok: false, error: err.message }));
     });
   });
@@ -46,19 +101,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     getServerUrl((serverUrl) => {
       fetch(`${serverUrl}/progress?id=${encodeURIComponent(message.taskId)}`)
         .then((res) => res.json())
-        .then((data) => {
-          // If remote Render server finished downloading, trigger Chrome native download
-          if (data && data.status === "finished" && !data.browser_download_triggered && !serverUrl.includes("127.0.0.1") && !serverUrl.includes("localhost")) {
-            data.browser_download_triggered = true;
-            try {
-              chrome.downloads.download({
-                url: `${serverUrl}/get_file?id=${encodeURIComponent(message.taskId)}`,
-                filename: data.title ? `${data.title}.mp4` : "video.mp4"
-              });
-            } catch (e) {}
-          }
-          sendResponse({ ok: true, data, serverUrl });
-        })
+        .then((data) => sendResponse({ ok: true, data, serverUrl }))
         .catch((err) => sendResponse({ ok: false, error: err.message }));
     });
     return true;
@@ -72,23 +115,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .catch((err) => sendResponse({ ok: false, error: err.message }));
     });
     return true;
-  }
-});
-
-chrome.action.onClicked.addListener((tab) => {
-  if (tab && tab.id) {
-    chrome.tabs.sendMessage(tab.id, { action: "show_or_trigger_bar" }, (res) => {
-      if (chrome.runtime.lastError) {
-        chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          files: ["content.js"]
-        }, () => {
-          chrome.scripting.insertCSS({
-            target: { tabId: tab.id },
-            files: ["content.css"]
-          });
-        });
-      }
-    });
   }
 });

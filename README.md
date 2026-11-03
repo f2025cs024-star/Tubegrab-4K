@@ -1,102 +1,67 @@
-# IDM 4K YouTube Downloader (Extension + Cloud Server)
+# ⚡ OmniGrab 4K - YouTube Downloader & Cloud Server
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A powerful, lightweight **IDM-style 4K YouTube Downloader** featuring a floating, draggable in-browser badge, automatic maximum quality detection (4K 2160p / 2K / 1080p), and a high-performance backend deployable to **Render** or runnable locally on your PC.
+An ultra-sleek, high-performance **YouTube Downloader** featuring a floating glassmorphism capsule pill, a dynamic quality dropdown tailored to each video, and background downloading that never stops—even if you switch or close tabs.
 
 ---
 
 ## ✨ Features
 
-- **🎯 True 4K 60FPS & 8K Support**: Downloads raw separate ultra-HD video + audio tracks and muxes them into high-bitrate `.mp4` using FFmpeg.
-- **⚡ Automatic Max Quality Detection**: No confusing resolution menus. Automatically matches and grabs the absolute highest resolution available for that specific video.
-- **🖐️ Draggable & Compact Badge**: Sleek 24px floating button anchored to the side of the video player. Drag the `⠿` handle anywhere you like.
-- **🎬 Fullscreen Auto-Hide**: The download button automatically disappears when entering full-screen mode so it never obstructs your viewing.
-- **☁️ Cloud (Render) & Local (Desktop) Dual Support**:
-  - **Render Cloud Backend**: Host it for free on Render. Anyone can install your Chrome extension and download videos with zero setup (no Python/FFmpeg required on their machine!).
-  - **Local Desktop Backend**: Run locally on Windows with turbo multi-thread speed saving directly to `Downloads`.
-- **🔐 Automatic Challenge Solver**: Built-in Node.js runner with remote `ejs:github` solver to bypass modern YouTube signature challenges and bot checks.
+- **🎯 True 4K 60FPS & 8K**: Uses FFmpeg to merge uncompressed raw video & audio streams into pristine MP4 files.
+- **💎 Frosted Glassmorphism UI**: Beautiful floating dark pill with neon accents (`[ ⠿ | ▶ Download | ▾ | ✕ ]`).
+- **📋 Dynamic Quality Dropdown (`▾`)**: Automatically reads the specific video's available streams directly from the player. Displays tailored badges (`4K`, `2K`, `1080p`, `720p`, `MP3`).
+- **🔄 Tab-Independent Background Downloads**: Start a download and switch tabs, open 20 new pages, or minimize Chrome. The background service worker keeps downloading and fires a native Windows desktop notification when ready.
+- **🖐️ Draggable Capsule**: Click & drag `⠿` anywhere across the screen. Remembers your favorite position. Double-click `⠿` to reset to video side.
+- **🎬 Fullscreen Auto-Hide**: Automatically vanishes when you go into Fullscreen mode.
+- **☁️ 1-Click Deploy on Render**: Deploy your cloud backend to Render for free. Anyone can install your extension from GitHub without installing Python, FFmpeg, or Node.js!
 
 ---
 
-## 🚀 Quick Setup: Load Extension in Chrome / Edge / Brave
+## 🚀 Quick Install (Browser Extension)
 
-1. Download or clone this repository:
+1. Clone or download this repo:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/yt-4k-idm.git
+   git clone https://github.com/YOUR_USERNAME/omnigrab-4k.git
    ```
-2. Open your browser and navigate to:
-   - **Chrome / Brave**: `chrome://extensions`
-   - **Microsoft Edge**: `edge://extensions`
-3. Toggle on **Developer mode** (top-right corner).
-4. Click **Load unpacked** and select the `yt_4k_idm` folder.
-5. Open any video on [YouTube](https://www.youtube.com). You will see the floating badge:
-   ```text
-   [ ⠿ | ▶ Download this video | ? | ✕ ]
-   ```
+2. Open **Chrome** or **Edge** and go to `chrome://extensions` (or `edge://extensions`).
+3. Toggle on **Developer mode** (top-right).
+4. Click **Load unpacked** and select the `yt_4k_idm` (or `extension`) folder.
+5. Open any YouTube video. The sleek glass pill will appear docked on the side of the video!
 
 ---
 
-## ☁️ Deploy Backend to Render (Free 24/7 Cloud Server)
+## ☁️ Deploy Backend to Render (Free 24/7 Cloud Engine)
 
-Deploy your own cloud backend in **2 clicks** so your friends or public users can use the extension without installing Python:
-
-1. Fork or push this repository to your **GitHub** account.
+1. Push this repository to your **GitHub** account.
 2. Sign in to [Render.com](https://render.com).
 3. Click **New +** → **Blueprint** (or **Web Service**).
-4. Connect this GitHub repository. Render will automatically detect `render.yaml` and `Dockerfile`.
-5. Click **Apply / Deploy**.
-6. Once deployed, copy your Render URL:
-   ```text
-   https://your-service-name.onrender.com
-   ```
-7. In Chrome, right-click the extension icon → **Options** (or open `options.html`), paste your Render URL, and click **Save Settings**!
+4. Select this repository. Render automatically reads `render.yaml` and `Dockerfile`.
+5. Click **Apply**.
+6. Copy your service URL: `https://your-service.onrender.com`.
+7. In Chrome, right-click the extension icon → **Options**, paste your Render URL, and click **Save Settings**!
 
 ---
 
-## 💻 Running the Backend Locally (Windows)
+## 💻 Running the Local Desktop Engine (Windows)
 
-If you prefer to run the engine locally on your Windows PC:
-
-1. Install requirements:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Double-click `launch_idm_4k.bat` or run:
-   ```bash
-   python idm_4k_app.py
-   ```
-3. Videos will download directly into your `Downloads` folder at maximum network speed.
+To run the local turbo backend:
+```bash
+pip install -r requirements.txt
+python idm_4k_app.py
+```
+*(Or double-click `launch_idm_4k.bat`)*.
 
 ---
 
 ## ⌨️ Shortcuts
 
-- **`Alt + D`** — Press anytime on YouTube to immediately trigger download.
-- **`Ctrl + Shift + Y`** — Global Windows hotkey: copy any YouTube link and press to download.
-
----
-
-## 📂 Project Structure
-
-```text
-yt_4k_idm/
-├── Dockerfile          # Production Docker container for Render deployment
-├── render.yaml         # One-click Render Blueprint specification
-├── server.py           # FastAPI Cloud Server for Render
-├── idm_4k_app.py       # Local desktop service with direct disk download
-├── launch_idm_4k.bat   # Windows 1-click launcher
-├── requirements.txt    # Python dependencies (yt-dlp, fastapi, etc.)
-├── manifest.json       # Chrome Extension Manifest V3
-├── content.js          # Draggable floating YouTube badge & progress
-├── content.css         # IDM styling & fullscreen auto-hide
-├── background.js       # Background service worker & Render communication
-├── options.html        # Settings page to configure Render or Local URL
-└── options.js          # Options script
-```
+- **`Alt + D`** — Instant download in Max Quality on YouTube.
+- **`Ctrl + Shift + Y`** — Global Windows hotkey: copy any YouTube URL and press.
 
 ---
 
 ## 📄 License
 
-MIT License. Open-source and free to use!
+MIT License. Open-source and free to share!

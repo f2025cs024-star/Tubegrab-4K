@@ -1,13 +1,14 @@
 (function () {
-  let isBarClosedByUser = false;
+  let isPillClosedByUser = false;
   let lastCheckedUrl = "";
   let activePollTimer = null;
   let isDragging = false;
   let dragStartX = 0;
   let dragStartY = 0;
-  let initialBarX = 0;
-  let initialBarY = 0;
+  let initialPillX = 0;
+  let initialPillY = 0;
   let hasUserDragged = false;
+  let isMenuOpen = false;
 
   function isFullscreen() {
     return !!(
@@ -20,13 +21,13 @@
   }
 
   function showToast(msg, isError = false) {
-    let toast = document.getElementById("idm-4k-toast");
+    let toast = document.getElementById("omnigrab-toast");
     if (!toast) {
       toast = document.createElement("div");
-      toast.id = "idm-4k-toast";
+      toast.id = "omnigrab-toast";
       document.body.appendChild(toast);
     }
-    toast.style.borderColor = isError ? "#ef4444" : "#38bdf8";
+    toast.style.borderColor = isError ? "rgba(239, 68, 68, 0.7)" : "rgba(56, 189, 248, 0.6)";
     toast.innerHTML = msg;
     toast.style.display = "block";
     clearTimeout(toast._timer);
@@ -35,28 +36,69 @@
     }, 4000);
   }
 
-  function startProgressTracking(taskId) {
-    const bar = document.getElementById("idm-4k-floating-bar");
-    if (!bar) return;
+  // Detect specific video's available qualities directly from YouTube Player
+  function detectAvailableQualities() {
+    const player = document.getElementById("movie_player");
+    let levels = [];
+    if (player && typeof player.getAvailableQualityLevels === "function") {
+      levels = player.getAvailableQualityLevels() || [];
+    }
 
-    bar.innerHTML = `
-      <div class="idm-drag-handle" title="Drag to move">⠿</div>
-      <div class="idm-progress-compact">
-        <span id="idm-pct-lbl">0%</span>
-        <div class="idm-progress-compact-bar">
-          <div class="idm-progress-compact-fill" id="idm-fill"></div>
+    const qualityMap = [
+      { key: "highres", label: "4K / 8K Ultra HD", val: "2160", badge: "4K", cls: "omni-badge-4k" },
+      { key: "hd2160", label: "4K Ultra HD (2160p)", val: "2160", badge: "4K", cls: "omni-badge-4k" },
+      { key: "hd1440", label: "2K QHD (1440p)", val: "1440", badge: "2K", cls: "omni-badge-hd" },
+      { key: "hd1080", label: "Full HD (1080p)", val: "1080", badge: "FHD", cls: "omni-badge-hd" },
+      { key: "hd720", label: "HD (720p)", val: "720", badge: "HD", cls: "omni-badge-hd" },
+      { key: "large", label: "SD (480p)", val: "480", badge: "480p", cls: "omni-badge-hd" },
+      { key: "medium", label: "SD (360p)", val: "360", badge: "360p", cls: "omni-badge-hd" }
+    ];
+
+    let found = [];
+    if (levels.length > 0) {
+      const addedVals = new Set();
+      qualityMap.forEach((q) => {
+        if (levels.includes(q.key) && !addedVals.has(q.val)) {
+          addedVals.add(q.val);
+          found.push(q);
+        }
+      });
+    }
+
+    // Default fallback if player API hasn't loaded yet
+    if (found.length === 0) {
+      found = [
+        { label: "4K Ultra HD (2160p)", val: "2160", badge: "4K", cls: "omni-badge-4k" },
+        { label: "Full HD (1080p)", val: "1080", badge: "FHD", cls: "omni-badge-hd" },
+        { label: "HD (720p)", val: "720", badge: "HD", cls: "omni-badge-hd" }
+      ];
+    }
+
+    return found;
+  }
+
+  function startProgressTracking(taskId) {
+    const pill = document.getElementById("omnigrab-pill");
+    if (!pill) return;
+
+    pill.innerHTML = `
+      <div class="omni-drag-grip" title="Drag to move">⠿</div>
+      <div class="omni-progress-mode">
+        <span class="omni-progress-text" id="omni-pct-lbl">0%</span>
+        <div class="omni-progress-track">
+          <div class="omni-progress-fill" id="omni-fill"></div>
         </div>
       </div>
-      <div class="idm-4k-small-btn" id="idm-reset-btn" title="Cancel/Reset">✕</div>
+      <div class="omni-close-btn" id="omni-reset-btn" title="Cancel/Reset">✕</div>
     `;
 
-    document.getElementById("idm-reset-btn").addEventListener("click", (e) => {
+    document.getElementById("omni-reset-btn").addEventListener("click", (e) => {
       e.stopPropagation();
       clearInterval(activePollTimer);
-      rebuildBar();
+      rebuildPill();
     });
 
-    makeDraggable(bar);
+    makeDraggable(pill);
 
     if (activePollTimer) clearInterval(activePollTimer);
 
@@ -66,8 +108,8 @@
         (res) => {
           if (!res || !res.ok || !res.data) return;
           const d = res.data;
-          const fill = document.getElementById("idm-fill");
-          const pctLbl = document.getElementById("idm-pct-lbl");
+          const fill = document.getElementById("omni-fill");
+          const pctLbl = document.getElementById("omni-pct-lbl");
 
           if (!fill || !pctLbl) return;
 
@@ -81,53 +123,54 @@
           } else if (d.status === "finished") {
             clearInterval(activePollTimer);
             fill.style.width = "100%";
-            bar.innerHTML = `
-              <div class="idm-drag-handle" title="Drag to move">⠿</div>
-              <div class="idm-progress-compact" style="background:#064e3b;border-color:#10b981;cursor:pointer;" id="idm-open-folder" title="Click to open Downloads folder!">
-                <span style="color:#34d399;">✓ Done! [Open]</span>
+            pill.innerHTML = `
+              <div class="omni-drag-grip" title="Drag to move">⠿</div>
+              <div class="omni-main-btn" style="background:rgba(16,185,129,0.25);border-color:#10b981;color:#34d399;" id="omni-open-folder" title="Click to open Downloads folder">
+                <span>✓ Complete! [Open]</span>
               </div>
-              <div class="idm-4k-small-btn" id="idm-reset-btn" title="Back">✕</div>
+              <div class="omni-close-btn" id="omni-reset-btn" title="Back">✕</div>
             `;
-            makeDraggable(bar);
-            document.getElementById("idm-open-folder").addEventListener("click", () => {
+            makeDraggable(pill);
+            document.getElementById("omni-open-folder").addEventListener("click", () => {
               chrome.runtime.sendMessage({ action: "open_downloads_folder" });
             });
-            document.getElementById("idm-reset-btn").addEventListener("click", (e) => {
+            document.getElementById("omni-reset-btn").addEventListener("click", (e) => {
               e.stopPropagation();
-              rebuildBar();
+              rebuildPill();
             });
-            showToast("✓ Download complete in <b>Max Quality</b>! Saved to Downloads.", false);
+            showToast("✓ Download complete! Saved into <b>Downloads</b> folder.", false);
           } else if (d.status === "error") {
             clearInterval(activePollTimer);
-            showToast("Notice: " + (d.error || "Download error"), true);
-            setTimeout(rebuildBar, 3000);
+            showToast("Download notice: " + (d.error || "Error"), true);
+            setTimeout(rebuildPill, 3000);
           }
         }
       );
     }, 500);
   }
 
-  function triggerDownload() {
+  function triggerDownload(quality = "max") {
     const videoUrl = window.location.href;
     const pageTitle = document.title.replace(/ - YouTube$/i, "").trim();
 
-    showToast("Starting Max Quality download...", false);
+    closeDropdown();
+    showToast("Starting download... Runs in background even if you switch tabs!", false);
 
     chrome.runtime.sendMessage(
       {
         action: "trigger_idm_download",
         url: videoUrl,
         title: pageTitle,
-        quality: "max"
+        quality: quality
       },
       (response) => {
         if (chrome.runtime.lastError || !response || !response.ok) {
           showToast(
-            "Service starting... If needed, run <b>IDM 4K Downloader</b> on Desktop.",
+            "Service connecting... Runs in background automatically.",
             true
           );
         } else {
-          showToast("⏬ Downloading in <b>Max Available Quality</b>!", false);
+          showToast("⏬ Downloading in background!", false);
           if (response.data && response.data.task_id) {
             startProgressTracking(response.data.task_id);
           }
@@ -136,28 +179,93 @@
     );
   }
 
-  function makeDraggable(el) {
-    const handle = el.querySelector(".idm-drag-handle") || el;
+  function toggleDropdown() {
+    let menu = document.getElementById("omnigrab-dropdown-menu");
+    if (!menu) {
+      menu = document.createElement("div");
+      menu.id = "omnigrab-dropdown-menu";
+      document.body.appendChild(menu);
+    }
 
-    handle.onmousedown = function (e) {
-      if (e.target.id === "idm-4k-main-btn" || e.target.classList.contains("idm-4k-small-btn") || e.target.id === "idm-open-folder") {
+    if (isMenuOpen) {
+      closeDropdown();
+      return;
+    }
+
+    const pill = document.getElementById("omnigrab-pill");
+    if (!pill) return;
+
+    const rect = pill.getBoundingClientRect();
+    menu.style.top = `${rect.bottom + 6}px`;
+    menu.style.left = `${Math.min(window.innerWidth - 200, rect.left)}px`;
+
+    const qualities = detectAvailableQualities();
+
+    let itemsHtml = `
+      <div class="omni-menu-header">Available for this video</div>
+      <div class="omni-menu-item" data-val="max">
+        <span>✨ Auto Max Quality</span>
+        <span class="omni-badge-max">BEST</span>
+      </div>
+    `;
+
+    qualities.forEach((q) => {
+      itemsHtml += `
+        <div class="omni-menu-item" data-val="${q.val}">
+          <span>${q.label}</span>
+          <span class="${q.cls}">${q.badge}</span>
+        </div>
+      `;
+    });
+
+    itemsHtml += `
+      <div class="omni-menu-item" data-val="mp3">
+        <span>🎵 Audio (MP3 320k)</span>
+        <span class="omni-badge-audio">MP3</span>
+      </div>
+    `;
+
+    menu.innerHTML = itemsHtml;
+    menu.style.display = "flex";
+    isMenuOpen = true;
+
+    menu.querySelectorAll(".omni-menu-item").forEach((el) => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        triggerDownload(el.getAttribute("data-val"));
+      });
+    });
+  }
+
+  function closeDropdown() {
+    const menu = document.getElementById("omnigrab-dropdown-menu");
+    if (menu) menu.style.display = "none";
+    isMenuOpen = false;
+  }
+
+  function makeDraggable(el) {
+    const grip = el.querySelector(".omni-drag-grip") || el;
+
+    grip.onmousedown = function (e) {
+      if (e.target.closest(".omni-main-btn") || e.target.closest(".omni-chevron-btn") || e.target.closest(".omni-close-btn")) {
         return;
       }
       e.preventDefault();
+      closeDropdown();
       isDragging = true;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
 
       const rect = el.getBoundingClientRect();
-      initialBarX = rect.left;
-      initialBarY = rect.top;
+      initialPillX = rect.left;
+      initialPillY = rect.top;
 
       document.onmousemove = function (ev) {
         if (!isDragging) return;
         const dx = ev.clientX - dragStartX;
         const dy = ev.clientY - dragStartY;
-        const newLeft = Math.max(5, Math.min(window.innerWidth - el.offsetWidth - 5, initialBarX + dx));
-        const newTop = Math.max(5, Math.min(window.innerHeight - el.offsetHeight - 5, initialBarY + dy));
+        const newLeft = Math.max(8, Math.min(window.innerWidth - el.offsetWidth - 8, initialPillX + dx));
+        const newTop = Math.max(8, Math.min(window.innerHeight - el.offsetHeight - 8, initialPillY + dy));
 
         el.style.left = `${newLeft}px`;
         el.style.top = `${newTop}px`;
@@ -171,7 +279,7 @@
           document.onmouseup = null;
           try {
             localStorage.setItem(
-              "idm_user_pos",
+              "omnigrab_pos",
               JSON.stringify({ left: el.style.left, top: el.style.top })
             );
           } catch (e) {}
@@ -179,32 +287,32 @@
       };
     };
 
-    handle.ondblclick = function (e) {
+    grip.ondblclick = function (e) {
       e.stopPropagation();
       hasUserDragged = false;
       try {
-        localStorage.removeItem("idm_user_pos");
+        localStorage.removeItem("omnigrab_pos");
       } catch (err) {}
-      positionBarAtVideoSide(el);
+      positionPillAtVideoSide(el);
       showToast("Position reset to video side.");
     };
   }
 
-  function positionBarAtVideoSide(bar) {
+  function positionPillAtVideoSide(pill) {
     if (isFullscreen()) {
-      bar.style.display = "none";
+      pill.style.display = "none";
       return;
     }
 
     if (hasUserDragged) return;
 
     try {
-      const saved = localStorage.getItem("idm_user_pos");
+      const saved = localStorage.getItem("omnigrab_pos");
       if (saved) {
         const pos = JSON.parse(saved);
         if (pos.left && pos.top) {
-          bar.style.left = pos.left;
-          bar.style.top = pos.top;
+          pill.style.left = pos.left;
+          pill.style.top = pos.top;
           hasUserDragged = true;
           return;
         }
@@ -220,84 +328,62 @@
       const rect = player.getBoundingClientRect();
       if (rect.width > 200 && rect.height > 100) {
         const topPos = Math.max(62, rect.top + 10);
-        const leftPos = Math.max(10, rect.right - bar.offsetWidth - 14);
-        bar.style.top = `${topPos}px`;
-        bar.style.left = `${leftPos}px`;
+        const leftPos = Math.max(10, rect.right - pill.offsetWidth - 14);
+        pill.style.top = `${topPos}px`;
+        pill.style.left = `${leftPos}px`;
         return;
       }
     }
 
-    bar.style.top = "66px";
-    bar.style.right = "20px";
+    pill.style.top = "66px";
+    pill.style.right = "20px";
   }
 
-  function rebuildBar() {
-    const bar = document.getElementById("idm-4k-floating-bar");
-    if (!bar) return;
+  function rebuildPill() {
+    const pill = document.getElementById("omnigrab-pill");
+    if (!pill) return;
 
-    bar.innerHTML = "";
+    pill.innerHTML = `
+      <div class="omni-drag-grip" title="Drag to move (Double-click to reset)">⠿</div>
+      <div class="omni-main-btn" id="omni-main-btn" title="Download in Max Quality (Shortcut: Alt+D)">
+        <span class="omni-play-icon"></span>
+        <span>Download</span>
+      </div>
+      <div class="omni-chevron-btn" id="omni-chevron-btn" title="Choose specific video quality">▾</div>
+      <div class="omni-close-btn" id="omni-close-btn" title="Hide button for this video">✕</div>
+    `;
 
-    const dragHandle = document.createElement("div");
-    dragHandle.className = "idm-drag-handle";
-    dragHandle.title = "Drag to reposition (Double click to reset)";
-    dragHandle.textContent = "⠿";
-
-    const mainBtn = document.createElement("div");
-    mainBtn.id = "idm-4k-main-btn";
-    mainBtn.title = "Download in Max Quality (Shortcut: Alt+D)";
-
-    const icon = document.createElement("span");
-    icon.className = "idm-4k-play-icon";
-
-    const label = document.createElement("span");
-    label.textContent = "Download this video";
-
-    mainBtn.appendChild(icon);
-    mainBtn.appendChild(label);
-
-    mainBtn.addEventListener("click", (e) => {
+    document.getElementById("omni-main-btn").addEventListener("click", (e) => {
       e.stopPropagation();
-      triggerDownload();
+      triggerDownload("max");
     });
 
-    const helpBtn = document.createElement("div");
-    helpBtn.className = "idm-4k-small-btn";
-    helpBtn.textContent = "?";
-    helpBtn.title = "Downloads in Maximum Quality (4K/HD). Press Alt+D anytime!";
-    helpBtn.addEventListener("click", (e) => {
+    document.getElementById("omni-chevron-btn").addEventListener("click", (e) => {
       e.stopPropagation();
-      showToast("💡 <b>Max Quality Downloader</b>: Drag <b>⠿</b> to move. Press <b>Alt+D</b> for instant download!");
+      toggleDropdown();
     });
 
-    const closeBtn = document.createElement("div");
-    closeBtn.className = "idm-4k-small-btn";
-    closeBtn.textContent = "✕";
-    closeBtn.title = "Hide button for this video";
-    closeBtn.addEventListener("click", (e) => {
+    document.getElementById("omni-close-btn").addEventListener("click", (e) => {
       e.stopPropagation();
-      isBarClosedByUser = true;
-      bar.style.display = "none";
+      isPillClosedByUser = true;
+      closeDropdown();
+      pill.style.display = "none";
     });
 
-    bar.appendChild(dragHandle);
-    bar.appendChild(mainBtn);
-    bar.appendChild(helpBtn);
-    bar.appendChild(closeBtn);
-
-    makeDraggable(bar);
+    makeDraggable(pill);
   }
 
-  function createFloatingBar() {
-    let bar = document.getElementById("idm-4k-floating-bar");
-    if (bar) return bar;
+  function createPill() {
+    let pill = document.getElementById("omnigrab-pill");
+    if (pill) return pill;
 
-    bar = document.createElement("div");
-    bar.id = "idm-4k-floating-bar";
-    document.body.appendChild(bar);
+    pill = document.createElement("div");
+    pill.id = "omnigrab-pill";
+    document.body.appendChild(pill);
 
-    rebuildBar();
-    positionBarAtVideoSide(bar);
-    return bar;
+    rebuildPill();
+    positionPillAtVideoSide(pill);
+    return pill;
   }
 
   function updateUi() {
@@ -305,70 +391,59 @@
       window.location.pathname.startsWith("/watch") ||
       window.location.pathname.startsWith("/shorts");
 
-    let bar = document.getElementById("idm-4k-floating-bar");
+    let pill = document.getElementById("omnigrab-pill");
 
-    if (!isVideoPage) {
-      if (bar) bar.style.display = "none";
-      return;
-    }
-
-    if (isFullscreen()) {
-      if (bar) bar.style.display = "none";
+    if (!isVideoPage || isFullscreen()) {
+      if (pill) pill.style.display = "none";
+      closeDropdown();
       return;
     }
 
     const curr = window.location.href;
     if (curr !== lastCheckedUrl) {
       lastCheckedUrl = curr;
-      isBarClosedByUser = false;
+      isPillClosedByUser = false;
+      closeDropdown();
       if (activePollTimer) clearInterval(activePollTimer);
     }
 
-    if (!isBarClosedByUser) {
-      if (!bar) bar = createFloatingBar();
-      bar.style.display = "flex";
-      positionBarAtVideoSide(bar);
+    if (!isPillClosedByUser) {
+      if (!pill) pill = createPill();
+      pill.style.display = "flex";
+      positionPillAtVideoSide(pill);
     }
   }
 
-  // Keyboard shortcut: Alt + D
+  // Alt + D shortcut
   window.addEventListener("keydown", (e) => {
     if (e.altKey && (e.key === "d" || e.key === "D")) {
       e.preventDefault();
-      triggerDownload();
+      triggerDownload("max");
     }
   });
 
-  // Listen to message from extension icon click
-  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.action === "show_or_trigger_bar") {
-      isBarClosedByUser = false;
-      let bar = document.getElementById("idm-4k-floating-bar");
-      if (!bar) bar = createFloatingBar();
-      bar.style.display = "flex";
-      rebuildBar();
-      positionBarAtVideoSide(bar);
-      bar.style.boxShadow = "0 0 15px #38bdf8";
-      setTimeout(() => {
-        if (bar) bar.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.45)";
-      }, 1500);
-      showToast("Download button ready! Click to download in <b>Max Quality</b>.");
-      sendResponse({ ok: true });
+  // Close dropdown on outside click
+  document.addEventListener("click", (e) => {
+    if (isMenuOpen && !e.target.closest("#omnigrab-dropdown-menu") && !e.target.closest("#omni-chevron-btn")) {
+      closeDropdown();
     }
   });
 
+  // Fullscreen detection
   ["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
     document.addEventListener(evt, updateUi);
   });
 
   window.addEventListener("resize", () => {
-    const bar = document.getElementById("idm-4k-floating-bar");
-    if (bar && !hasUserDragged) positionBarAtVideoSide(bar);
+    const pill = document.getElementById("omnigrab-pill");
+    if (pill && !hasUserDragged) positionPillAtVideoSide(pill);
+    closeDropdown();
   });
 
   window.addEventListener("scroll", () => {
-    const bar = document.getElementById("idm-4k-floating-bar");
-    if (bar && !hasUserDragged) positionBarAtVideoSide(bar);
+    const pill = document.getElementById("omnigrab-pill");
+    if (pill && !hasUserDragged) positionPillAtVideoSide(pill);
+    closeDropdown();
   }, true);
 
   window.addEventListener("yt-navigate-finish", updateUi);

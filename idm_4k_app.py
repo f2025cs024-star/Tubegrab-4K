@@ -47,8 +47,7 @@ def write_netscape_cookies(cookies_list, filepath):
         return False
     try:
         with open(filepath, "w", encoding="utf-8") as f:
-            f.write("# Netscape HTTP Cookie File\n")
-            f.write("# http://curl.haxx.se/rfc/cookie_spec.html\n\n")
+            f.write("# Netscape HTTP Cookie File\n\n")
             for c in cookies_list:
                 domain = c.get("domain", "")
                 if not domain:
@@ -62,7 +61,7 @@ def write_netscape_cookies(cookies_list, filepath):
                 f.write(f"{domain}\t{flag}\t{path}\t{secure}\t{exp}\t{name}\t{val}\n")
         return True
     except Exception as e:
-        print(f"[IDM 4K] Cookie write error: {e}")
+        print(f"[OmniGrab] Cookie write error: {e}")
         return False
 
 
@@ -91,6 +90,26 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         "error": None
     })
 
+    q = (quality or "max").lower()
+    is_mp3 = (q == "mp3")
+
+    if q == "1080":
+        fmt = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best"
+    elif q == "1440":
+        fmt = "bestvideo[height<=1440]+bestaudio/best[height<=1440]/best"
+    elif q == "720":
+        fmt = "bestvideo[height<=720]+bestaudio/best[height<=720]/best"
+    elif q == "480":
+        fmt = "bestvideo[height<=480]+bestaudio/best[height<=480]/best"
+    elif q == "360":
+        fmt = "bestvideo[height<=360]+bestaudio/best[height<=360]/best"
+    elif q == "2160":
+        fmt = "bestvideo[height<=2160]+bestaudio/best[height<=2160]/best"
+    elif is_mp3:
+        fmt = "bestaudio/best"
+    else:
+        fmt = "bestvideo+bestaudio/best"
+
     def progress_hook(d):
         if d.get("status") == "downloading":
             total = d.get("total_bytes") or d.get("total_bytes_estimate") or 0
@@ -114,7 +133,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
     out_template = os.path.join(DOWNLOADS_DIR, "%(title)s.%(ext)s")
 
     ydl_opts = {
-        "format": "bestvideo+bestaudio/best",
+        "format": fmt,
         "outtmpl": out_template,
         "noplaylist": True,
         "progress_hooks": [progress_hook],
@@ -138,6 +157,13 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
     elif os.path.exists(COOKIES_FILE) and os.path.getsize(COOKIES_FILE) > 50:
         ydl_opts["cookiefile"] = COOKIES_FILE
 
+    if is_mp3:
+        ydl_opts["postprocessors"] = [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "320",
+        }]
+
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             meta = ydl.extract_info(url, download=True)
@@ -157,10 +183,10 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
     except Exception as e:
         info_dict["status"] = "error"
         info_dict["error"] = str(e)
-        print(f"[IDM 4K] Error downloading {url}: {e}")
+        print(f"[OmniGrab] Error downloading {url}: {e}")
 
 
-class IDMBackgroundServer(BaseHTTPRequestHandler):
+class OmniGrabServer(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         return
 
@@ -183,7 +209,7 @@ class IDMBackgroundServer(BaseHTTPRequestHandler):
             self._send_cors(200)
             self.wfile.write(json.dumps({
                 "status": "running",
-                "app": "IDM 4K Downloader",
+                "app": "OmniGrab 4K Downloader",
                 "save_dir": DOWNLOADS_DIR,
                 "active_tasks": len(ACTIVE_TASKS)
             }).encode("utf-8"))
@@ -210,7 +236,7 @@ class IDMBackgroundServer(BaseHTTPRequestHandler):
             return
 
         self._send_cors(200)
-        self.wfile.write(json.dumps({"status": "running", "app": "IDM 4K Downloader"}).encode("utf-8"))
+        self.wfile.write(json.dumps({"status": "running", "app": "OmniGrab 4K Downloader"}).encode("utf-8"))
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -256,12 +282,12 @@ class IDMBackgroundServer(BaseHTTPRequestHandler):
 
 def main():
     print("=" * 60)
-    print("  IDM 4K Turbo Downloader Service")
-    print(f"  Destination: {DOWNLOADS_DIR}")
-    print("  Node.js Challenge Solver Enabled")
+    print("  OmniGrab 4K Turbo Downloader Service")
+    print(f"  Target Destination: {DOWNLOADS_DIR}")
+    print("  Server API: http://127.0.0.1:19876")
     print("=" * 60)
 
-    server = HTTPServer(("127.0.0.1", PORT), IDMBackgroundServer)
+    server = HTTPServer(("127.0.0.1", PORT), OmniGrabServer)
     server.serve_forever()
 
 
