@@ -60,9 +60,12 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
 
           if (!serverUrl.includes("127.0.0.1") && !serverUrl.includes("localhost")) {
             try {
+              const ext = (data.filepath && data.filepath.endsWith(".mp3")) || (data.quality === "mp3") ? ".mp3" : ".mp4";
+              const rawTitle = data.title || title || "video";
+              const cleanTitle = rawTitle.replace(/[<>:"/\\|?*]+/g, "_").trim() || "video";
               chrome.downloads.download({
                 url: `${serverUrl}/get_file?id=${encodeURIComponent(taskId)}`,
-                filename: (data.title || title || "video") + ".mp4"
+                filename: cleanTitle + ext
               });
             } catch (e) {}
           }
