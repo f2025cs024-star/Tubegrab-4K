@@ -670,7 +670,11 @@
     const isShortsPath = window.location.pathname.startsWith("/shorts/");
     if (!isWatchPath && !isShortsPath) return false;
 
-    // 2. On YouTube desktop, <ytd-watch-flexy> is hidden when navigating away or closing video
+    // 2. If in miniplayer mode, watch page is inactive / closed
+    const miniplayer = document.querySelector("ytd-miniplayer[active]");
+    if (miniplayer) return false;
+
+    // 3. On YouTube desktop, <ytd-watch-flexy> is hidden when navigating away or closing video
     const watchFlexy = document.querySelector("ytd-watch-flexy");
     if (watchFlexy) {
       if (watchFlexy.hasAttribute("hidden") || watchFlexy.style.display === "none") {
@@ -678,7 +682,7 @@
       }
     }
 
-    // 3. Player must exist and have visible dimensions
+    // 4. Player must exist and be visibly on the screen in the viewport
     const player =
       document.querySelector("#movie_player") ||
       document.querySelector("ytd-player") ||
@@ -688,6 +692,11 @@
 
     const rect = player.getBoundingClientRect();
     if (rect.width < 120 || rect.height < 60) {
+      return false;
+    }
+
+    // If the video player has scrolled off the top or bottom of the screen, it's not active
+    if (rect.bottom < 80 || rect.top > window.innerHeight) {
       return false;
     }
 
@@ -723,7 +732,7 @@
 
     if (player) {
       const rect = player.getBoundingClientRect();
-      if (rect.width > 200 && rect.height > 100) {
+      if (rect.width > 200 && rect.height > 100 && rect.bottom > 80 && rect.top < window.innerHeight) {
         const topPos = Math.max(60, rect.top + 10);
         const leftPos = Math.max(10, rect.right - pill.offsetWidth - 12);
         pill.style.top = `${topPos}px`;
@@ -811,7 +820,9 @@
   function hideUiImmediately() {
     const pill = getPill();
     if (pill) pill.style.display = "none";
-    closeDropdown();
+    const menu = getMenu();
+    if (menu) menu.style.display = "none";
+    isMenuOpen = false;
   }
 
   function updateUi() {
