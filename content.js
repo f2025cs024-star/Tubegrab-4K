@@ -1,4 +1,12 @@
 (function () {
+  if (window.__tubegrab_loaded__) {
+    const ep = document.getElementById("tubegrab-pill") || document.getElementById("omnigrab-pill");
+    if (ep) ep.remove();
+    const em = document.getElementById("tubegrab-dropdown-menu") || document.getElementById("omnigrab-dropdown-menu");
+    if (em) em.remove();
+  }
+  window.__tubegrab_loaded__ = true;
+
   let isPillClosedByUser = false;
   let lastCheckedUrl = "";
   let activePollTimer = null;
@@ -265,7 +273,7 @@
     return list;
   }
 
-  function startProgressTracking(taskId, quality) {
+  function startProgressTracking(taskId, quality, serverUrl) {
     const pill = getPill();
     if (!pill) return;
 
@@ -304,7 +312,7 @@
     activePollTimer = setInterval(() => {
       try {
         chrome.runtime.sendMessage(
-          { action: "check_progress", taskId: taskId },
+          { action: "check_progress", taskId: taskId, serverUrl: serverUrl },
           (res) => {
             if (chrome.runtime.lastError || !res || !res.ok || !res.data) return;
             const d = res.data;
@@ -314,9 +322,7 @@
 
             if (!fill || !pctLbl) return;
 
-            if (d.status === "starting") {
-              if (metaLbl) metaLbl.textContent = d.speed || "Connecting to cloud...";
-            } else if (d.status === "downloading") {
+            if (d.status === "starting" || d.status === "downloading") {
               const pct = d.percent || 0;
               fill.style.width = pct + "%";
               pctLbl.textContent = Math.round(pct) + "%";
@@ -326,7 +332,7 @@
                 } else if (d.speed) {
                   metaLbl.textContent = d.speed;
                 } else {
-                  metaLbl.textContent = "Downloading...";
+                  metaLbl.textContent = d.status === "starting" ? "Connecting..." : "Downloading...";
                 }
               }
             } else if (d.status === "merging") {
@@ -393,7 +399,38 @@
 
     closeDropdown();
     const labelTag = targetQ === "mp3" ? "MP3 Audio" : `${targetQ}p`;
-    showToast(`Downloading in ${labelTag}... (Continues across tabs)`, false);
+    showToast(`Starting ${labelTag} download...`, false);
+
+    const pill = getPill();
+    if (pill) {
+      pill.classList.add("omni-is-downloading");
+      pill.innerHTML = `
+        <div class="omni-drag-grip" title="Drag">⠿</div>
+        <div class="omni-dl-info">
+          <svg class="omni-dl-icon" viewBox="0 0 24 24" width="13" height="13" fill="none">
+            <path d="M12 3V15M12 15L7.5 10.5M12 15L16.5 10.5" stroke="#38bdf8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 19H20" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <span class="omni-dl-pct" id="omni-pct-lbl">0%</span>
+          <span class="omni-dl-meta" id="omni-meta-lbl">Connecting...</span>
+        </div>
+        <div class="omni-close-btn" id="omni-reset-btn" title="Cancel">✕</div>
+        <div class="omni-blue-bar-track">
+          <div class="omni-blue-bar-fill" id="omni-blue-fill" style="width: 5%"></div>
+        </div>
+      `;
+      const rBtn = document.getElementById("omni-reset-btn");
+      if (rBtn) {
+        rBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (activePollTimer) clearInterval(activePollTimer);
+          activePollTimer = null;
+          pill.classList.remove("omni-is-downloading");
+          rebuildPill();
+        });
+      }
+      makeDraggable(pill);
+    }
 
     try {
       chrome.runtime.sendMessage(
@@ -405,11 +442,11 @@
         },
         (response) => {
           if (chrome.runtime.lastError || !response || !response.ok) {
-            showToast("Connecting to service...", true);
+            showToast("Connecting to engine...", false);
           } else {
             showToast(`⏬ Downloading in ${labelTag}!`, false);
             if (response.data && response.data.task_id) {
-              startProgressTracking(response.data.task_id, targetQ);
+              startProgressTracking(response.data.task_id, targetQ, response.serverUrl);
             }
           }
         }
@@ -693,7 +730,7 @@
             { action: "get_active_task_for_url", url: window.location.href },
             (res) => {
               if (!chrome.runtime.lastError && res && res.task && !activePollTimer) {
-                startProgressTracking(res.task.taskId, res.task.quality);
+                startProgressTracking(res.task.taskId, res.task.quality, res.task.serverUrl);
               }
             }
           );

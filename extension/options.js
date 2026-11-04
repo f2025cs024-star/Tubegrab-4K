@@ -9,12 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const msg = document.getElementById("msg");
 
   chrome.storage.sync.get(["serverUrl"], (res) => {
-    input.value = res.serverUrl || cloudUrl;
+    input.value = res.serverUrl || localUrl;
   });
 
   saveBtn.addEventListener("click", () => {
     let url = input.value.trim().replace(/\/+$/, "");
-    if (!url) url = cloudUrl;
+    if (!url) url = localUrl;
     chrome.storage.sync.set({ serverUrl: url }, () => {
       msg.textContent = "✓ Settings saved!";
       msg.style.display = "block";

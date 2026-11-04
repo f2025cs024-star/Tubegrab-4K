@@ -1,28 +1,28 @@
-const CLOUD_SERVER = "https://tubegrab-4k.onrender.com";
 const LOCAL_SERVER = "http://127.0.0.1:19876";
+const CLOUD_SERVER = "https://tubegrab-4k.onrender.com";
 const activeBgTasks = new Map();
 
 function getServerUrl(callback) {
-  chrome.storage.sync.get(["serverUrl"], (res) => {
-    const configured = res.serverUrl;
-    if (configured && (configured.includes("127.0.0.1") || configured.includes("localhost"))) {
-      // Ping local server to see if alive
-      const ctrl = new AbortController();
-      const tid = setTimeout(() => ctrl.abort(), 350);
-      fetch("http://127.0.0.1:19876/status", { signal: ctrl.signal })
-        .then((r) => {
-          clearTimeout(tid);
-          if (r.ok) callback("http://127.0.0.1:19876");
-          else callback(CLOUD_SERVER);
-        })
-        .catch(() => {
-          clearTimeout(tid);
-          callback(CLOUD_SERVER);
+  // Always prefer local desktop engine if online (zero bot checks, max home internet speed)
+  const ctrl = new AbortController();
+  const tid = setTimeout(() => ctrl.abort(), 350);
+  fetch("http://127.0.0.1:19876/status", { signal: ctrl.signal })
+    .then((r) => {
+      clearTimeout(tid);
+      if (r.ok) {
+        callback(LOCAL_SERVER);
+      } else {
+        chrome.storage.sync.get(["serverUrl"], (res) => {
+          callback(res.serverUrl || LOCAL_SERVER);
         });
-    } else {
-      callback(configured || CLOUD_SERVER);
-    }
-  });
+      }
+    })
+    .catch(() => {
+      clearTimeout(tid);
+      chrome.storage.sync.get(["serverUrl"], (res) => {
+        callback(res.serverUrl || LOCAL_SERVER);
+      });
+    });
 }
 
 function getYouTubeCookies(callback) {
@@ -148,15 +148,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.action === "check_progress") {
-    const sUrl = message.serverUrl || CLOUD_SERVER;
-    fetch(`${sUrl}/progress?id=${encodeURIComponent(message.taskId)}`)
-      .then((res) => res.json())
-      .then((data) => {
-        try { sendResponse({ ok: true, data, serverUrl: sUrl }); } catch (e) {}
-      })
-      .catch((err) => {
-        try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
-      });
+    let sUrl = message.serverUrl;
+    if (!sUrl && activeBgTasks.has(message.taskId)) {
+      sUrl = activeBgTasks.get(message.taskId).serverUrl;
+    }
+    const queryServer = (targetUrl) => {
+      fetch(`${targetUrl}/progress?id=${encodeURIComponent(message.taskId)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          try { sendResponse({ ok: true, data, serverUrl: targetUrl }); } catch (e) {}
+        })
+        .catch((err) => {
+          try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+        });
+    };
+    if (sUrl) {
+      queryServer(sUrl);
+    } else {
+      getServerUrl((targetUrl) => queryServer(targetUrl));
+    }
     return true;
   }
 

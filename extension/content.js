@@ -273,7 +273,7 @@
     return list;
   }
 
-  function startProgressTracking(taskId, quality) {
+  function startProgressTracking(taskId, quality, serverUrl) {
     const pill = getPill();
     if (!pill) return;
 
@@ -312,7 +312,7 @@
     activePollTimer = setInterval(() => {
       try {
         chrome.runtime.sendMessage(
-          { action: "check_progress", taskId: taskId },
+          { action: "check_progress", taskId: taskId, serverUrl: serverUrl },
           (res) => {
             if (chrome.runtime.lastError || !res || !res.ok || !res.data) return;
             const d = res.data;
@@ -332,7 +332,7 @@
                 } else if (d.speed) {
                   metaLbl.textContent = d.speed;
                 } else {
-                  metaLbl.textContent = d.status === "starting" ? "Connecting to cloud..." : "Downloading...";
+                  metaLbl.textContent = d.status === "starting" ? "Connecting..." : "Downloading...";
                 }
               }
             } else if (d.status === "merging") {
@@ -399,7 +399,7 @@
 
     closeDropdown();
     const labelTag = targetQ === "mp3" ? "MP3 Audio" : `${targetQ}p`;
-    showToast(`Connecting to cloud server in ${labelTag}...`, false);
+    showToast(`Starting ${labelTag} download...`, false);
 
     const pill = getPill();
     if (pill) {
@@ -412,7 +412,7 @@
             <path d="M4 19H20" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
           <span class="omni-dl-pct" id="omni-pct-lbl">0%</span>
-          <span class="omni-dl-meta" id="omni-meta-lbl">Connecting to cloud...</span>
+          <span class="omni-dl-meta" id="omni-meta-lbl">Connecting...</span>
         </div>
         <div class="omni-close-btn" id="omni-reset-btn" title="Cancel">✕</div>
         <div class="omni-blue-bar-track">
@@ -442,11 +442,11 @@
         },
         (response) => {
           if (chrome.runtime.lastError || !response || !response.ok) {
-            showToast("Connecting to cloud server...", false);
+            showToast("Connecting to engine...", false);
           } else {
             showToast(`⏬ Downloading in ${labelTag}!`, false);
             if (response.data && response.data.task_id) {
-              startProgressTracking(response.data.task_id, targetQ);
+              startProgressTracking(response.data.task_id, targetQ, response.serverUrl);
             }
           }
         }
@@ -730,7 +730,7 @@
             { action: "get_active_task_for_url", url: window.location.href },
             (res) => {
               if (!chrome.runtime.lastError && res && res.task && !activePollTimer) {
-                startProgressTracking(res.task.taskId, res.task.quality);
+                startProgressTracking(res.task.taskId, res.task.quality, res.task.serverUrl);
               }
             }
           );

@@ -1,37 +1,38 @@
-const DEFAULT_LOCAL = "http://127.0.0.1:19876";
-const DEFAULT_CLOUD = "https://tubegrab-4k.onrender.com";
+const LOCAL_SERVER = "http://127.0.0.1:19876";
+const CLOUD_SERVER = "https://tubegrab-4k.onrender.com";
 const activeBgTasks = new Map();
 
 function getServerUrl(callback) {
-  chrome.storage.sync.get(["serverUrl"], (res) => {
-    if (res.serverUrl) {
-      return callback(res.serverUrl);
-    }
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 350);
-    fetch(`${DEFAULT_LOCAL}/status`, { signal: controller.signal })
-      .then((r) => r.json())
-      .then(() => {
-        clearTimeout(timeoutId);
-        callback(DEFAULT_LOCAL);
-      })
-      .catch(() => {
-        clearTimeout(timeoutId);
-        callback(DEFAULT_CLOUD);
+  // Always prefer local desktop engine if online (zero bot checks, max home internet speed)
+  const ctrl = new AbortController();
+  const tid = setTimeout(() => ctrl.abort(), 350);
+  fetch("http://127.0.0.1:19876/status", { signal: ctrl.signal })
+    .then((r) => {
+      clearTimeout(tid);
+      if (r.ok) {
+        callback(LOCAL_SERVER);
+      } else {
+        chrome.storage.sync.get(["serverUrl"], (res) => {
+          callback(res.serverUrl || LOCAL_SERVER);
+        });
+      }
+    })
+    .catch(() => {
+      clearTimeout(tid);
+      chrome.storage.sync.get(["serverUrl"], (res) => {
+        callback(res.serverUrl || LOCAL_SERVER);
       });
-  });
+    });
 }
 
 function getYouTubeCookies(callback) {
   try {
     chrome.cookies.getAll({ url: "https://www.youtube.com" }, (c1) => {
       chrome.cookies.getAll({ domain: ".youtube.com" }, (c2) => {
-        const map = new Map();
-        (c1 || []).forEach((c) => map.set(c.name, c));
-        (c2 || []).forEach((c) => {
-          if (!map.has(c.name)) map.set(c.name, c);
-        });
-        callback(Array.from(map.values()));
+        const cookieMap = new Map();
+        (c1 || []).forEach((c) => cookieMap.set(c.name + "@" + c.domain, c));
+        (c2 || []).forEach((c) => cookieMap.set(c.name + "@" + c.domain, c));
+        callback(Array.from(cookieMap.values()));
       });
     });
   } catch (e) {
@@ -52,8 +53,8 @@ function notifyCompletion(title) {
 }
 
 function monitorTaskInBackground(taskId, title, serverUrl) {
-  if (activeBgTasks.has(taskId)) return;
-  activeBgTasks.set(taskId, { title, serverUrl });
+  if (activeBgTasks.has(taskId) && activeBgTasks.get(taskId).monitoring) return;
+  activeBgTasks.set(taskId, { title, serverUrl, monitoring: true });
 
   const timer = setInterval(() => {
     fetch(`${serverUrl}/progress?id=${encodeURIComponent(taskId)}`)
@@ -67,12 +68,10 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
 
           if (!serverUrl.includes("127.0.0.1") && !serverUrl.includes("localhost")) {
             try {
-              const ext = (data.filepath && data.filepath.endsWith(".mp3")) || (data.quality === "mp3") ? ".mp3" : ".mp4";
-              const rawTitle = data.title || title || "video";
-              const cleanTitle = rawTitle.replace(/[<>:"/\\|?*]+/g, "_").trim() || "video";
               chrome.downloads.download({
                 url: `${serverUrl}/get_file?id=${encodeURIComponent(taskId)}`,
-                filename: cleanTitle + ext
+                filename: (data.title || title || "video").replace(/[\\/:*?"<>|]/g, "_") + ".mp4",
+                saveAs: false
               });
             } catch (e) {}
           }
@@ -90,26 +89,53 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
 function sendDownloadTrigger(url, title, quality, sendResponse) {
   getServerUrl((serverUrl) => {
     getYouTubeCookies((cookies) => {
+      const payload = {
+        url: url,
+        title: title || "",
+        quality: quality || "max",
+        cookies: cookies || []
+      };
+
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 60000);
+
       fetch(`${serverUrl}/trigger`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          url: url,
-          title: title || "",
-          quality: quality || "max",
-          cookies: cookies || []
-        })
+        body: JSON.stringify(payload),
+        signal: ctrl.signal
       })
         .then((res) => res.json())
         .then((data) => {
+          clearTimeout(tid);
           if (data && data.task_id) {
-            activeBgTasks.set(data.task_id, { url, title, quality, serverUrl });
+            activeBgTasks.set(data.task_id, { url, title, quality, serverUrl, monitoring: false });
             monitorTaskInBackground(data.task_id, title, serverUrl);
           }
           try { sendResponse({ ok: true, data, serverUrl }); } catch (e) {}
         })
         .catch((err) => {
-          try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+          clearTimeout(tid);
+          if (serverUrl !== CLOUD_SERVER) {
+            fetch(`${CLOUD_SERVER}/trigger`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            })
+              .then((r) => r.json())
+              .then((data) => {
+                if (data && data.task_id) {
+                  activeBgTasks.set(data.task_id, { url, title, quality, serverUrl: CLOUD_SERVER, monitoring: false });
+                  monitorTaskInBackground(data.task_id, title, CLOUD_SERVER);
+                }
+                try { sendResponse({ ok: true, data, serverUrl: CLOUD_SERVER }); } catch (e) {}
+              })
+              .catch((e2) => {
+                try { sendResponse({ ok: false, error: e2.message }); } catch (e3) {}
+              });
+          } else {
+            try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+          }
         });
     });
   });
@@ -122,16 +148,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.action === "check_progress") {
-    getServerUrl((serverUrl) => {
-      fetch(`${serverUrl}/progress?id=${encodeURIComponent(message.taskId)}`)
+    let sUrl = message.serverUrl;
+    if (!sUrl && activeBgTasks.has(message.taskId)) {
+      sUrl = activeBgTasks.get(message.taskId).serverUrl;
+    }
+    const queryServer = (targetUrl) => {
+      fetch(`${targetUrl}/progress?id=${encodeURIComponent(message.taskId)}`)
         .then((res) => res.json())
         .then((data) => {
-          try { sendResponse({ ok: true, data, serverUrl }); } catch (e) {}
+          try { sendResponse({ ok: true, data, serverUrl: targetUrl }); } catch (e) {}
         })
         .catch((err) => {
           try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
         });
-    });
+    };
+    if (sUrl) {
+      queryServer(sUrl);
+    } else {
+      getServerUrl((targetUrl) => queryServer(targetUrl));
+    }
     return true;
   }
 
@@ -209,41 +244,39 @@ function checkForUpdates() {
   });
 }
 
+function reInjectActiveTabs() {
+  chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+    for (const tab of tabs || []) {
+      if (tab.id) {
+        chrome.scripting.insertCSS({
+          target: { tabId: tab.id },
+          files: ["content.css"]
+        }).catch(() => {});
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ["content.js"]
+        }).catch(() => {});
+      }
+    }
+  });
+}
+
 chrome.notifications.onClicked.addListener((notifId) => {
   if (notifId && (notifId.startsWith("tubegrab_update_") || notifId.startsWith("omnigrab_update_"))) {
     getServerUrl((serverUrl) => {
       fetch(`${serverUrl}/version`)
         .then((res) => res.json())
         .then((data) => {
-          const url = data.release_url || "https://github.com";
+          const url = data.release_url || "https://github.com/f2025cs024-star/Tubegrab-4K";
           chrome.tabs.create({ url: url });
         })
         .catch(() => {
-          chrome.tabs.create({ url: "https://github.com" });
+          chrome.tabs.create({ url: "https://github.com/f2025cs024-star/Tubegrab-4K" });
         });
     });
   }
 });
 
-function reInjectActiveTabs() {
-  try {
-    chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
-      for (const tab of (tabs || [])) {
-        if (!tab.id) continue;
-        chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          files: ["content.js"]
-        }).catch(() => {});
-        chrome.scripting.insertCSS({
-          target: { tabId: tab.id },
-          files: ["content.css"]
-        }).catch(() => {});
-      }
-    });
-  } catch (e) {}
-}
-
-// Check for updates on startup, install, and periodically every 2 hours
 chrome.runtime.onInstalled.addListener(() => {
   reInjectActiveTabs();
   setTimeout(checkForUpdates, 3000);

@@ -1,8 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TubeGrab 4K - YouTube Video Downloader Extension",
-  "version": "2.2.1",
-  "update_url": "https://tubegrab-4k.onrender.com/updates.xml",
+  "version": "2.2.2",
   "description": "High-performance YouTube video downloader extension with dynamic 4K quality dropdown, live electric blue progress bar, and background downloading.",
   "permissions": [
     "activeTab",

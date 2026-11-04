@@ -8,7 +8,7 @@ import winsound
 import threading
 import subprocess
 from pathlib import Path
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import urllib.parse
 
 try:
@@ -41,6 +41,15 @@ DOWNLOADS_DIR = str(Path.home() / "Downloads")
 COOKIES_FILE = str(Path(__file__).parent / "yt_cookies.txt")
 ACTIVE_TASKS = {}
 
+
+LOG_FILE = str(Path(__file__).parent / "server.log")
+
+def log(msg):
+    try:
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}\n")
+    except Exception:
+        pass
 
 def write_netscape_cookies(cookies_list, filepath):
     if not cookies_list:
@@ -76,6 +85,7 @@ def format_bytes(num_bytes):
 
 
 def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_list: list = None):
+    log(f"Triggered task {task_id} for {url} ({quality})")
     info_dict = ACTIVE_TASKS.setdefault(task_id, {
         "id": task_id,
         "url": url,
@@ -83,7 +93,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         "quality": quality,
         "status": "starting",
         "percent": 0.0,
-        "speed": "",
+        "speed": "Connecting...",
         "downloaded": "",
         "total": "",
         "filepath": "",
@@ -137,8 +147,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         "merge_output_format": "mp4",
         "quiet": True,
         "no_warnings": True,
-        "js_runtimes": {"node": {"path": NODE_PATH}},
-        "remote_components": ["ejs:github"]
+        "js_runtimes": {"node": {"path": NODE_PATH}}
     }
 
     if FFMPEG_PATH:
@@ -170,6 +179,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         info_dict["status"] = "finished"
         info_dict["percent"] = 100.0
         info_dict["speed"] = "Done"
+        log(f"Task {task_id} completed successfully!")
 
         try:
             winsound.MessageBeep(winsound.MB_ICONASTERISK)
@@ -179,7 +189,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
     except Exception as e:
         info_dict["status"] = "error"
         info_dict["error"] = str(e)
-        print(f"[OmniGrab] Error downloading {url}: {e}")
+        log(f"Task {task_id} ERROR: {e}")
 
 
 class TubeGrabServer(BaseHTTPRequestHandler):
@@ -209,6 +219,11 @@ class TubeGrabServer(BaseHTTPRequestHandler):
                 "save_dir": DOWNLOADS_DIR,
                 "active_tasks": len(ACTIVE_TASKS)
             }).encode("utf-8"))
+            return
+
+        if parsed.path == "/tasks":
+            self._send_cors(200)
+            self.wfile.write(json.dumps(list(ACTIVE_TASKS.values())).encode("utf-8"))
             return
 
         if parsed.path == "/progress":
@@ -303,8 +318,8 @@ def main():
     print("  Server API: http://127.0.0.1:19876")
     print("=" * 60)
 
-    HTTPServer.allow_reuse_address = True
-    server = HTTPServer(("127.0.0.1", PORT), TubeGrabServer)
+    ThreadingHTTPServer.allow_reuse_address = True
+    server = ThreadingHTTPServer(("127.0.0.1", PORT), TubeGrabServer)
     server.serve_forever()
 
 
