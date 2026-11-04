@@ -269,31 +269,46 @@ function isNewerVersion(remote, local) {
 }
 
 function checkForUpdates() {
-  getServerUrl((serverUrl) => {
-    fetch(`${serverUrl}/version`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data || !data.version) return;
-        const currentVersion = chrome.runtime.getManifest().version;
-        if (isNewerVersion(data.version, currentVersion)) {
-          chrome.storage.local.get(["lastNotifiedVersion"], (res) => {
-            if (res.lastNotifiedVersion !== data.version) {
-              chrome.storage.local.set({ lastNotifiedVersion: data.version });
-              try {
-                chrome.notifications.create("tubegrab_update_" + data.version, {
-                  type: "basic",
-                  iconUrl: chrome.runtime.getURL("icon.png"),
-                  title: `⚡ TubeGrab 4K Update (v${data.version}) Available!`,
-                  message: data.changelog || "A new update is available. Click to view the update.",
-                  priority: 2
-                });
-              } catch (e) {}
-            }
+  // Check official cloud release endpoint first
+  fetch("https://tubegrab-4k-talha-950a.vercel.app/version.json")
+    .then((res) => res.json())
+    .then((data) => handleVersionData(data))
+    .catch(() => {
+      // Fallback to local/configured server
+      getServerUrl((serverUrl) => {
+        fetch(`${serverUrl}/version`)
+          .then((res) => res.json())
+          .then((data) => handleVersionData(data))
+          .catch(() => {});
+      });
+    });
+}
+
+function handleVersionData(data) {
+  if (!data || !data.version) return;
+  const currentVersion = chrome.runtime.getManifest().version;
+  if (isNewerVersion(data.version, currentVersion)) {
+    chrome.storage.local.get(["lastNotifiedVersion"], (res) => {
+      if (res.lastNotifiedVersion !== data.version) {
+        chrome.storage.local.set({
+          lastNotifiedVersion: data.version,
+          hasUpdate: true,
+          latestVersion: data.version,
+          changelog: Array.isArray(data.changelog) ? data.changelog.join("; ") : (data.changelog || "")
+        });
+        try {
+          const changeSummary = Array.isArray(data.changelog) ? data.changelog[0] : (data.changelog || "Click to update to latest version.");
+          chrome.notifications.create("tubegrab_update_" + data.version, {
+            type: "basic",
+            iconUrl: chrome.runtime.getURL("icon.png"),
+            title: `⚡ TubeGrab 4K Update (v${data.version}) Available!`,
+            message: changeSummary,
+            priority: 2
           });
-        }
-      })
-      .catch(() => {});
-  });
+        } catch (e) {}
+      }
+    });
+  }
 }
 
 function reInjectActiveTabs() {

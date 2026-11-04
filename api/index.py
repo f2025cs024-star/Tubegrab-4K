@@ -10,7 +10,7 @@ import yt_dlp
 app = FastAPI(
     title="TubeGrab 4K Cloud & Hub API",
     description="Official API for TubeGrab 4K YouTube Video Downloader Extension",
-    version="2.2.0"
+    version="2.2.5"
 )
 
 app.add_middleware(
@@ -108,7 +108,7 @@ def health():
     return {
         "status": "online",
         "app": "TubeGrab 4K Vercel Hub API",
-        "version": "2.2.0",
+        "version": "2.2.5",
         "deployment": "Vercel Serverless (Fluid Compute)",
         "features": {
             "metadata_extraction": "supported",
@@ -124,11 +124,11 @@ def health():
 @app.get("/api/version")
 def get_version():
     return {
-        "version": "2.2.0",
+        "version": "2.2.5",
         "app": "TubeGrab 4K",
-        "changelog": "Dynamic quality dropdown (144p to 4K), live electric blue progress bar, micro-pill UI.",
+        "changelog": "Auto-shutdown zero-resource engine, instant wake-up, 144p to 4K UHD quality picker.",
         "release_url": "https://github.com/f2025cs024-star/Tubegrab-4K",
-        "download_url": "https://github.com/f2025cs024-star/Tubegrab-4K/archive/refs/heads/main.zip"
+        "download_url": "https://tubegrab-4k-talha-950a.vercel.app/tubegrab-windows-full.zip"
     }
 
 

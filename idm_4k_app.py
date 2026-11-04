@@ -89,6 +89,46 @@ def perform_shutdown():
 
 LOG_FILE = str(Path(__file__).parent / "server.log")
 
+def trigger_update_async():
+    """Fetches latest yt-dlp, idm_4k_app.py, and extension files in the background."""
+    def _worker():
+        try:
+            log("[AutoUpdate] Checking and applying updates from GitHub...")
+            # 1. Update yt-dlp to support latest YouTube cipher
+            subprocess.run(
+                [sys.executable, "-m", "pip", "install", "-U", "--no-cache-dir", "yt-dlp"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120
+            )
+            # 2. Update idm_4k_app.py
+            import urllib.request
+            raw_url = "https://raw.githubusercontent.com/f2025cs024-star/Tubegrab-4K/main/idm_4k_app.py"
+            req = urllib.request.Request(raw_url, headers={"User-Agent": "TubeGrab-Updater"})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                if resp.status == 200:
+                    code = resp.read().decode("utf-8")
+                    if "TubeGrabServer" in code and len(code) > 2000:
+                        with open(__file__, "w", encoding="utf-8") as f:
+                            f.write(code)
+                        log("[AutoUpdate] idm_4k_app.py updated successfully.")
+            # 3. Update extension scripts on disk if folder exists
+            ext_dir = Path(__file__).parent / "extension"
+            if ext_dir.exists():
+                for fname in ["content.js", "background.js", "manifest.json", "content.css"]:
+                    u = f"https://raw.githubusercontent.com/f2025cs024-star/Tubegrab-4K/main/extension/{fname}"
+                    r = urllib.request.Request(u, headers={"User-Agent": "TubeGrab-Updater"})
+                    try:
+                        with urllib.request.urlopen(r, timeout=10) as f_resp:
+                            if f_resp.status == 200:
+                                (ext_dir / fname).write_text(f_resp.read().decode("utf-8"), encoding="utf-8")
+                    except Exception:
+                        pass
+                log("[AutoUpdate] Extension folder refreshed.")
+            log("[AutoUpdate] Update process completed cleanly.")
+        except Exception as e:
+            log(f"[AutoUpdate] Failed: {e}")
+
+    threading.Thread(target=_worker, daemon=True).start()
+
 def log(msg):
     try:
         with open(LOG_FILE, "a", encoding="utf-8") as f:
@@ -287,9 +327,9 @@ class TubeGrabServer(BaseHTTPRequestHandler):
         if parsed.path == "/version":
             self._send_cors(200)
             self.wfile.write(json.dumps({
-                "version": "2.2.0",
+                "version": "2.2.5",
                 "app": "TubeGrab 4K",
-                "changelog": "Dynamic quality dropdown (144p to 4K), live electric blue progress bar, micro-pill UI.",
+                "changelog": "Auto-shutdown zero-resource engine, instant wake-up, 144p to 4K UHD quality picker.",
                 "release_url": "https://github.com/f2025cs024-star/Tubegrab-4K"
             }).encode("utf-8"))
             return
@@ -297,11 +337,17 @@ class TubeGrabServer(BaseHTTPRequestHandler):
         if parsed.path == "/config":
             self._send_cors(200)
             self.wfile.write(json.dumps({
-                "version": "2.2.0",
+                "version": "2.2.5",
                 "min_version": "2.0.0",
                 "supported_resolutions": ["4320", "2160", "1440", "1080", "720", "480", "360", "240", "144", "mp3"],
                 "notice": ""
             }).encode("utf-8"))
+            return
+
+        if parsed.path == "/update":
+            trigger_update_async()
+            self._send_cors(200)
+            self.wfile.write(json.dumps({"ok": True, "message": "Automatic update initiated in background"}).encode("utf-8"))
             return
 
         if parsed.path == "/shutdown":
