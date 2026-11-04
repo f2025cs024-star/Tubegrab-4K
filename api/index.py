@@ -28,7 +28,6 @@ class DownloadRequest(BaseModel):
     cookies: Optional[List[dict]] = None
 
 
-@app.get("/")
 @app.get("/api")
 @app.get("/status")
 @app.get("/api/status")
