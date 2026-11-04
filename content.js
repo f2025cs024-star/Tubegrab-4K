@@ -664,9 +664,40 @@
     };
   }
 
+  function isActivelyWatchingVideo() {
+    // 1. Must be on a video watch page (/watch?v=...) or shorts (/shorts/...)
+    const isWatchPath = window.location.pathname === "/watch" && new URLSearchParams(window.location.search).has("v");
+    const isShortsPath = window.location.pathname.startsWith("/shorts/");
+    if (!isWatchPath && !isShortsPath) return false;
+
+    // 2. On YouTube desktop, <ytd-watch-flexy> is hidden when navigating away or closing video
+    const watchFlexy = document.querySelector("ytd-watch-flexy");
+    if (watchFlexy) {
+      if (watchFlexy.hasAttribute("hidden") || watchFlexy.style.display === "none") {
+        return false;
+      }
+    }
+
+    // 3. Player must exist and have visible dimensions
+    const player =
+      document.querySelector("#movie_player") ||
+      document.querySelector("ytd-player") ||
+      document.querySelector("video");
+
+    if (!player) return false;
+
+    const rect = player.getBoundingClientRect();
+    if (rect.width < 120 || rect.height < 60) {
+      return false;
+    }
+
+    return true;
+  }
+
   function positionPillAtVideoSide(pill) {
-    if (isFullscreen()) {
+    if (isFullscreen() || !isActivelyWatchingVideo()) {
       pill.style.display = "none";
+      closeDropdown();
       return;
     }
 
@@ -701,8 +732,9 @@
       }
     }
 
-    pill.style.top = "66px";
-    pill.style.right = "16px";
+    // If player is not visible or video is closed, hide pill immediately (never float at top right)
+    pill.style.display = "none";
+    closeDropdown();
   }
 
   function rebuildPill() {
@@ -776,16 +808,17 @@
     return pill;
   }
 
-  function updateUi() {
-    const isVideoPage =
-      window.location.pathname.startsWith("/watch") ||
-      window.location.pathname.startsWith("/shorts");
+  function hideUiImmediately() {
+    const pill = getPill();
+    if (pill) pill.style.display = "none";
+    closeDropdown();
+  }
 
+  function updateUi() {
     let pill = getPill();
 
-    if (!isVideoPage || isFullscreen()) {
-      if (pill) pill.style.display = "none";
-      closeDropdown();
+    if (!isActivelyWatchingVideo() || isFullscreen()) {
+      hideUiImmediately();
       return;
     }
 
@@ -810,7 +843,7 @@
         positionPillAtVideoSide(pill);
       }
 
-      if (!activePollTimer && isVideoPage) {
+      if (!activePollTimer) {
         try {
           chrome.runtime.sendMessage(
             { action: "get_active_task_for_url", url: window.location.href },
@@ -857,10 +890,31 @@
     closeDropdown();
   }, true);
 
+  // Instant hiding when navigating away or closing video
+  window.addEventListener("yt-navigate-start", hideUiImmediately);
+  window.addEventListener("popstate", () => {
+    hideUiImmediately();
+    setTimeout(updateUi, 80);
+  });
   window.addEventListener("yt-navigate-finish", updateUi);
+  window.addEventListener("yt-page-data-updated", updateUi);
   window.addEventListener("spfdone", updateUi);
   window.addEventListener("DOMContentLoaded", updateUi);
   window.addEventListener("load", updateUi);
 
-  setInterval(updateUi, 800);
+  // MutationObserver for instantaneous hiding when YouTube hides the watch flexy container
+  try {
+    const appEl = document.querySelector("ytd-app") || document.body;
+    if (appEl) {
+      const observer = new MutationObserver(() => {
+        if (!isActivelyWatchingVideo()) {
+          hideUiImmediately();
+        }
+      });
+      observer.observe(appEl, { attributes: true, subtree: true, attributeFilter: ["hidden", "style"] });
+    }
+  } catch (e) {}
+
+  // Snappy 250ms polling loop (replaces 800ms)
+  setInterval(updateUi, 250);
 })();
