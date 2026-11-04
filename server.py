@@ -144,6 +144,11 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         "merge_output_format": "mp4",
         "quiet": True,
         "no_warnings": True,
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["android", "ios", "mweb", "web"]
+            }
+        },
         "http_headers": {
             "Accept-Language": "en-US,en;q=0.9"
         }
@@ -191,7 +196,12 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
         try:
             info["speed"] = "Retrying via resilient engine..."
             fallback_opts = dict(ydl_opts)
-            fallback_opts["format"] = "best"
+            fallback_opts["format"] = "18/best" if not is_mp3 else "bestaudio/best"
+            fallback_opts["extractor_args"] = {
+                "youtube": {
+                    "player_client": ["android", "ios"]
+                }
+            }
             fallback_opts.pop("cookiefile", None)
             with yt_dlp.YoutubeDL(fallback_opts) as ydl:
                 meta = ydl.extract_info(url, download=True)
