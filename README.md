@@ -1,9 +1,41 @@
-# ⚡ TubeGrab 4K — YouTube Video Downloader Extension & Cloud Engine
+# ⚡ TubeGrab 4K — YouTube Video Downloader Extension & Engine
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/f2025cs024-star/Tubegrab-4K)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 An ultra-sleek, high-performance **YouTube Video Downloader Extension** featuring a floating glassmorphism capsule pill, live electric blue download progress bar, dynamic quality dropdown tailored to each video (144p to 4K & 8K), and background downloading that never stops—even if you switch or close tabs.
+
+---
+
+## 💻 2-Step Setup on Any New Laptop (Using GitHub)
+
+Setting up TubeGrab 4K on a new laptop takes less than **60 seconds**:
+
+### Step 1: Download the Repository from GitHub
+* **Option A (No Git needed)**: Go to [https://github.com/f2025cs024-star/Tubegrab-4K](https://github.com/f2025cs024-star/Tubegrab-4K), click the green **Code** button → click **Download ZIP**, and extract the ZIP folder.
+* **Option B (Using Git)**:
+  ```bash
+  git clone https://github.com/f2025cs024-star/Tubegrab-4K.git
+  ```
+
+### Step 2: Run the 1-Click Installer
+Inside the downloaded folder, simply double-click:
+```text
+install.bat
+```
+This automated script will:
+* Verify Python (and notify you if Python is needed with PATH enabled).
+* Automatically install required libraries (`fastapi`, `uvicorn`, `yt-dlp`, `imageio-ffmpeg`, `curl_cffi`).
+* Configure **Windows Silent Auto-Start** so TubeGrab 4K runs silently in the background on every PC boot (zero popups, zero terminal windows).
+* Register the custom `tubegrab://` protocol.
+* Launch the background helper immediately!
+
+### Step 3: Load the Extension in Google Chrome
+1. Open Google Chrome and go to: `chrome://extensions`
+2. Turn **ON** the **Developer mode** toggle in the top-right corner.
+3. Click the **Load unpacked** button in the top-left corner.
+4. Select the `extension` folder inside the downloaded `Tubegrab-4K` directory.
+5. **Done!** Open any YouTube video. The sleek glass pill will appear docked on the side of the video, ready to download!
 
 ---
 
@@ -17,49 +49,7 @@ An ultra-sleek, high-performance **YouTube Video Downloader Extension** featurin
 - **🔄 Tab-Independent Background Downloads**: Start a download and switch tabs, open 20 new pages, or minimize Chrome. The background service worker keeps downloading and fires a native Windows desktop notification when ready.
 - **🖐️ Draggable Capsule**: Click & drag `⠿` anywhere across the screen. Remembers your favorite position. Double-click `⠿` to reset to video side.
 - **🎬 Fullscreen Auto-Hide**: Automatically vanishes when you go into Fullscreen mode.
-- **☁️ 1-Click Deploy on Render**: Deploy your cloud backend to Render for free. Anyone can install your extension from GitHub without installing Python, FFmpeg, or Node.js!
-- **🔄 Auto-Update Notification**: Cloud-connected update checking automatically notifies users whenever a new version is released.
-
----
-
-## 🚀 Quick Install (Browser Extension)
-
-1. Clone or download this repo:
-   ```bash
-   git clone https://github.com/f2025cs024-star/Tubegrab-4K.git
-   ```
-2. Open **Chrome** or **Edge** and go to `chrome://extensions` (or `edge://extensions`).
-3. Toggle on **Developer mode** (top-right).
-4. Click **Load unpacked** and select the `yt_4k_idm` (or `extension`) folder.
-5. Open any YouTube video. The sleek glass pill will appear docked on the side of the video!
-
----
-
-## ☁️ Deploy Backend to Render (Free 24/7 Cloud Engine)
-
-1. Push this repository to your **GitHub** account:
-   ```bash
-   git remote add origin https://github.com/f2025cs024-star/Tubegrab-4K.git
-   git branch -M main
-   git push -u origin main
-   ```
-2. Sign in to [Render.com](https://render.com).
-3. Click **New +** → **Blueprint** (or **Web Service**).
-4. Select this repository. Render automatically reads `render.yaml` and `Dockerfile`.
-5. Click **Apply**.
-6. Copy your service URL: `https://your-service.onrender.com`.
-7. In Chrome, right-click the extension icon → **Options**, paste your Render URL, and click **Save Settings**!
-
----
-
-## 💻 Running the Local Desktop Engine (Windows)
-
-To run the local turbo backend:
-```bash
-pip install -r requirements.txt
-python idm_4k_app.py
-```
-*(Or double-click `launch_idm_4k.bat`)*.
+- **🚀 Zero-Click Background Helper**: Starts automatically on PC boot with `pythonw.exe`—completely invisible with zero RAM overhead (~15MB).
 
 ---
 
