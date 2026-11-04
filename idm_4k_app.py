@@ -40,6 +40,51 @@ PORT = 19876
 DOWNLOADS_DIR = str(Path.home() / "Downloads")
 COOKIES_FILE = str(Path(__file__).parent / "yt_cookies.txt")
 ACTIVE_TASKS = {}
+SHUTDOWN_TIMER = None
+SHUTDOWN_LOCK = threading.Lock()
+SERVER_INSTANCE = None
+
+def cancel_shutdown():
+    global SHUTDOWN_TIMER
+    with SHUTDOWN_LOCK:
+        if SHUTDOWN_TIMER is not None:
+            try:
+                SHUTDOWN_TIMER.cancel()
+            except Exception:
+                pass
+            SHUTDOWN_TIMER = None
+
+def check_auto_shutdown(delay=5.0):
+    """Checks if all downloads are finished and schedules auto-exit to free 100% RAM/CPU."""
+    global SHUTDOWN_TIMER
+    with SHUTDOWN_LOCK:
+        active = any(
+            t.get("status") in ("starting", "downloading", "merging")
+            for t in ACTIVE_TASKS.values()
+        )
+        if not active:
+            if SHUTDOWN_TIMER is None:
+                log(f"[AutoStop] All downloads finished. Scheduling auto-stop in {delay}s to free RAM & CPU...")
+                SHUTDOWN_TIMER = threading.Timer(delay, perform_shutdown)
+                SHUTDOWN_TIMER.daemon = True
+                SHUTDOWN_TIMER.start()
+        else:
+            if SHUTDOWN_TIMER is not None:
+                try:
+                    SHUTDOWN_TIMER.cancel()
+                except Exception:
+                    pass
+                SHUTDOWN_TIMER = None
+
+def perform_shutdown():
+    log("[AutoStop] Auto-stop executed. Engine terminating cleanly to 0% CPU & 0 MB RAM.")
+    try:
+        if SERVER_INSTANCE:
+            threading.Thread(target=SERVER_INSTANCE.shutdown, daemon=True).start()
+    except Exception:
+        pass
+    time.sleep(0.5)
+    os._exit(0)
 
 
 LOG_FILE = str(Path(__file__).parent / "server.log")
@@ -85,6 +130,7 @@ def format_bytes(num_bytes):
 
 
 def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_list: list = None):
+    cancel_shutdown()
     log(f"Triggered task {task_id} for {url} ({quality})")
     info_dict = ACTIVE_TASKS.setdefault(task_id, {
         "id": task_id,
@@ -190,6 +236,8 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         info_dict["status"] = "error"
         info_dict["error"] = str(e)
         log(f"Task {task_id} ERROR: {e}")
+    finally:
+        check_auto_shutdown(delay=6.0)
 
 
 class TubeGrabServer(BaseHTTPRequestHandler):
@@ -256,6 +304,12 @@ class TubeGrabServer(BaseHTTPRequestHandler):
             }).encode("utf-8"))
             return
 
+        if parsed.path == "/shutdown":
+            self._send_cors(200)
+            self.wfile.write(json.dumps({"ok": True, "message": "Engine shutting down"}).encode("utf-8"))
+            threading.Timer(0.8, perform_shutdown).start()
+            return
+
         if parsed.path == "/open_folder":
             try:
                 os.startfile(DOWNLOADS_DIR)
@@ -273,6 +327,7 @@ class TubeGrabServer(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
 
         if parsed.path == "/trigger":
+            cancel_shutdown()
             length = int(self.headers.get("Content-Length", 0))
             raw = self.rfile.read(length).decode("utf-8") if length > 0 else "{}"
             try:
@@ -312,9 +367,16 @@ class TubeGrabServer(BaseHTTPRequestHandler):
 
 
 def main():
+    global SERVER_INSTANCE
     try:
         ThreadingHTTPServer.allow_reuse_address = True
         server = ThreadingHTTPServer(("127.0.0.1", PORT), TubeGrabServer)
+        SERVER_INSTANCE = server
+        log(f"TubeGrab 4K engine listening on port {PORT}. Ready for instant downloads.")
+
+        # Initial idle timeout: If launched and no download triggered within 60s, exit cleanly to free RAM/CPU
+        check_auto_shutdown(delay=60.0)
+
         server.serve_forever()
     except OSError:
         # Port 19876 already in use by active TubeGrab engine, exit silently

@@ -42,7 +42,7 @@ function attemptWakeAndCallback(callback) {
         if (r.ok) {
           clearInterval(poll);
           callback(LOCAL_SERVER);
-        } else if (attempts >= 8) {
+        } else if (attempts >= 25) {
           clearInterval(poll);
           chrome.storage.sync.get(["serverUrl"], (res) => {
             callback(res.serverUrl || LOCAL_SERVER);
@@ -50,14 +50,14 @@ function attemptWakeAndCallback(callback) {
         }
       })
       .catch(() => {
-        if (attempts >= 8) {
+        if (attempts >= 25) {
           clearInterval(poll);
           chrome.storage.sync.get(["serverUrl"], (res) => {
             callback(res.serverUrl || LOCAL_SERVER);
           });
         }
       });
-  }, 250);
+  }, 150);
 }
 
 function getYouTubeCookies(callback) {
@@ -112,9 +112,26 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
           }
 
           notifyCompletion(data.title || title);
+
+          // If all downloads are finished and using local engine, signal clean shutdown
+          if (activeBgTasks.size === 0 && (serverUrl.includes("127.0.0.1") || serverUrl.includes("localhost"))) {
+            setTimeout(() => {
+              if (activeBgTasks.size === 0) {
+                fetch(`${serverUrl}/shutdown`).catch(() => {});
+              }
+            }, 5000);
+          }
         } else if (data.status === "error") {
           clearInterval(timer);
           activeBgTasks.delete(taskId);
+
+          if (activeBgTasks.size === 0 && (serverUrl.includes("127.0.0.1") || serverUrl.includes("localhost"))) {
+            setTimeout(() => {
+              if (activeBgTasks.size === 0) {
+                fetch(`${serverUrl}/shutdown`).catch(() => {});
+              }
+            }, 5000);
+          }
         }
       })
       .catch(() => {});
