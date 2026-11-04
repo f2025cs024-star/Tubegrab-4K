@@ -1,6 +1,8 @@
 {
   "version": 2,
   "rewrites": [
+    { "source": "/googleea333b6af960c847.html", "destination": "/api/index.py" },
+    { "source": "/google(.*)", "destination": "/api/index.py" },
     { "source": "/version", "destination": "/api/index.py" },
     { "source": "/config", "destination": "/api/index.py" },
     { "source": "/status", "destination": "/api/index.py" },

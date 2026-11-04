@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import Optional, List
 from fastapi import FastAPI, Query, HTTPException
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, PlainTextResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import yt_dlp
@@ -85,6 +85,15 @@ def get_robots():
     if f:
         return FileResponse(str(f), media_type="text/plain")
     raise HTTPException(status_code=404, detail="robots.txt not found")
+
+
+@app.get("/google{code}.html")
+def get_google_verification(code: str):
+    filename = f"google{code}.html"
+    f = find_file(filename)
+    if f:
+        return FileResponse(str(f), media_type="text/html")
+    return Response(content=f"google-site-verification: google{code}.html\n", media_type="text/html")
 
 
 @app.get("/api")
