@@ -155,6 +155,13 @@ try {
     # Register in Windows Startup folder for auto-start on boot
     try {
         $startupDir = [Environment]::GetFolderPath('Startup')
+        # Clean up any legacy or broken shortcuts
+        $legacyShortcuts = @("IDM_4K_Downloader.lnk", "OmniGrab.lnk", "OmniGrab_4K.lnk")
+        foreach ($oldSc in $legacyShortcuts) {
+            $oldPath = Join-Path $startupDir $oldSc
+            if (Test-Path $oldPath) { Remove-Item $oldPath -Force -ErrorAction SilentlyContinue }
+        }
+
         $shortcutPath = Join-Path $startupDir "TubeGrab_4K.lnk"
         $wsh = New-Object -ComObject WScript.Shell
         $lnk = $wsh.CreateShortcut($shortcutPath)

@@ -6,7 +6,10 @@
 #omnigrab-pill {
   position: fixed !important;
   z-index: 2147483647 !important;
-  display: flex !important;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
   align-items: center !important;
   gap: 2px !important;
   background: rgba(15, 23, 42, 0.92) !important;
@@ -23,6 +26,25 @@
   box-sizing: border-box !important;
   white-space: nowrap !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+#tubegrab-pill.tubegrab-active,
+#omnigrab-pill.tubegrab-active {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+#tubegrab-pill.tubegrab-hidden,
+#omnigrab-pill.tubegrab-hidden,
+#tubegrab-dropdown-menu.tubegrab-hidden,
+#omnigrab-dropdown-menu.tubegrab-hidden,
+.tubegrab-hidden {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 #tubegrab-pill:hover,
@@ -154,7 +176,10 @@ body.ytp-fullscreen #omnigrab-pill {
   border-radius: 12px !important;
   padding: 6px 5px !important;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.75), 0 0 16px rgba(56, 189, 248, 0.2) !important;
-  display: none;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
   flex-direction: column !important;
   gap: 2px !important;
   min-width: 175px !important;
@@ -164,6 +189,14 @@ body.ytp-fullscreen #omnigrab-pill {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   user-select: none !important;
   box-sizing: border-box !important;
+}
+
+#tubegrab-dropdown-menu.tubegrab-active,
+#omnigrab-dropdown-menu.tubegrab-active {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* Custom Scrollbar for Dropdown */
