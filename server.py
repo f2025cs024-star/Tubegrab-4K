@@ -166,10 +166,6 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
     cookie_file = task_folder / "cookies.txt"
     if cookies and write_netscape_cookies(cookies, cookie_file):
         ydl_opts["cookiefile"] = str(cookie_file)
-        ydl_opts["extractor_args"] = {"youtube": {"player_client": ["web", "mweb", "visionos", "android"]}}
-    else:
-        # VisionOS and Android clients bypass datacenter bot verification
-        ydl_opts["extractor_args"] = {"youtube": {"player_client": ["visionos", "android"]}}
 
     if is_mp3:
         ydl_opts["postprocessors"] = [{
@@ -191,12 +187,11 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
                 if os.path.exists(cand):
                     info["filepath"] = cand
     except Exception as primary_err:
-        print(f"Primary extraction failed ({primary_err}), attempting visionos/android fallback...")
+        print(f"Primary extraction failed ({primary_err}), attempting fallback...")
         try:
-            info["speed"] = "Retrying via mobile engine..."
+            info["speed"] = "Retrying via resilient engine..."
             fallback_opts = dict(ydl_opts)
-            fallback_opts["format"] = "bestvideo+bestaudio/best"
-            fallback_opts["extractor_args"] = {"youtube": {"player_client": ["visionos", "android"]}}
+            fallback_opts["format"] = "best"
             fallback_opts.pop("cookiefile", None)
             with yt_dlp.YoutubeDL(fallback_opts) as ydl:
                 meta = ydl.extract_info(url, download=True)
@@ -346,11 +341,10 @@ def debug():
 
 
 @app.get("/test_extract")
-def test_extract(url: str = "https://www.youtube.com/watch?v=jNQXAC9IVRw", client: str = "visionos"):
+def test_extract(url: str = "https://www.youtube.com/watch?v=jNQXAC9IVRw"):
     opts = {
-        "quiet": True,
-        "format": "bestvideo+bestaudio/best",
-        "extractor_args": {"youtube": {"player_client": [client]}}
+        "quiet": False,
+        "format": "bestvideo+bestaudio/best"
     }
     if IMPERSONATE_TARGET:
         opts["impersonate"] = IMPERSONATE_TARGET
@@ -362,11 +356,23 @@ def test_extract(url: str = "https://www.youtube.com/watch?v=jNQXAC9IVRw", clien
             return {
                 "ok": True,
                 "title": meta.get("title"),
-                "client": client,
                 "formats": len(meta.get("formats", []))
             }
     except Exception as e:
-        return {"ok": False, "error": str(e), "client": client}
+        return {"ok": False, "error": str(e)}
+
+
+@app.get("/test_cli")
+def test_cli(url: str = "https://www.youtube.com/watch?v=jNQXAC9IVRw"):
+    import subprocess
+    cmd = ["yt-dlp", "-v", "--impersonate", "chrome-131", "-F", url]
+    if FFMPEG_EXE:
+        cmd.extend(["--ffmpeg-location", FFMPEG_EXE])
+    try:
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        return {"stdout": res.stdout, "stderr": res.stderr, "code": res.returncode}
+    except Exception as e:
+        return {"error": str(e)}
 
 
 if __name__ == "__main__":
