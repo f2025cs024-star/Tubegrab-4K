@@ -334,6 +334,23 @@ def debug():
     }
 
 
+@app.get("/test_cli")
+def test_cli(url: str = "https://www.youtube.com/watch?v=jNQXAC9IVRw", client: str = "android", use_cookies: bool = False):
+    import subprocess
+    cmd = ["yt-dlp", "-v", "-F", url]
+    if client:
+        cmd.extend(["--extractor-args", f"youtube:player_client={client}"])
+    if use_cookies and os.path.exists("yt_cookies.txt"):
+        cmd.extend(["--cookies", "yt_cookies.txt"])
+    if FFMPEG_EXE:
+        cmd.extend(["--ffmpeg-location", FFMPEG_EXE])
+    try:
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=25)
+        return {"stdout": res.stdout, "stderr": res.stderr, "code": res.returncode}
+    except Exception as e:
+        return {"error": str(e)}
+
+
 @app.get("/test_extract")
 def test_extract(url: str = "https://www.youtube.com/watch?v=jNQXAC9IVRw", client: str = "android"):
     opts = {
