@@ -392,7 +392,18 @@
     }, 500);
   }
 
+  function triggerWakeup() {
+    try {
+      const ifr = document.createElement("iframe");
+      ifr.style.display = "none";
+      ifr.src = "tubegrab://start";
+      document.body.appendChild(ifr);
+      setTimeout(() => ifr.remove(), 2500);
+    } catch (e) {}
+  }
+
   function triggerDownload(quality) {
+    triggerWakeup();
     const videoUrl = window.location.href;
     const pageTitle = document.title.replace(/ - YouTube$/i, "").trim();
 

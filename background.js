@@ -2,27 +2,62 @@ const LOCAL_SERVER = "http://127.0.0.1:19876";
 const CLOUD_SERVER = "https://tubegrab-4k.onrender.com";
 const activeBgTasks = new Map();
 
+function wakeLocalHelper() {
+  try {
+    chrome.tabs.create({ url: "tubegrab://start", active: false }, (tab) => {
+      setTimeout(() => {
+        if (tab && tab.id) chrome.tabs.remove(tab.id);
+      }, 500);
+    });
+  } catch (e) {}
+}
+
 function getServerUrl(callback) {
   // Always prefer local desktop engine if online (zero bot checks, max home internet speed)
   const ctrl = new AbortController();
-  const tid = setTimeout(() => ctrl.abort(), 1000);
+  const tid = setTimeout(() => ctrl.abort(), 600);
   fetch("http://127.0.0.1:19876/status", { signal: ctrl.signal })
     .then((r) => {
       clearTimeout(tid);
       if (r.ok) {
         callback(LOCAL_SERVER);
       } else {
-        chrome.storage.sync.get(["serverUrl"], (res) => {
-          callback(res.serverUrl || LOCAL_SERVER);
-        });
+        attemptWakeAndCallback(callback);
       }
     })
     .catch(() => {
       clearTimeout(tid);
-      chrome.storage.sync.get(["serverUrl"], (res) => {
-        callback(res.serverUrl || LOCAL_SERVER);
-      });
+      attemptWakeAndCallback(callback);
     });
+}
+
+function attemptWakeAndCallback(callback) {
+  wakeLocalHelper();
+
+  let attempts = 0;
+  const poll = setInterval(() => {
+    attempts++;
+    fetch("http://127.0.0.1:19876/status")
+      .then((r) => {
+        if (r.ok) {
+          clearInterval(poll);
+          callback(LOCAL_SERVER);
+        } else if (attempts >= 8) {
+          clearInterval(poll);
+          chrome.storage.sync.get(["serverUrl"], (res) => {
+            callback(res.serverUrl || LOCAL_SERVER);
+          });
+        }
+      })
+      .catch(() => {
+        if (attempts >= 8) {
+          clearInterval(poll);
+          chrome.storage.sync.get(["serverUrl"], (res) => {
+            callback(res.serverUrl || LOCAL_SERVER);
+          });
+        }
+      });
+  }, 250);
 }
 
 function getYouTubeCookies(callback) {

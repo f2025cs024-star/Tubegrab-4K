@@ -312,15 +312,13 @@ class TubeGrabServer(BaseHTTPRequestHandler):
 
 
 def main():
-    print("=" * 60)
-    print("  TubeGrab 4K Turbo Downloader Service")
-    print(f"  Target Destination: {DOWNLOADS_DIR}")
-    print("  Server API: http://127.0.0.1:19876")
-    print("=" * 60)
-
-    ThreadingHTTPServer.allow_reuse_address = True
-    server = ThreadingHTTPServer(("127.0.0.1", PORT), TubeGrabServer)
-    server.serve_forever()
+    try:
+        ThreadingHTTPServer.allow_reuse_address = True
+        server = ThreadingHTTPServer(("127.0.0.1", PORT), TubeGrabServer)
+        server.serve_forever()
+    except OSError:
+        # Port 19876 already in use by active TubeGrab engine, exit silently
+        sys.exit(0)
 
 
 if __name__ == "__main__":
