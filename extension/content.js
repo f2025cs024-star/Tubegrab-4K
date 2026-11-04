@@ -253,7 +253,21 @@
     }, 3500);
   }
 
+  function checkDomVideoHeights() {
+    try {
+      const v = document.querySelector("video");
+      if (v && v.videoHeight && v.videoHeight > 0) {
+        if (!detectedHeights.includes(v.videoHeight)) {
+          detectedHeights.push(v.videoHeight);
+          detectedHeights.sort((a, b) => b - a);
+          updateMaxLabel();
+        }
+      }
+    } catch (e) {}
+  }
+
   function getAvailableItems() {
+    checkDomVideoHeights();
     const list = [];
     if (detectedHeights && detectedHeights.length > 0) {
       // STRICT FILTER: Only show qualities that actually exist for this specific video!
@@ -273,6 +287,13 @@
       });
 
       list.sort((a, b) => b.h - a.h);
+    } else {
+      // Immediate intelligent fallback so the dropdown is NEVER empty or stuck
+      allKnownQualities.forEach((item) => {
+        if (item.h <= 1080) {
+          list.push(item);
+        }
+      });
     }
     return list;
   }

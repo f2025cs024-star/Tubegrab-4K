@@ -39,6 +39,12 @@
       "css": ["content.css"],
       "js": ["content.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["page_bridge.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
     }
   ]
 }
