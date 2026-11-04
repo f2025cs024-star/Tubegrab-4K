@@ -1,15 +1,6 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/googleea333b6af960c847.html", "destination": "/api/index.py" },
-    { "source": "/google(.*)", "destination": "/api/index.py" },
-    { "source": "/version", "destination": "/api/index.py" },
-    { "source": "/config", "destination": "/api/index.py" },
-    { "source": "/status", "destination": "/api/index.py" },
-    { "source": "/info", "destination": "/api/index.py" },
-    { "source": "/trigger", "destination": "/api/index.py" },
-    { "source": "/api/(.*)", "destination": "/api/index.py" }
-  ],
+  "cleanUrls": false,
   "headers": [
     {
       "source": "/(.*)",
