@@ -399,7 +399,38 @@
 
     closeDropdown();
     const labelTag = targetQ === "mp3" ? "MP3 Audio" : `${targetQ}p`;
-    showToast(`Downloading in ${labelTag}... (Continues across tabs)`, false);
+    showToast(`Connecting to cloud server in ${labelTag}...`, false);
+
+    const pill = getPill();
+    if (pill) {
+      pill.classList.add("omni-is-downloading");
+      pill.innerHTML = `
+        <div class="omni-drag-grip" title="Drag">⠿</div>
+        <div class="omni-dl-info">
+          <svg class="omni-dl-icon" viewBox="0 0 24 24" width="13" height="13" fill="none">
+            <path d="M12 3V15M12 15L7.5 10.5M12 15L16.5 10.5" stroke="#38bdf8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 19H20" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <span class="omni-dl-pct" id="omni-pct-lbl">0%</span>
+          <span class="omni-dl-meta" id="omni-meta-lbl">Connecting to cloud...</span>
+        </div>
+        <div class="omni-close-btn" id="omni-reset-btn" title="Cancel">✕</div>
+        <div class="omni-blue-bar-track">
+          <div class="omni-blue-bar-fill" id="omni-blue-fill" style="width: 5%"></div>
+        </div>
+      `;
+      const rBtn = document.getElementById("omni-reset-btn");
+      if (rBtn) {
+        rBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (activePollTimer) clearInterval(activePollTimer);
+          activePollTimer = null;
+          pill.classList.remove("omni-is-downloading");
+          rebuildPill();
+        });
+      }
+      makeDraggable(pill);
+    }
 
     try {
       chrome.runtime.sendMessage(
@@ -411,7 +442,7 @@
         },
         (response) => {
           if (chrome.runtime.lastError || !response || !response.ok) {
-            showToast("Connecting to service...", true);
+            showToast("Connecting to cloud server...", false);
           } else {
             showToast(`⏬ Downloading in ${labelTag}!`, false);
             if (response.data && response.data.task_id) {

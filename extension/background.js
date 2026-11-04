@@ -1,10 +1,27 @@
-const DEFAULT_SERVER = "https://tubegrab-4k.onrender.com";
+const CLOUD_SERVER = "https://tubegrab-4k.onrender.com";
 const LOCAL_SERVER = "http://127.0.0.1:19876";
 const activeBgTasks = new Map();
 
 function getServerUrl(callback) {
   chrome.storage.sync.get(["serverUrl"], (res) => {
-    callback(res.serverUrl || DEFAULT_SERVER);
+    const configured = res.serverUrl;
+    if (configured && (configured.includes("127.0.0.1") || configured.includes("localhost"))) {
+      // Ping local server to see if alive
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 350);
+      fetch("http://127.0.0.1:19876/status", { signal: ctrl.signal })
+        .then((r) => {
+          clearTimeout(tid);
+          if (r.ok) callback("http://127.0.0.1:19876");
+          else callback(CLOUD_SERVER);
+        })
+        .catch(() => {
+          clearTimeout(tid);
+          callback(CLOUD_SERVER);
+        });
+    } else {
+      callback(configured || CLOUD_SERVER);
+    }
   });
 }
 
@@ -72,18 +89,25 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
 function sendDownloadTrigger(url, title, quality, sendResponse) {
   getServerUrl((serverUrl) => {
     getYouTubeCookies((cookies) => {
+      const payload = {
+        url: url,
+        title: title || "",
+        quality: quality || "max",
+        cookies: cookies || []
+      };
+
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 60000);
+
       fetch(`${serverUrl}/trigger`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          url: url,
-          title: title || "",
-          quality: quality || "max",
-          cookies: cookies || []
-        })
+        body: JSON.stringify(payload),
+        signal: ctrl.signal
       })
         .then((res) => res.json())
         .then((data) => {
+          clearTimeout(tid);
           if (data && data.task_id) {
             activeBgTasks.set(data.task_id, { url, title, quality, serverUrl, monitoring: false });
             monitorTaskInBackground(data.task_id, title, serverUrl);
@@ -91,7 +115,27 @@ function sendDownloadTrigger(url, title, quality, sendResponse) {
           try { sendResponse({ ok: true, data, serverUrl }); } catch (e) {}
         })
         .catch((err) => {
-          try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+          clearTimeout(tid);
+          if (serverUrl !== CLOUD_SERVER) {
+            fetch(`${CLOUD_SERVER}/trigger`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            })
+              .then((r) => r.json())
+              .then((data) => {
+                if (data && data.task_id) {
+                  activeBgTasks.set(data.task_id, { url, title, quality, serverUrl: CLOUD_SERVER, monitoring: false });
+                  monitorTaskInBackground(data.task_id, title, CLOUD_SERVER);
+                }
+                try { sendResponse({ ok: true, data, serverUrl: CLOUD_SERVER }); } catch (e) {}
+              })
+              .catch((e2) => {
+                try { sendResponse({ ok: false, error: e2.message }); } catch (e3) {}
+              });
+          } else {
+            try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+          }
         });
     });
   });
@@ -104,16 +148,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.action === "check_progress") {
-    getServerUrl((serverUrl) => {
-      fetch(`${serverUrl}/progress?id=${encodeURIComponent(message.taskId)}`)
-        .then((res) => res.json())
-        .then((data) => {
-          try { sendResponse({ ok: true, data, serverUrl }); } catch (e) {}
-        })
-        .catch((err) => {
-          try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
-        });
-    });
+    const sUrl = message.serverUrl || CLOUD_SERVER;
+    fetch(`${sUrl}/progress?id=${encodeURIComponent(message.taskId)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        try { sendResponse({ ok: true, data, serverUrl: sUrl }); } catch (e) {}
+      })
+      .catch((err) => {
+        try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
+      });
     return true;
   }
 
