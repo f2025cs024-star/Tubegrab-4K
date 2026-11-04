@@ -1,7 +1,8 @@
 import os
+from pathlib import Path
 from typing import Optional, List
 from fastapi import FastAPI, Query, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import yt_dlp
@@ -20,12 +21,70 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+CURRENT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = CURRENT_DIR.parent if CURRENT_DIR.name == "api" else CURRENT_DIR
+
+def find_file(filename: str) -> Optional[Path]:
+    for base in [CURRENT_DIR, ROOT_DIR, Path(".")]:
+        target = base / filename
+        if target.exists() and target.is_file():
+            return target
+    return None
 
 class DownloadRequest(BaseModel):
     url: str
     title: Optional[str] = ""
     quality: Optional[str] = "max"
     cookies: Optional[List[dict]] = None
+
+
+@app.get("/")
+@app.get("/index.html")
+def home():
+    f = find_file("index.html")
+    if f:
+        return FileResponse(str(f), media_type="text/html")
+    return {"status": "online", "app": "TubeGrab 4K Website"}
+
+
+@app.get("/extension.zip")
+def download_extension():
+    f = find_file("extension.zip")
+    if f:
+        return FileResponse(str(f), filename="TubeGrab-4K-Extension.zip", media_type="application/zip")
+    raise HTTPException(status_code=404, detail="extension.zip not found")
+
+
+@app.get("/tubegrab-windows-full.zip")
+def download_full():
+    f = find_file("tubegrab-windows-full.zip")
+    if f:
+        return FileResponse(str(f), filename="TubeGrab-4K-Windows-Suite.zip", media_type="application/zip")
+    raise HTTPException(status_code=404, detail="tubegrab-windows-full.zip not found")
+
+
+@app.get("/icon.png")
+def get_icon():
+    f = find_file("icon.png")
+    if f:
+        return FileResponse(str(f), media_type="image/png")
+    raise HTTPException(status_code=404, detail="icon.png not found")
+
+
+@app.get("/sitemap.xml")
+def get_sitemap():
+    f = find_file("sitemap.xml")
+    if f:
+        return FileResponse(str(f), media_type="application/xml")
+    raise HTTPException(status_code=404, detail="sitemap.xml not found")
+
+
+@app.get("/robots.txt")
+def get_robots():
+    f = find_file("robots.txt")
+    if f:
+        return FileResponse(str(f), media_type="text/plain")
+    raise HTTPException(status_code=404, detail="robots.txt not found")
 
 
 @app.get("/api")
@@ -98,51 +157,36 @@ def get_video_info(url: str = Query(..., description="YouTube video URL")):
                 if f.get("acodec") and f.get("acodec") != "none":
                     has_audio = True
 
-            sorted_res = sorted(list(heights), reverse=True)
-            res_labels = [f"{h}p" for h in sorted_res]
+            sorted_h = sorted(list(heights), reverse=True)
+            max_res = f"{sorted_h[0]}p" if sorted_h else "1080p"
+
+            qualities = []
+            for h in sorted_h:
+                label = f"{h}p"
+                if h >= 2160:
+                    label += " (4K UHD)"
+                elif h >= 1440:
+                    label += " (2K QHD)"
+                elif h >= 1080:
+                    label += " (Full HD)"
+                qualities.append(label)
+
             if has_audio:
-                res_labels.append("MP3 Audio")
+                qualities.append("MP3 Audio (320kbps)")
 
             return {
                 "ok": True,
-                "title": meta.get("title"),
-                "thumbnail": meta.get("thumbnail"),
-                "duration": meta.get("duration"),
-                "uploader": meta.get("uploader"),
-                "views": meta.get("view_count"),
-                "qualities": res_labels,
-                "max_resolution": f"{sorted_res[0]}p" if sorted_res else "1080p"
+                "title": meta.get("title", "YouTube Video"),
+                "uploader": meta.get("uploader", "YouTube Creator"),
+                "duration": meta.get("duration", 0),
+                "thumbnail": meta.get("thumbnail", ""),
+                "max_resolution": max_res,
+                "qualities": qualities,
+                "available_heights": sorted_h
             }
     except Exception as e:
-        return JSONResponse(
-            status_code=400,
-            content={"ok": False, "error": str(e)}
-        )
-
-
-@app.post("/trigger")
-@app.post("/api/trigger")
-def trigger(req: DownloadRequest):
-    return JSONResponse(
-        status_code=200,
-        content={
+        return {
             "ok": False,
-            "task_id": None,
-            "error": "Vercel Serverless payload limit notice",
-            "message": (
-                "Vercel Serverless Functions have a 4.5MB response payload limit and cannot stream 4K video files. "
-                "For high-speed 4K/8K downloads, please run the local TubeGrab 4K Desktop Helper (http://127.0.0.1:19876) "
-                "or connect to a Render Docker container."
-            ),
-            "recommendation": "Run launch_idm_4k.bat locally on your Windows PC for instant 4K downloads."
+            "error": str(e),
+            "notice": "Cloud extractor blocked by YouTube datacenter bot wall. Use local TubeGrab helper for instant extraction."
         }
-    )
-
-
-@app.get("/progress")
-@app.get("/api/progress")
-def progress(id: str = Query(...)):
-    return {
-        "status": "info",
-        "message": "Use local desktop engine (http://127.0.0.1:19876) for real-time progress."
-    }

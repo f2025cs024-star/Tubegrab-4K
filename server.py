@@ -239,13 +239,57 @@ def run_yt_dlp(task_id: str, url: str, title: str, quality: str, cookies: Option
 
 
 @app.get("/")
+@app.get("/index.html")
 def home():
+    for candidate in [Path("index.html"), Path("api/index.html"), Path(__file__).resolve().parent / "index.html"]:
+        if candidate.exists():
+            return FileResponse(str(candidate), media_type="text/html")
     return {
         "status": "online",
         "app": "TubeGrab 4K Cloud Server",
         "version": "2.2.2",
         "docs": "/docs"
     }
+
+
+@app.get("/extension.zip")
+def download_ext():
+    for candidate in [Path("extension.zip"), Path("api/extension.zip"), Path(__file__).resolve().parent / "extension.zip"]:
+        if candidate.exists():
+            return FileResponse(str(candidate), filename="TubeGrab-4K-Extension.zip", media_type="application/zip")
+    raise HTTPException(status_code=404, detail="File not found")
+
+
+@app.get("/tubegrab-windows-full.zip")
+def download_suite():
+    for candidate in [Path("tubegrab-windows-full.zip"), Path("api/tubegrab-windows-full.zip"), Path(__file__).resolve().parent / "tubegrab-windows-full.zip"]:
+        if candidate.exists():
+            return FileResponse(str(candidate), filename="TubeGrab-4K-Windows-Suite.zip", media_type="application/zip")
+    raise HTTPException(status_code=404, detail="File not found")
+
+
+@app.get("/icon.png")
+def get_icon():
+    for candidate in [Path("icon.png"), Path("api/icon.png"), Path(__file__).resolve().parent / "icon.png"]:
+        if candidate.exists():
+            return FileResponse(str(candidate), media_type="image/png")
+    raise HTTPException(status_code=404, detail="File not found")
+
+
+@app.get("/sitemap.xml")
+def get_sitemap():
+    for candidate in [Path("sitemap.xml"), Path("api/sitemap.xml"), Path(__file__).resolve().parent / "sitemap.xml"]:
+        if candidate.exists():
+            return FileResponse(str(candidate), media_type="application/xml")
+    raise HTTPException(status_code=404, detail="File not found")
+
+
+@app.get("/robots.txt")
+def get_robots():
+    for candidate in [Path("robots.txt"), Path("api/robots.txt"), Path(__file__).resolve().parent / "robots.txt"]:
+        if candidate.exists():
+            return FileResponse(str(candidate), media_type="text/plain")
+    raise HTTPException(status_code=404, detail="File not found")
 
 
 @app.get("/status")
