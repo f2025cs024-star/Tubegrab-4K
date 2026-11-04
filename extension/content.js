@@ -19,7 +19,7 @@
   let isMenuOpen = false;
 
   let detectedHeights = [];
-  let maxLabel = "4K";
+  let maxLabel = "Download";
 
   const PILL_ID = "tubegrab-pill";
   const MENU_ID = "tubegrab-dropdown-menu";
@@ -217,7 +217,7 @@
         maxLabel = topH + "p";
       }
     } else {
-      maxLabel = "4K";
+      maxLabel = "Download";
     }
 
     const lbl = document.getElementById("omni-lbl-text");
@@ -255,20 +255,24 @@
 
   function getAvailableItems() {
     const list = [];
-    if (detectedHeights.length > 0) {
-      const topH = detectedHeights[0];
+    if (detectedHeights && detectedHeights.length > 0) {
+      // STRICT FILTER: Only show qualities that actually exist for this specific video!
       allKnownQualities.forEach((item) => {
-        if (item.h <= topH) {
+        if (detectedHeights.includes(item.h)) {
           list.push(item);
         }
       });
-    } else {
-      // Default to 4K and below if probe not finished yet so 4K is never hidden
-      allKnownQualities.forEach((item) => {
-        if (item.h <= 2160) {
-          list.push(item);
+
+      // Also include any non-standard detected height (e.g. 540p, 900p, Shorts vertical heights)
+      detectedHeights.forEach((h) => {
+        if (h > 0 && !list.some((it) => it.h === h)) {
+          const badge = h >= 2160 ? "4K" : (h >= 1080 ? "HD" : `${h}p`);
+          const cls = h >= 2160 ? "omni-badge-4k" : (h >= 1080 ? "omni-badge-hd" : "omni-badge-sd");
+          list.push({ h: h, label: `${h}p`, val: String(h), badge: badge, cls: cls });
         }
       });
+
+      list.sort((a, b) => b.h - a.h);
     }
     return list;
   }
@@ -488,14 +492,22 @@
 
     let itemsHtml = `<div class="omni-menu-header">Available Qualities</div>`;
 
-    items.forEach((q) => {
+    if (items.length === 0) {
       itemsHtml += `
-        <div class="omni-menu-item" data-val="${q.val}">
-          <span class="omni-item-name">${q.label}</span>
-          <span class="${q.cls}">${q.badge}</span>
+        <div style="padding:10px 14px;color:#94a3b8;font-size:12px;text-align:center;">
+          Detecting qualities...
         </div>
       `;
-    });
+    } else {
+      items.forEach((q) => {
+        itemsHtml += `
+          <div class="omni-menu-item" data-val="${q.val}">
+            <span class="omni-item-name">${q.label}</span>
+            <span class="${q.cls}">${q.badge}</span>
+          </div>
+        `;
+      });
+    }
 
     itemsHtml += `
       <div class="omni-menu-item" data-val="mp3">
@@ -708,7 +720,7 @@
       lastCheckedUrl = curr;
       isPillClosedByUser = false;
       detectedHeights = [];
-      maxLabel = "4K";
+      maxLabel = "Download";
       closeDropdown();
       if (activePollTimer) {
         clearInterval(activePollTimer);
