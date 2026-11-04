@@ -21,6 +21,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def google_verification_middleware(request, call_next):
+    path = request.url.path
+    if path.startswith("/google") and path.endswith(".html"):
+        filename = path.lstrip("/")
+        return Response(content=f"google-site-verification: {filename}\n", media_type="text/html")
+    return await call_next(request)
+
 CURRENT_DIR = Path(__file__).resolve().parent
 ROOT_DIR = CURRENT_DIR.parent if CURRENT_DIR.name == "api" else CURRENT_DIR
 
@@ -87,13 +95,10 @@ def get_robots():
     raise HTTPException(status_code=404, detail="robots.txt not found")
 
 
-@app.get("/google{code}.html")
-def get_google_verification(code: str):
-    filename = f"google{code}.html"
-    f = find_file(filename)
-    if f:
-        return FileResponse(str(f), media_type="text/html")
-    return Response(content=f"google-site-verification: google{code}.html\n", media_type="text/html")
+@app.get("/googleea333b6af960c847.html")
+@app.get("/google283a7b7c4b960849.html")
+def get_google_verification():
+    return Response(content="google-site-verification: googleea333b6af960c847.html\n", media_type="text/html")
 
 
 @app.get("/api")
