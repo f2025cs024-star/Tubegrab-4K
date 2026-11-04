@@ -19,7 +19,7 @@
   let isMenuOpen = false;
 
   let detectedHeights = [];
-  let maxLabel = "Download";
+  let maxLabel = "4K";
 
   const PILL_ID = "tubegrab-pill";
   const MENU_ID = "tubegrab-dropdown-menu";
@@ -200,24 +200,71 @@
     }
   });
 
-  function updateMaxLabel() {
-    if (detectedHeights.length > 0) {
-      const topH = detectedHeights[0];
-      if (topH >= 4320) {
-        maxLabel = "8K";
-      } else if (topH >= 2160) {
-        maxLabel = "4K";
-      } else if (topH >= 1440) {
-        maxLabel = "2K";
-      } else if (topH >= 1080) {
-        maxLabel = "1080p";
-      } else if (topH >= 720) {
-        maxLabel = "720p";
-      } else {
-        maxLabel = topH + "p";
+  function extractHeightsFromDom() {
+    try {
+      const scripts = document.querySelectorAll("script");
+      for (let i = 0; i < scripts.length; i++) {
+        const text = scripts[i].textContent || "";
+        const marker = "ytInitialPlayerResponse = {";
+        const idx = text.indexOf(marker);
+        if (idx !== -1) {
+          const start = idx + "ytInitialPlayerResponse = ".length;
+          let depth = 0;
+          let end = start;
+          for (let j = start; j < text.length; j++) {
+            if (text[j] === "{") depth++;
+            else if (text[j] === "}") {
+              depth--;
+              if (depth === 0) {
+                end = j + 1;
+                break;
+              }
+            }
+          }
+          if (end > start) {
+            const data = JSON.parse(text.substring(start, end));
+            const sd = (data && data.streamingData) || {};
+            const set = new Set();
+            (sd.adaptiveFormats || []).forEach((f) => {
+              if (f.height) set.add(f.height);
+            });
+            (sd.formats || []).forEach((f) => {
+              if (f.height) set.add(f.height);
+            });
+            const list = Array.from(set)
+              .filter((h) => typeof h === "number" && h > 0)
+              .sort((a, b) => b - a);
+            if (list.length > 0) return list;
+          }
+        }
       }
+    } catch (e) {}
+
+    try {
+      const v = document.querySelector("video");
+      if (v && v.videoHeight && v.videoHeight > 0) {
+        return [v.videoHeight];
+      }
+    } catch (e) {}
+
+    return [];
+  }
+
+  function updateMaxLabel() {
+    if (!detectedHeights || detectedHeights.length === 0) {
+      detectedHeights = extractHeightsFromDom();
+    }
+
+    if (detectedHeights && detectedHeights.length > 0) {
+      const topH = detectedHeights[0];
+      if (topH >= 4320) maxLabel = "8K";
+      else if (topH >= 2160) maxLabel = "4K";
+      else if (topH >= 1440) maxLabel = "2K";
+      else if (topH >= 1080) maxLabel = "1080p";
+      else if (topH >= 720) maxLabel = "720p";
+      else maxLabel = topH + "p";
     } else {
-      maxLabel = "Download";
+      maxLabel = "4K";
     }
 
     const lbl = document.getElementById("omni-lbl-text");
@@ -267,7 +314,9 @@
   }
 
   function getAvailableItems() {
-    checkDomVideoHeights();
+    if (!detectedHeights || detectedHeights.length === 0) {
+      detectedHeights = extractHeightsFromDom();
+    }
     const list = [];
     if (detectedHeights && detectedHeights.length > 0) {
       // STRICT FILTER: Only show qualities that actually exist for this specific video!
@@ -287,13 +336,6 @@
       });
 
       list.sort((a, b) => b.h - a.h);
-    } else {
-      // Immediate intelligent fallback so the dropdown is NEVER empty or stuck
-      allKnownQualities.forEach((item) => {
-        if (item.h <= 1080) {
-          list.push(item);
-        }
-      });
     }
     return list;
   }
@@ -751,8 +793,8 @@
     if (curr !== lastCheckedUrl) {
       lastCheckedUrl = curr;
       isPillClosedByUser = false;
-      detectedHeights = [];
-      maxLabel = "Download";
+      detectedHeights = extractHeightsFromDom();
+      updateMaxLabel();
       closeDropdown();
       if (activePollTimer) {
         clearInterval(activePollTimer);
