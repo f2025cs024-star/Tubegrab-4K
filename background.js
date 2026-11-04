@@ -5,7 +5,7 @@ const activeBgTasks = new Map();
 function getServerUrl(callback) {
   // Always prefer local desktop engine if online (zero bot checks, max home internet speed)
   const ctrl = new AbortController();
-  const tid = setTimeout(() => ctrl.abort(), 350);
+  const tid = setTimeout(() => ctrl.abort(), 1000);
   fetch("http://127.0.0.1:19876/status", { signal: ctrl.signal })
     .then((r) => {
       clearTimeout(tid);
@@ -278,11 +278,21 @@ chrome.notifications.onClicked.addListener((notifId) => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.sync.get(["serverUrl"], (res) => {
+    if (res.serverUrl && res.serverUrl.includes("render.com")) {
+      chrome.storage.sync.set({ serverUrl: LOCAL_SERVER });
+    }
+  });
   reInjectActiveTabs();
   setTimeout(checkForUpdates, 3000);
 });
 
 chrome.runtime.onStartup.addListener(() => {
+  chrome.storage.sync.get(["serverUrl"], (res) => {
+    if (res.serverUrl && res.serverUrl.includes("render.com")) {
+      chrome.storage.sync.set({ serverUrl: LOCAL_SERVER });
+    }
+  });
   setTimeout(checkForUpdates, 3000);
 });
 
