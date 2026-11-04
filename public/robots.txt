@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Sitemap: https://tubegrab-4k-talha-950a.vercel.app/sitemap.xml
+
+# Fast crawling optimizations
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
