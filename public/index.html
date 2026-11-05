@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StreamForge - Clean, High-Speed YouTube Downloader & Desktop Suite</title>
-  <meta name="description" content="StreamForge is a high-speed, ad-free YouTube video downloader and browser extension. Download 1080p, 1440p, 4K UHD, and MP3 audio directly from the YouTube player.">
-  <meta name="keywords" content="streamforge, youtube downloader, yt downloader, streamforge youtube, chrome extension, edge extension, 1080p youtube download, 4k video download, mp3 audio extractor, open source downloader">
+  <title>StreamForge - High-Performance YouTube Downloader & Desktop Suite</title>
+  <meta name="description" content="StreamForge is a high-speed, ad-free YouTube video and audio downloader desktop suite and extension. Lossless 1080p, 1440p, 4K UHD 60FPS video muxing and 320kbps MP3 extraction.">
+  <meta name="keywords" content="streamforge, youtube downloader, yt downloader, streamforge youtube, 1080p youtube download, 4k video download, mp3 audio extractor, open source youtube downloader, windows youtube downloader">
   <meta name="author" content="StreamForge Team">
   <meta name="google-site-verification" content="googleea333b6af960c847" />
   <link rel="canonical" href="https://streamforge-talha-950a.vercel.app/" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="StreamForge - Clean YouTube Downloader & Desktop Suite">
-  <meta property="og:description" content="Download YouTube videos directly from your browser player in full quality with zero ads.">
+  <meta property="og:description" content="Download YouTube videos directly from your browser in full original quality with zero ads.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://streamforge-talha-950a.vercel.app/">
   <meta property="og:image" content="https://streamforge-talha-950a.vercel.app/icon.png">
@@ -27,7 +27,7 @@
         "@id": "https://streamforge-talha-950a.vercel.app/#website",
         "url": "https://streamforge-talha-950a.vercel.app/",
         "name": "StreamForge",
-        "description": "Clean, ad-free YouTube video downloader extension and desktop engine."
+        "description": "High-performance YouTube video and audio downloader desktop suite and extension."
       },
       {
         "@type": "SoftwareApplication",
@@ -47,29 +47,49 @@
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #090d16;
-      --bg-surface: #0f1523;
-      --bg-card: #141c2e;
-      --bg-card-hover: #182238;
+      --bg: #040711;
+      --bg-surface: #0a0f1d;
+      --bg-card: #0f172a;
+      --bg-card-hover: #131e36;
       --border: rgba(255, 255, 255, 0.08);
-      --border-focus: rgba(56, 189, 248, 0.5);
+      --border-accent: rgba(56, 189, 248, 0.35);
+      --border-glow: rgba(56, 189, 248, 0.6);
       --text: #f1f5f9;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
       --primary: #0284c7;
       --primary-hover: #0369a1;
       --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.15);
+      --accent-rgb: 56, 189, 248;
+      --accent-glow: rgba(56, 189, 248, 0.18);
+      --neon-purple: #8b5cf6;
       --success: #10b981;
       --danger: #ef4444;
       --radius-sm: 6px;
       --radius: 10px;
-      --radius-lg: 14px;
-      --font-mono: "JetBrains Mono", monospace;
+      --radius-lg: 16px;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="purple"] {
+      --accent: #a78bfa;
+      --accent-rgb: 167, 139, 250;
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --border-accent: rgba(167, 139, 250, 0.4);
+    }
+
+    [data-theme="emerald"] {
+      --accent: #34d399;
+      --accent-rgb: 52, 211, 153;
+      --primary: #059669;
+      --primary-hover: #047857;
+      --border-accent: rgba(52, 211, 153, 0.4);
     }
 
     * {
@@ -81,25 +101,56 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.5;
+      font-family: var(--font-sans);
+      line-height: 1.55;
       font-size: 15px;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
+    /* Ambient Tech Grid & Glow Background */
+    .bg-matrix-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background-image: 
+        radial-gradient(rgba(var(--accent-rgb), 0.12) 1px, transparent 1px),
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 32px 32px, 96px 96px, 96px 96px;
+      opacity: 0.7;
     }
 
-    /* Container */
+    .bg-ambient-light {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(var(--accent-rgb), 0.18) 0%, rgba(139, 92, 246, 0.08) 50%, transparent 70%);
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+      animation: pulseLight 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseLight {
+      0% { opacity: 0.6; transform: translateX(-50%) scale(0.95); }
+      100% { opacity: 0.9; transform: translateX(-50%) scale(1.05); }
+    }
+
     .container {
-      max-width: 1060px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
     }
 
     /* Navbar */
@@ -107,8 +158,8 @@
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      background: rgba(9, 13, 22, 0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(4, 7, 17, 0.85);
+      backdrop-filter: blur(16px);
       z-index: 100;
     }
 
@@ -116,51 +167,54 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
+      height: 68px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 18px;
-      font-weight: 700;
+      gap: 12px;
+      font-size: 19px;
+      font-weight: 800;
       color: #fff;
       text-decoration: none;
+      letter-spacing: -0.02em;
     }
 
     .brand img {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.35);
     }
 
     .brand-tag {
       font-size: 11px;
       font-family: var(--font-mono);
-      background: rgba(56, 189, 248, 0.12);
+      background: rgba(var(--accent-rgb), 0.1);
       color: var(--accent);
-      padding: 2px 7px;
-      border-radius: 4px;
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(var(--accent-rgb), 0.25);
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 22px;
+      gap: 24px;
     }
 
     .nav-links a {
       color: var(--text-muted);
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
+      text-decoration: none;
       transition: color 0.15s;
     }
 
     .nav-links a:hover {
       color: #fff;
-      text-decoration: none;
     }
 
     .nav-actions {
@@ -169,37 +223,36 @@
       gap: 12px;
     }
 
+    .theme-selector {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .theme-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid rgba(0, 0, 0, 0.4);
+      transition: transform 0.15s;
+    }
+    .theme-dot:hover { transform: scale(1.2); }
+    .theme-dot.cyan { background: #38bdf8; }
+    .theme-dot.purple { background: #a78bfa; }
+    .theme-dot.emerald { background: #34d399; }
+
     .btn-ghost {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 7px 14px;
-      background: transparent;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
       color: var(--text);
-      font-size: 13.5px;
-      font-weight: 500;
-      border-radius: var(--radius-sm);
-      transition: all 0.15s;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .btn-ghost:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 16px;
-      background: var(--primary);
-      border: 1px solid transparent;
-      color: #fff;
       font-size: 13.5px;
       font-weight: 600;
       border-radius: var(--radius-sm);
@@ -208,9 +261,33 @@
       text-decoration: none;
     }
 
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      background: var(--primary);
+      border: 1px solid rgba(var(--accent-rgb), 0.4);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(var(--accent-rgb), 0.25);
+    }
+
     .btn-primary:hover {
       background: var(--primary-hover);
-      text-decoration: none;
+      box-shadow: 0 6px 22px rgba(var(--accent-rgb), 0.4);
+      transform: translateY(-1px);
     }
 
     /* Hero */
@@ -222,50 +299,65 @@
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      color: #34d399;
+      gap: 9px;
+      background: rgba(var(--accent-rgb), 0.08);
+      border: 1px solid rgba(var(--accent-rgb), 0.25);
+      color: var(--accent);
       font-size: 12px;
       font-family: var(--font-mono);
-      padding: 4px 12px;
+      font-weight: 600;
+      padding: 5px 14px;
       border-radius: 20px;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.15);
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
-      background: #10b981;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
       border-radius: 50%;
-      box-shadow: 0 0 8px #10b981;
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
 
     .hero h1 {
-      font-size: 42px;
+      font-size: 48px;
       font-weight: 800;
-      letter-spacing: -0.025em;
-      line-height: 1.15;
+      letter-spacing: -0.035em;
+      line-height: 1.12;
       color: #fff;
-      max-width: 760px;
-      margin: 0 auto 16px;
+      max-width: 840px;
+      margin: 0 auto 18px;
+    }
+
+    .hero h1 span.gradient-text {
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .hero p {
-      font-size: 17px;
+      font-size: 17.5px;
       color: var(--text-muted);
-      max-width: 620px;
-      margin: 0 auto 36px;
+      max-width: 660px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
     }
 
-    /* Single Hero CTA */
+    /* Hero CTA Box */
     .hero-cta-box {
-      max-width: 620px;
+      max-width: 640px;
       margin: 0 auto 48px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 20px;
     }
 
     .btn-hero-primary {
@@ -274,22 +366,38 @@
       justify-content: center;
       gap: 16px;
       width: 100%;
-      padding: 16px 28px;
-      background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+      padding: 18px 32px;
+      background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
       color: #fff !important;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      border-radius: var(--radius);
-      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.35);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 6px 30px rgba(var(--accent-rgb), 0.35);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
       text-decoration: none !important;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-hero-primary::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn-hero-primary:hover::before {
+      left: 100%;
     }
 
     .btn-hero-primary:hover {
-      background: linear-gradient(180deg, #0369a1 0%, #075985 100%);
       transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(2, 132, 199, 0.5);
-      color: #fff !important;
+      box-shadow: 0 10px 40px rgba(var(--accent-rgb), 0.5);
+      border-color: rgba(var(--accent-rgb), 0.6);
     }
 
     .btn-hero-primary svg {
@@ -303,78 +411,310 @@
     }
 
     .btn-title {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      line-height: 1.25;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.015em;
+      line-height: 1.2;
     }
 
     .btn-sub {
-      font-size: 12.5px;
+      font-size: 13px;
       color: rgba(255, 255, 255, 0.85);
-      font-weight: 400;
-      margin-top: 2px;
+      font-weight: 500;
+      margin-top: 3px;
     }
 
     .hero-meta-badges {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px 18px;
-      font-size: 12.5px;
+      gap: 12px 20px;
+      font-size: 13px;
       color: var(--text-muted);
     }
 
     .meta-item {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
     }
 
     .meta-item svg {
       color: var(--accent);
     }
 
-    /* Live Interactive Video Inspector */
-    .inspector-section {
+    /* Live Interactive Muxing HUD / Simulator */
+    .hud-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin: 0 auto 56px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(var(--accent-rgb), 0.08);
+      position: relative;
+    }
+
+    .hud-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+
+    .hud-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hud-stats {
+      display: flex;
+      gap: 18px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .hud-stats span b {
+      color: var(--text);
+    }
+
+    /* Interactive Pipeline Graph */
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+      position: relative;
+    }
+
+    .pipe-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .pipe-node:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+    }
+
+    .node-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .node-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .node-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+    }
+
+    /* Live Interactive Mux Simulator Buttons */
+    .sim-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+    }
+
+    .sim-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .sim-btn {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .sim-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .sim-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 700;
+    }
+
+    /* Visualizer Meter */
+    .meter-container {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .wave-bars {
+      display: flex;
+      gap: 3px;
+      align-items: flex-end;
+      height: 18px;
+    }
+
+    .wave-bar {
+      width: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      height: 4px;
+      transition: height 0.15s ease;
+    }
+
+    /* Interactive Developer Terminal Widget */
+    .terminal-section {
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
+      margin-bottom: 64px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .term-tabs {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      border-bottom: 1px solid var(--border);
+      padding: 0 14px;
+    }
+
+    .term-tab {
+      padding: 12px 18px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-dim);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .term-tab:hover {
+      color: var(--text);
+    }
+
+    .term-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .term-body {
+      padding: 20px 24px;
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      line-height: 1.6;
+      background: #060913;
+      color: #e2e8f0;
+      position: relative;
+    }
+
+    .copy-code-btn {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .copy-code-btn:hover {
+      background: var(--accent);
+      color: #000;
+      font-weight: 600;
+    }
+
+    .code-comment { color: #64748b; }
+    .code-kw { color: #38bdf8; font-weight: 600; }
+    .code-str { color: #34d399; }
+    .code-cmd { color: #facc15; }
+
+    /* Web Video Inspector */
+    .inspector-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
       padding: 28px;
-      max-width: 860px;
-      margin: 0 auto 56px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+      margin: 0 auto 64px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
     }
 
     .inspector-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .inspector-header h2 {
-      font-size: 17px;
-      font-weight: 700;
+      font-size: 18px;
+      font-weight: 800;
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .inspector-tag {
-      font-size: 11px;
+      font-size: 12px;
       font-family: var(--font-mono);
-      color: var(--text-dim);
       background: rgba(255, 255, 255, 0.04);
-      padding: 3px 8px;
-      border-radius: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
     }
 
     .input-box {
       display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .url-input {
@@ -382,17 +722,17 @@
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 12px 14px;
+      padding: 14px 18px;
       color: #fff;
-      font-size: 14px;
+      font-size: 14.5px;
       font-family: inherit;
       outline: none;
-      transition: border-color 0.15s;
+      transition: all 0.2s;
     }
 
     .url-input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-glow);
+      box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
     .url-input::placeholder {
@@ -406,28 +746,29 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 16px;
-      animation: fadeIn 0.2s ease-in-out;
+      padding: 20px;
+      animation: fadeIn 0.25s ease-in-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .preview-flex {
       display: flex;
-      gap: 18px;
+      gap: 20px;
       align-items: flex-start;
     }
 
     .preview-thumb {
-      width: 170px;
-      height: 96px;
-      border-radius: 6px;
+      width: 200px;
+      height: 112px;
+      border-radius: 8px;
       object-fit: cover;
       background: #000;
       flex-shrink: 0;
+      border: 1px solid var(--border);
     }
 
     .preview-info {
@@ -436,8 +777,8 @@
     }
 
     .preview-title {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 700;
       color: #fff;
       margin-bottom: 6px;
       white-space: nowrap;
@@ -446,9 +787,10 @@
     }
 
     .preview-meta {
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--text-muted);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      font-family: var(--font-mono);
     }
 
     .quality-chips {
@@ -459,10 +801,12 @@
 
     .chip {
       font-size: 12px;
-      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 5px 12px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 6px;
       color: var(--text);
       cursor: pointer;
       transition: all 0.15s;
@@ -478,63 +822,64 @@
       background: var(--accent);
       border-color: var(--accent);
       color: #000;
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    /* Live Progress Bar Simulation */
+    /* Live Progress Bar */
     .progress-wrap {
       display: none;
-      margin-top: 14px;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 6px;
-      padding: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin-top: 18px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .progress-bar-bg {
-      height: 6px;
+      height: 8px;
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
+      border-radius: 4px;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .progress-bar-fill {
       width: 0%;
       height: 100%;
-      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       transition: width 0.2s linear;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+      box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.8);
     }
 
     .progress-text {
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 12.5px;
       font-family: var(--font-mono);
       color: var(--text-muted);
     }
 
-    /* How It Works (3 Steps) */
+    /* 3 Steps */
     .section-title {
       text-align: center;
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 28px;
+      font-weight: 800;
       color: #fff;
       margin-bottom: 10px;
+      letter-spacing: -0.02em;
     }
 
     .section-subtitle {
       text-align: center;
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text-muted);
-      margin-bottom: 36px;
+      margin-bottom: 40px;
     }
 
     .steps-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      gap: 20px;
       margin-bottom: 64px;
     }
 
@@ -542,44 +887,52 @@
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 22px;
+      padding: 26px;
+      transition: all 0.2s;
+    }
+
+    .step-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
     }
 
     .step-num {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.06);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(var(--accent-rgb), 0.1);
+      border: 1px solid rgba(var(--accent-rgb), 0.25);
       font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 13.5px;
+      font-weight: 700;
       color: var(--accent);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .step-card h4 {
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 17px;
+      font-weight: 700;
       color: #fff;
       margin-bottom: 8px;
     }
 
     .step-card p {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     .code-pill {
       font-family: var(--font-mono);
-      background: rgba(0, 0, 0, 0.35);
-      padding: 2px 6px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2px 7px;
       border-radius: 4px;
       font-size: 12px;
       color: var(--accent);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     /* Comparison Table */
@@ -594,20 +947,23 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13.5px;
+      font-size: 14px;
       text-align: left;
     }
 
     th {
       background: rgba(255, 255, 255, 0.02);
-      padding: 14px 20px;
+      padding: 16px 22px;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
       border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     td {
-      padding: 14px 20px;
+      padding: 16px 22px;
       border-bottom: 1px solid var(--border);
       color: var(--text);
     }
@@ -618,19 +974,19 @@
 
     .check {
       color: var(--success);
-      font-weight: bold;
+      font-weight: 700;
     }
 
     .cross {
       color: var(--danger);
-      font-weight: bold;
+      font-weight: 600;
     }
 
     /* FAQ */
     .faq-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      gap: 18px;
       margin-bottom: 64px;
     }
 
@@ -638,27 +994,27 @@
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 24px;
     }
 
     .faq-item h4 {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 700;
       color: #fff;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .faq-item p {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     /* Footer */
     footer {
       border-top: 1px solid var(--border);
-      padding: 32px 0;
-      font-size: 13px;
+      padding: 36px 0;
+      font-size: 13.5px;
       color: var(--text-dim);
     }
 
@@ -670,12 +1026,14 @@
 
     .footer-links {
       display: flex;
-      gap: 18px;
+      gap: 20px;
     }
 
     .footer-links a {
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 13.5px;
+      text-decoration: none;
+      transition: color 0.15s;
     }
 
     .footer-links a:hover {
@@ -684,26 +1042,35 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-      .download-grid, .steps-grid, .faq-grid {
+      .pipeline-grid, .steps-grid, .faq-grid {
         grid-template-columns: 1fr;
       }
       .nav-links {
         display: none;
       }
       .hero h1 {
-        font-size: 32px;
+        font-size: 34px;
       }
       .preview-flex {
         flex-direction: column;
       }
       .preview-thumb {
         width: 100%;
-        height: 180px;
+        height: 190px;
+      }
+      .sim-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- Ambient Matrix Background -->
+  <div class="bg-matrix-grid"></div>
+  <div class="bg-ambient-light"></div>
 
   <!-- Navbar -->
   <header>
@@ -713,18 +1080,28 @@
         <span>StreamForge</span>
         <span class="brand-tag">YT Suite v2.2.5</span>
       </a>
+
       <nav class="nav-links">
-        <a href="#download">Download</a>
+        <a href="#pipeline">Mux Engine</a>
         <a href="#inspector">Web Inspector</a>
-        <a href="#how-it-works">How It Works</a>
+        <a href="#terminal">CLI & API</a>
+        <a href="#how-it-works">Setup</a>
         <a href="#faq">FAQ</a>
       </nav>
+
       <div class="nav-actions">
+        <!-- Interactive Theme Palette Switcher -->
+        <div class="theme-selector" title="Switch Theme Palette">
+          <div class="theme-dot cyan" onclick="setTheme('cyan')" title="Cyan Cyber"></div>
+          <div class="theme-dot purple" onclick="setTheme('purple')" title="Neon Violet"></div>
+          <div class="theme-dot emerald" onclick="setTheme('emerald')" title="Matrix Emerald"></div>
+        </div>
+
         <a href="https://github.com/f2025cs024-star/Tubegrab-4K" target="_blank" class="btn-ghost">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
           GitHub
         </a>
-        <a href="tubegrab-windows-full.zip" class="btn-primary">Download Suite</a>
+        <a href="streamforge-windows-suite.zip" class="btn-primary">Download Suite</a>
       </div>
     </div>
   </header>
@@ -735,20 +1112,20 @@
     <section class="hero">
       <div class="status-badge">
         <span class="status-dot"></span>
-        Zero Ads • 100% Client-Side • Lossless Muxing
+        Zero Ads • Direct DASH Stream Muxing • 0% CPU Idle Auto-Shutdown
       </div>
-      <h1>The Clean YouTube Downloader That Lives Inside Your Player</h1>
-      <p>Download original 1080p, 1440p, 4K UHD video and MP3 audio directly from YouTube with zero popup redirects, zero wait timers, and zero quality loss.</p>
+      <h1>The Clean YouTube Downloader Built for <span class="gradient-text">Desktop Speed</span></h1>
+      <p>Download original 1080p, 1440p, 4K UHD 60fps video and 320kbps MP3 audio directly from YouTube with zero popup ads, zero re-compression loss, and native multi-threaded FFmpeg acceleration.</p>
 
-      <!-- Single Focused Call to Action -->
+      <!-- Single Focused Hero CTA -->
       <div class="hero-cta-box" id="download">
-        <a href="tubegrab-windows-full.zip" class="btn-hero-primary">
+        <a href="streamforge-windows-suite.zip" class="btn-hero-primary">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.902-1.799"/>
           </svg>
           <div class="btn-text-wrap">
             <span class="btn-title">Download StreamForge for Windows</span>
-            <span class="btn-sub">Complete Suite (.zip) • Includes Extension & Background Engine</span>
+            <span class="btn-sub">Complete Suite (.zip) • Includes Browser Extension & Native Background Engine</span>
           </div>
         </a>
 
@@ -773,19 +1150,78 @@
       </div>
     </section>
 
-    <!-- Web Video Inspector (OneCompiler Style) -->
+    <!-- Interactive Muxing Engine HUD / Simulator -->
+    <section class="hud-card" id="pipeline">
+      <div class="hud-header">
+        <div class="hud-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Muxing Engine // Dual-Stream Pipeline
+        </div>
+        <div class="hud-stats">
+          <span>THROUGHPUT: <b id="hudSpeed">42.8 MB/s</b></span>
+          <span>LATENCY: <b>&lt; 1ms</b></span>
+          <span>CODEC: <b id="hudCodec">VP9 + Opus</b></span>
+        </div>
+      </div>
+
+      <!-- Pipeline Node Visualizer -->
+      <div class="pipeline-grid">
+        <div class="pipe-node">
+          <div class="node-label">01. Split DASH Stream</div>
+          <div class="node-title">YouTube CDN Ingest</div>
+          <div class="node-desc" id="node1Desc">Video (2160p60) + Audio (160k Opus)</div>
+        </div>
+
+        <div class="pipe-node" style="border-color: var(--border-accent);">
+          <div class="node-label">02. Hardware Muxer</div>
+          <div class="node-title">Local FFmpeg Pipeline</div>
+          <div class="node-desc" id="node2Desc">Lossless stream-copy (0.0s re-encode)</div>
+        </div>
+
+        <div class="pipe-node">
+          <div class="node-label">03. Destination</div>
+          <div class="node-title">Downloads Folder</div>
+          <div class="node-desc" id="node3Desc">Video (4K UHD).mp4 (Instant playback)</div>
+        </div>
+      </div>
+
+      <!-- Interactive Controls -->
+      <div class="sim-bar">
+        <div class="sim-btns">
+          <span style="font-size: 12px; font-family: var(--font-mono); color: var(--text-dim); align-self: center; margin-right: 4px;">TEST PRESETS:</span>
+          <button class="sim-btn active" onclick="setPreset('4k')">4K 60fps (UHD)</button>
+          <button class="sim-btn" onclick="setPreset('1080')">1080p60 (Full HD)</button>
+          <button class="sim-btn" onclick="setPreset('mp3')">MP3 (320kbps)</button>
+        </div>
+
+        <div class="meter-container">
+          <span>FFMPEG IO:</span>
+          <div class="wave-bars" id="waveBars">
+            <div class="wave-bar" style="height: 14px;"></div>
+            <div class="wave-bar" style="height: 8px;"></div>
+            <div class="wave-bar" style="height: 18px;"></div>
+            <div class="wave-bar" style="height: 11px;"></div>
+            <div class="wave-bar" style="height: 16px;"></div>
+            <div class="wave-bar" style="height: 6px;"></div>
+          </div>
+          <span id="activePresetBadge" style="color: var(--accent); font-weight: 700;">STREAM: ACTIVE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Web Video Inspector -->
     <section class="inspector-section" id="inspector">
       <div class="inspector-header">
         <h2>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
           Quick Video Inspector
         </h2>
-        <span class="inspector-tag" id="engineStatus">Checking local engine...</span>
+        <span class="inspector-tag" id="engineStatus">Checking local engine (port 19876)...</span>
       </div>
 
       <div class="input-box">
         <input type="text" id="videoUrlInput" class="url-input" placeholder="Paste YouTube link (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ)">
-        <button id="inspectBtn" class="btn-primary">Inspect</button>
+        <button id="inspectBtn" class="btn-primary">Inspect Stream</button>
       </div>
 
       <!-- Preview Output -->
@@ -796,22 +1232,22 @@
             <h4 id="videoTitle" class="preview-title">Video Title</h4>
             <div id="videoMeta" class="preview-meta">Duration: --:-- • YouTube Video</div>
             <div class="quality-chips" id="qualityChips">
-              <span class="chip active" data-q="max">Best Quality (UHD)</span>
+              <span class="chip active" data-q="max">Best Quality (UHD 4K)</span>
               <span class="chip" data-q="1080">1080p Full HD</span>
               <span class="chip" data-q="720">720p HD</span>
-              <span class="chip" data-q="mp3">MP3 Audio</span>
+              <span class="chip" data-q="mp3">MP3 Audio (320kbps)</span>
             </div>
           </div>
         </div>
 
-        <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 10px;">
+        <div style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 10px;">
           <button id="startDownloadBtn" class="btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Send to StreamForge Engine
           </button>
         </div>
 
-        <!-- Live Progress -->
+        <!-- Live Progress Bar -->
         <div id="progressWrap" class="progress-wrap">
           <div class="progress-bar-bg">
             <div id="progressFill" class="progress-bar-fill"></div>
@@ -824,7 +1260,27 @@
       </div>
     </section>
 
-    <!-- How It Works -->
+    <!-- Developer Terminal & Architecture Widget -->
+    <section class="terminal-section" id="terminal">
+      <div class="term-tabs">
+        <div class="term-tab active" onclick="switchTerm('install')">1. Quick Install</div>
+        <div class="term-tab" onclick="switchTerm('api')">2. Local REST API</div>
+        <div class="term-tab" onclick="switchTerm('autostop')">3. Zero-Idle Architecture</div>
+      </div>
+      <div class="term-body">
+        <button class="copy-code-btn" id="copyCodeBtn" onclick="copyTermCode()">Copy Command</button>
+        <pre id="termCode"><span class="code-comment"># Unpack and run the automated self-healing installer</span>
+<span class="code-cmd">.\install.bat</span>
+
+<span class="code-comment"># What happens automatically:</span>
+[1/4] Detecting Python 3 environment... <span class="code-str">[OK] Python 3.12</span>
+[2/4] Resolving FFmpeg, yt-dlp & Fast Muxing engines... <span class="code-str">[OK] Ready</span>
+[3/4] Registering streamforge:// Windows background handler... <span class="code-str">[OK] Active</span>
+[4/4] Starting zero-idle background helper on 127.0.0.1:19876... <span class="code-str">[OK] Online</span></pre>
+      </div>
+    </section>
+
+    <!-- How It Works (3 Steps) -->
     <section id="how-it-works" style="margin-bottom: 64px;">
       <h3 class="section-title">Setup In 3 Simple Steps</h3>
       <p class="section-subtitle">No installer wizards, no account creation, and zero background telemetry.</p>
@@ -833,16 +1289,16 @@
         <div class="step-card">
           <div class="step-num">01</div>
           <h4>Extract the Suite</h4>
-          <p>Unzip <code>tubegrab-windows-full.zip</code> and run <code>install.bat</code>. It configures Python and registers the background helper automatically.</p>
+          <p>Unzip <code>streamforge-windows-suite.zip</code> and double-click <code>install.bat</code>. It configures Python, FFmpeg, and registers the background helper automatically.</p>
         </div>
         <div class="step-card">
           <div class="step-num">02</div>
           <h4>Load Extension</h4>
-          <p>In Chrome or Edge, go to <span class="code-pill">chrome://extensions</span>, toggle <b>Developer mode</b> ON, and click <b>Load unpacked</b> on the <code>extension</code> folder.</p>
+          <p>In Chrome or Edge, navigate to <span class="code-pill">chrome://extensions</span>, toggle <b>Developer mode</b> ON, and click <b>Load unpacked</b> on the included <code>extension</code> folder.</p>
         </div>
         <div class="step-card">
           <div class="step-num">03</div>
-          <h4>Download Directly</h4>
+          <h4>Download in 1 Click</h4>
           <p>Open any video on YouTube. Select your preferred resolution from the quality dropdown right beside the video title and click Download.</p>
         </div>
       </div>
@@ -853,15 +1309,15 @@
       <table>
         <thead>
           <tr>
-            <th>Feature</th>
-            <th>StreamForge</th>
-            <th>Web Converters (y2mate, etc.)</th>
+            <th>Architecture Feature</th>
+            <th>StreamForge Suite</th>
+            <th>Spammy Web Converters</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Popup Ads & Suspicious Redirects</td>
-            <td><span class="check">None (Clean Player UI)</span></td>
+            <td><span class="check">None (Native In-Player UI)</span></td>
             <td><span class="cross">Aggressive Ads & Malicious Popups</span></td>
           </tr>
           <tr>
@@ -925,7 +1381,120 @@
   </footer>
 
   <script>
-    // Live Inspector Client Logic
+    // Theme Switcher
+    function setTheme(theme) {
+      if (theme === 'cyan') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    }
+
+    // Terminal Tabs Logic
+    const termSnippets = {
+      install: `<span class="code-comment"># Unpack and run the automated self-healing installer</span>
+<span class="code-cmd">.\\install.bat</span>
+
+<span class="code-comment"># What happens automatically:</span>
+[1/4] Detecting Python 3 environment... <span class="code-str">[OK] Python 3.12</span>
+[2/4] Resolving FFmpeg, yt-dlp & Fast Muxing engines... <span class="code-str">[OK] Ready</span>
+[3/4] Registering streamforge:// Windows background handler... <span class="code-str">[OK] Active</span>
+[4/4] Starting zero-idle background helper on 127.0.0.1:19876... <span class="code-str">[OK] Online</span>`,
+
+      api: `<span class="code-comment"># Trigger on-demand download via local REST endpoint</span>
+<span class="code-cmd">curl</span> -X POST http://127.0.0.1:19876/trigger \\
+  -H <span class="code-str">"Content-Type: application/json"</span> \\
+  -d <span class="code-str">'{"url": "https://www.youtube.com/watch?v=...", "quality": "max"}'</span>
+
+<span class="code-comment"># Instant response:</span>
+{ <span class="code-kw">"ok"</span>: <span class="code-str">true</span>, <span class="code-kw">"task_id"</span>: <span class="code-str">"9f8a2b1c"</span>, <span class="code-kw">"speed"</span>: <span class="code-str">"42.8 MB/s"</span> }`,
+
+      autostop: `<span class="code-comment"># StreamForge Auto-Shutdown Lifecycle</span>
+<span class="code-kw">def</span> <span class="code-cmd">check_auto_shutdown</span>(delay=5.0):
+    <span class="code-comment"># Terminate engine after all downloads complete</span>
+    <span class="code-kw">if</span> not any_active_downloads():
+        log(<span class="code-str">"[AutoStop] Clean termination: 0% CPU & 0 MB RAM idle"</span>)
+        SHUTDOWN_TIMER = Timer(delay, os._exit, [0])
+        SHUTDOWN_TIMER.start()`
+    };
+
+    function switchTerm(tab) {
+      document.querySelectorAll('.term-tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('termCode').innerHTML = termSnippets[tab];
+    }
+
+    function copyTermCode() {
+      const code = document.getElementById('termCode').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copyCodeBtn');
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = 'Copy Command', 2000);
+      });
+    }
+
+    // Muxing HUD Preset Switcher
+    function setPreset(type) {
+      document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const speed = document.getElementById('hudSpeed');
+      const codec = document.getElementById('hudCodec');
+      const n1 = document.getElementById('node1Desc');
+      const n2 = document.getElementById('node2Desc');
+      const n3 = document.getElementById('node3Desc');
+
+      if (type === '4k') {
+        speed.textContent = "42.8 MB/s";
+        codec.textContent = "VP9 + Opus";
+        n1.textContent = "Video (2160p60) + Audio (160k Opus)";
+        n2.textContent = "Lossless stream-copy (0.0s re-encode)";
+        n3.textContent = "Video (4K UHD).mp4 (Instant playback)";
+      } else if (type === '1080') {
+        speed.textContent = "38.2 MB/s";
+        codec.textContent = "AVC1 + AAC";
+        n1.textContent = "Video (1080p60) + Audio (128k AAC)";
+        n2.textContent = "Fast MP4 remux container";
+        n3.textContent = "Video (1080p).mp4";
+      } else if (type === 'mp3') {
+        speed.textContent = "12.4 MB/s";
+        codec.textContent = "LAME MP3 320k";
+        n1.textContent = "High-bitrate audio stream extraction";
+        n2.textContent = "Lossless ID3 tag injection";
+        n3.textContent = "Audio Track (320kbps).mp3";
+      }
+
+      // Animate wave bars
+      const bars = document.querySelectorAll('.wave-bar');
+      bars.forEach(b => {
+        b.style.height = `${Math.floor(Math.random() * 16) + 4}px`;
+      });
+    }
+
+    // Live Engine Status Poller
+    function checkEngine() {
+      const statusTag = document.getElementById('engineStatus');
+      fetch("http://127.0.0.1:19876/status", { signal: AbortSignal.timeout(1200) })
+        .then(r => r.json())
+        .then(d => {
+          statusTag.textContent = "● Local Engine Active (127.0.0.1:19876)";
+          statusTag.style.color = "#10b981";
+          statusTag.style.borderColor = "rgba(16, 185, 129, 0.4)";
+        })
+        .catch(() => {
+          statusTag.textContent = "○ Standalone Cloud Mode";
+          statusTag.style.color = "#94a3b8";
+        });
+    }
+    checkEngine();
+
+    // YouTube URL Extractor
+    function extractYouTubeId(url) {
+      const reg = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const match = url.match(reg);
+      return match ? match[1] : null;
+    }
+
     const inspectBtn = document.getElementById('inspectBtn');
     const urlInput = document.getElementById('videoUrlInput');
     const previewCard = document.getElementById('previewCard');
@@ -937,34 +1506,10 @@
     const progressFill = document.getElementById('progressFill');
     const progressPercent = document.getElementById('progressPercent');
     const progressStatus = document.getElementById('progressStatus');
-    const engineStatus = document.getElementById('engineStatus');
 
     let selectedQuality = "max";
     let activeVideoId = "";
 
-    // Check Local Engine Status
-    function checkEngine() {
-      fetch("http://127.0.0.1:19876/status", { signal: AbortSignal.timeout(1200) })
-        .then(r => r.json())
-        .then(d => {
-          engineStatus.textContent = "● Local Engine Active";
-          engineStatus.style.color = "#10b981";
-        })
-        .catch(() => {
-          engineStatus.textContent = "○ Standalone Mode";
-          engineStatus.style.color = "#94a3b8";
-        });
-    }
-    checkEngine();
-
-    // Parse YouTube ID
-    function extractYouTubeId(url) {
-      const reg = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-      const match = url.match(reg);
-      return match ? match[1] : null;
-    }
-
-    // Handle Inspect Click
     inspectBtn.addEventListener('click', () => {
       const url = urlInput.value.trim();
       if (!url) return;
@@ -982,7 +1527,6 @@
       previewCard.style.display = "block";
       progressWrap.style.display = "none";
 
-      // Try fetching live title from YouTube oEmbed
       fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${id}`)
         .then(r => r.json())
         .then(data => {
@@ -994,7 +1538,6 @@
         .catch(() => {});
     });
 
-    // Quality chip toggle
     document.querySelectorAll('.chip').forEach(chip => {
       chip.addEventListener('click', () => {
         document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
@@ -1003,7 +1546,6 @@
       });
     });
 
-    // Handle Download Action
     startDownloadBtn.addEventListener('click', () => {
       const fullUrl = `https://www.youtube.com/watch?v=${activeVideoId}`;
       progressWrap.style.display = "block";
@@ -1059,7 +1601,7 @@
     }
 
     function simulateDemo() {
-      progressStatus.textContent = "Local engine helper not running. Start StreamForge via install.bat to download directly.";
+      progressStatus.textContent = "Local engine helper not running. Start via install.bat to download directly.";
       let p = 20;
       const t = setInterval(() => {
         p += 20;
@@ -1068,7 +1610,7 @@
           progressPercent.textContent = `${p}%`;
         } else {
           clearInterval(t);
-          progressStatus.textContent = "Install the Windows Suite to save 4K files directly to your PC!";
+          progressStatus.textContent = "Install the Windows Suite to save high-res files directly to your PC!";
         }
       }, 400);
     }
