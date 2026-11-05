@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "TubeGrab 4K - YouTube Video Downloader Extension",
-  "version": "2.2.3",
-  "description": "High-performance YouTube video downloader extension with dynamic 4K quality dropdown, live electric blue progress bar, and background downloading.",
+  "name": "TubeGrab - YouTube Video Downloader Extension",
+  "version": "2.2.5",
+  "description": "Clean, ad-free YouTube video downloader extension with dynamic quality dropdown, live progress bar, and high-speed downloading.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -17,7 +17,7 @@
     "128": "icon.png"
   },
   "action": {
-    "default_title": "TubeGrab 4K Downloader",
+    "default_title": "TubeGrab Downloader",
     "default_icon": "icon.png"
   },
   "options_ui": {

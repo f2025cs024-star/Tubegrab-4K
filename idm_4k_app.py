@@ -303,7 +303,7 @@ class TubeGrabServer(BaseHTTPRequestHandler):
             self._send_cors(200)
             self.wfile.write(json.dumps({
                 "status": "running",
-                "app": "TubeGrab 4K Downloader",
+                "app": "TubeGrab Downloader",
                 "save_dir": DOWNLOADS_DIR,
                 "active_tasks": len(ACTIVE_TASKS)
             }).encode("utf-8"))
@@ -328,8 +328,8 @@ class TubeGrabServer(BaseHTTPRequestHandler):
             self._send_cors(200)
             self.wfile.write(json.dumps({
                 "version": "2.2.5",
-                "app": "TubeGrab 4K",
-                "changelog": "Auto-shutdown zero-resource engine, instant wake-up, 144p to 4K UHD quality picker.",
+                "app": "TubeGrab",
+                "changelog": "Auto-shutdown zero-resource engine, instant wake-up, dynamic quality picker.",
                 "release_url": "https://github.com/f2025cs024-star/Tubegrab-4K"
             }).encode("utf-8"))
             return

@@ -1,1745 +1,1077 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TubeGrab - Clean, High-Speed YouTube Downloader & Extension</title>
+  <meta name="description" content="TubeGrab is a clean, ad-free YouTube video downloader and browser extension. Download 1080p, 1440p, 4K UHD, and MP3 audio directly from the YouTube player.">
+  <meta name="keywords" content="tubegrab, youtube downloader, chrome extension, edge extension, 1080p youtube download, 4k video download, mp3 audio extractor, open source downloader">
+  <meta name="author" content="TubeGrab Team">
+  <meta name="google-site-verification" content="googleea333b6af960c847" />
+  <link rel="canonical" href="https://tubegrab-4k-talha-950a.vercel.app/" />
 
-  <!-- Primary SEO Meta Tags -->
-  <title>TubeGrab 4K - Free YouTube 4K Video Downloader Extension (60FPS UHD)</title>
-  <meta name="title" content="TubeGrab 4K - Free YouTube 4K Video Downloader Extension (60FPS UHD)" />
-  <meta name="description" content="Download YouTube videos in true 4K 60FPS UHD and high-bitrate MP3 audio. Clean, ad-free, open-source Chrome & Edge extension with zero speed limits and local FFmpeg stream muxing." />
-  <meta name="keywords" content="youtube 4k downloader, youtube video downloader extension, download youtube 4k 60fps, chrome youtube downloader, tubegrab 4k, idm youtube 4k, youtube to mp3 320kbps, best youtube downloader 2026, free 4k video downloader" />
-  <meta name="author" content="TubeGrab 4K Team" />
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <link rel="canonical" href="https://tubegrab-4k.vercel.app/" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="TubeGrab - Clean YouTube Downloader & Extension">
+  <meta property="og:description" content="Download YouTube videos directly from your browser player in full quality with zero ads.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tubegrab-4k-talha-950a.vercel.app/">
+  <meta property="og:image" content="https://tubegrab-4k-talha-950a.vercel.app/icon.png">
 
-  <!-- Open Graph / Facebook / Discord -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://tubegrab-4k.vercel.app/" />
-  <meta property="og:site_name" content="TubeGrab 4K" />
-  <meta property="og:title" content="TubeGrab 4K - Free YouTube 4K Video Downloader Extension" />
-  <meta property="og:description" content="Experience true 4K 60FPS YouTube video downloads with synced audio. 100% free, private, open-source, and embedded directly inside YouTube." />
-  <meta property="og:image" content="https://tubegrab-4k.vercel.app/icon.png" />
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://tubegrab-4k.vercel.app/" />
-  <meta property="twitter:title" content="TubeGrab 4K - Free YouTube 4K Video Downloader Extension" />
-  <meta property="twitter:description" content="Download YouTube videos in crisp 4K 60FPS UHD with studio audio. Ad-free, secure, and open-source." />
-  <meta property="twitter:image" content="https://tubegrab-4k.vercel.app/icon.png" />
-
-  <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https: http://127.0.0.1:19876 http://localhost:19876; frame-src 'self';" />
-
-  <link rel="icon" type="image/png" href="icon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-
-  <!-- JSON-LD Structured Data for Google Rich Snippets -->
+  <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "WebSite",
+        "@id": "https://tubegrab-4k-talha-950a.vercel.app/#website",
+        "url": "https://tubegrab-4k-talha-950a.vercel.app/",
+        "name": "TubeGrab",
+        "description": "Clean, ad-free YouTube video downloader extension and desktop engine."
+      },
+      {
         "@type": "SoftwareApplication",
-        "name": "TubeGrab 4K",
-        "operatingSystem": "Windows 10, Windows 11, ChromeOS, macOS, Linux",
+        "name": "TubeGrab",
+        "operatingSystem": "Windows 10, Windows 11, Chromium Browsers",
         "applicationCategory": "MultimediaApplication",
-        "description": "High-performance browser extension and desktop engine to download YouTube videos in 4K, 1440p, 1080p 60FPS with pristine audio.",
         "offers": {
           "@type": "Offer",
-          "price": "0.00",
+          "price": "0",
           "priceCurrency": "USD"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "ratingCount": "2480",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
-        "url": "https://tubegrab-4k.vercel.app/",
-        "downloadUrl": "https://tubegrab-4k.vercel.app/tubegrab-windows-full.zip",
-        "softwareVersion": "2.2.0"
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Why isn't TubeGrab 4K on the official Chrome Web Store?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Google strictly bans all YouTube video downloaders from the Chrome Web Store due to terms of service restrictions. TubeGrab 4K is installed safely as an unpacked developer extension in less than 30 seconds."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How does TubeGrab 4K download YouTube videos in 4K with audio?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "YouTube splits video and audio into separate adaptive DASH streams for 1080p, 1440p, and 4K. Standard web downloaders fail or produce mute files. TubeGrab 4K streams both simultaneously and muxes them on your machine using FFmpeg for lossy-free, crystal-clear 4K 60FPS video with synced audio."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is TubeGrab 4K safe and free from malware?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes, 100%. TubeGrab 4K is completely open-source under the MIT license on GitHub. Every file is auditable, free of telemetry, ads, or tracking, and verified clean with SHA-256 integrity checksums."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Do I need to keep a console or Python terminal open?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No! TubeGrab 4K includes a silent Windows protocol helper (tubegrab://start). When you click download on YouTube, it automatically wakes up the background process silently without flashing any command prompt."
-            }
-          }
-        ]
-      },
-      {
-        "@type": "HowTo",
-        "name": "How to Install TubeGrab 4K YouTube Downloader",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "name": "Download Package",
-            "text": "Download the TubeGrab 4K ZIP package and extract it to a folder on your computer."
-          },
-          {
-            "@type": "HowToStep",
-            "name": "Open Chrome Extensions",
-            "text": "Navigate to chrome://extensions in your browser and turn on Developer mode in the top right."
-          },
-          {
-            "@type": "HowToStep",
-            "name": "Load Unpacked",
-            "text": "Click Load unpacked and select the extension folder."
-          },
-          {
-            "@type": "HowToStep",
-            "name": "Download 4K Videos",
-            "text": "Open YouTube and click the sleek TubeGrab 4K capsule button to download in any quality."
-          }
-        ]
+        }
       }
     ]
   }
   </script>
 
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg: #060813;
-      --card-bg: rgba(13, 19, 33, 0.72);
-      --card-border: rgba(0, 240, 255, 0.18);
-      --cyan: #00f0ff;
-      --cyan-glow: rgba(0, 240, 255, 0.45);
-      --blue: #3b82f6;
-      --purple: #8b5cf6;
-      --text: #f8fafc;
+      --bg: #090d16;
+      --bg-surface: #0f1523;
+      --bg-card: #141c2e;
+      --bg-card-hover: #182238;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(56, 189, 248, 0.5);
+      --text: #f1f5f9;
       --text-muted: #94a3b8;
-      --green: #10b981;
-      --gold: #f59e0b;
+      --text-dim: #64748b;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      --success: #10b981;
+      --danger: #ef4444;
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --font-mono: "JetBrains Mono", monospace;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+
     body {
-      background: radial-gradient(ellipse at 50% -10%, #15224a 0%, var(--bg) 65%);
+      background-color: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-      line-height: 1.6;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
     }
-    a { color: var(--cyan); text-decoration: none; transition: all 0.2s; }
-    a:hover { color: #fff; text-shadow: 0 0 8px var(--cyan-glow); }
-    code, pre { font-family: 'JetBrains Mono', monospace; }
 
-    /* Layout */
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Container */
     .container {
-      max-width: 1140px;
+      max-width: 1060px;
       margin: 0 auto;
-      padding: 24px 20px 80px;
+      padding: 0 20px;
     }
 
-    /* Header & Navigation */
+    /* Navbar */
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 24px;
-      border-radius: 18px;
-      background: rgba(13, 19, 33, 0.65);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 48px;
+      border-bottom: 1px solid var(--border);
       position: sticky;
-      top: 16px;
-      z-index: 1000;
+      top: 0;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
     }
+
+    .nav-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 900;
-      font-size: 22px;
-      letter-spacing: -0.5px;
-    }
-    .brand img {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      box-shadow: 0 0 14px var(--cyan-glow);
-    }
-    .brand-title {
-      background: linear-gradient(135deg, #fff 40%, var(--cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    nav a {
-      color: var(--text-muted);
-      font-size: 14px;
-      font-weight: 600;
-    }
-    nav a:hover { color: #fff; }
-
-    /* Badges & Buttons */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      border-radius: 999px;
-      background: rgba(0, 240, 255, 0.12);
-      color: var(--cyan);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      letter-spacing: 0.2px;
-    }
-    .badge-green {
-      background: rgba(16, 185, 129, 0.12);
-      color: var(--green);
-      border-color: rgba(16, 185, 129, 0.3);
-    }
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px var(--green);
-      display: inline-block;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       gap: 10px;
-      padding: 14px 26px;
-      border-radius: 12px;
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      border: none;
+      color: #fff;
       text-decoration: none;
     }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--cyan), #0077ff);
-      color: #050814 !important;
-      box-shadow: 0 8px 24px rgba(0, 240, 255, 0.35);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(0, 240, 255, 0.55);
-      text-shadow: none;
-    }
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff !important;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-    }
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--cyan);
-      transform: translateY(-2px);
-    }
-    .btn-sm { padding: 8px 16px; font-size: 13px; border-radius: 8px; }
 
-    /* Hero Section */
-    .hero {
-      text-align: center;
-      padding: 40px 0 60px;
+    .brand img {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
     }
-    .hero h1 {
-      font-size: 52px;
-      font-weight: 900;
-      line-height: 1.15;
-      margin: 18px 0;
-      letter-spacing: -1.2px;
+
+    .brand-tag {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
     }
-    .hero h1 .highlight {
-      background: linear-gradient(90deg, var(--cyan), #60a5fa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-      font-size: 19px;
-      color: var(--text-muted);
-      max-width: 720px;
-      margin: 0 auto 36px;
-      line-height: 1.6;
-    }
-    .hero-actions {
+
+    .nav-links {
       display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 32px;
-    }
-    .hero-trust {
-      display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      color: var(--text-muted);
-      font-size: 13.5px;
+      gap: 22px;
     }
-    .hero-trust span { display: inline-flex; align-items: center; gap: 6px; }
 
-    /* Cards */
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 36px;
-      backdrop-filter: blur(20px);
-      margin-bottom: 48px;
-      box-shadow: 0 24px 48px rgba(0,0,0,0.45);
-      position: relative;
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.15s;
     }
-    .section-title {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 12px;
+
+    .nav-links a:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-actions {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .section-sub {
-      color: var(--text-muted);
-      font-size: 15px;
-      margin-bottom: 28px;
-    }
 
-    /* Live Interactive Simulator */
-    .simulator-container {
-      background: #090d1a;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
-    }
-    .sim-topbar {
-      background: #0d1326;
-      padding: 10px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .sim-dots { display: flex; gap: 8px; }
-    .sim-dot { width: 11px; height: 11px; border-radius: 50%; }
-    .sim-dot.red { background: #ff5f56; }
-    .sim-dot.yellow { background: #ffbd2e; }
-    .sim-dot.green { background: #27c93f; }
-    .sim-url {
-      background: rgba(0,0,0,0.4);
-      padding: 4px 16px;
-      border-radius: 6px;
-      font-size: 12px;
-      color: #94a3b8;
-      width: 50%;
-      text-align: center;
-    }
-    .sim-player {
-      position: relative;
-      background: #000;
-      aspect-ratio: 16/9;
-      max-height: 440px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-    }
-    .sim-play-btn {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(0, 240, 255, 0.2);
-      border: 2px solid var(--cyan);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 24px var(--cyan-glow);
-    }
-    .sim-play-btn svg { fill: #fff; width: 24px; height: 24px; margin-left: 4px; }
-    .sim-overlay-badge {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      background: rgba(0,0,0,0.75);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--cyan);
-    }
-
-    /* Embedded YouTube Player Actions Bar */
-    .sim-action-bar {
-      background: #0f172a;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .sim-video-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
-    .sim-video-info span { font-size: 12px; color: var(--text-muted); }
-
-    /* Interactive TubeGrab Capsule in Simulator */
-    .tg-sim-capsule {
-      position: relative;
+    .btn-ghost {
       display: inline-flex;
       align-items: center;
-      background: linear-gradient(135deg, rgba(8, 14, 28, 0.95), rgba(15, 23, 42, 0.95));
-      border: 1px solid rgba(0, 240, 255, 0.4);
-      border-radius: 999px;
-      padding: 4px 12px 4px 14px;
-      box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
+      gap: 7px;
+      padding: 7px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13.5px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
       cursor: pointer;
-      user-select: none;
-      transition: all 0.2s ease;
+      text-decoration: none;
     }
-    .tg-sim-capsule:hover {
-      border-color: var(--cyan);
-      box-shadow: 0 0 24px var(--cyan-glow);
-    }
-    .tg-pill-logo {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      margin-right: 8px;
-    }
-    .tg-pill-text {
-      font-size: 13px;
-      font-weight: 800;
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.2);
       color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .tg-pill-badge {
-      background: var(--cyan);
-      color: #050814;
-      font-size: 10px;
-      font-weight: 900;
-      padding: 1px 6px;
-      border-radius: 4px;
-    }
-    .tg-pill-arrow {
-      margin-left: 8px;
-      color: var(--cyan);
-      font-size: 10px;
-      transition: transform 0.2s;
+      text-decoration: none;
     }
 
-    /* Simulator Dropdown Menu */
-    .tg-sim-menu {
-      position: absolute;
-      bottom: calc(100% + 12px);
-      right: 0;
-      background: #090d1c;
-      border: 1px solid rgba(0, 240, 255, 0.35);
-      border-radius: 14px;
-      width: 290px;
-      padding: 8px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(20px);
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      z-index: 200;
-    }
-    .tg-sim-menu.open { display: flex; animation: simFadeIn 0.2s ease forwards; }
-    @keyframes simFadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .tg-sim-item {
-      display: flex;
+    .btn-primary {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      border-radius: 8px;
+      gap: 7px;
+      padding: 8px 16px;
+      background: var(--primary);
+      border: 1px solid transparent;
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
       cursor: pointer;
-      transition: background 0.15s;
-    }
-    .tg-sim-item:hover { background: rgba(0, 240, 255, 0.12); }
-    .tg-sim-item-name { font-size: 13px; font-weight: 700; color: #fff; }
-    .tg-sim-item-badge {
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
-    }
-    .tg-sim-item-badge.hd {
-      background: rgba(0, 240, 255, 0.2);
-      color: var(--cyan);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      text-decoration: none;
     }
 
-    /* Live Progress Bar Card in Simulator */
-    .sim-progress-box {
-      margin-top: 16px;
-      padding: 16px;
-      background: rgba(0, 240, 255, 0.06);
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      border-radius: 12px;
-      display: none;
-    }
-    .sim-progress-bar-bg {
-      height: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-    .sim-progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--cyan), #3b82f6);
-      border-radius: 999px;
-      box-shadow: 0 0 10px var(--cyan);
-      transition: width 0.1s linear;
-    }
-    .sim-progress-stats {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      text-decoration: none;
     }
 
-    /* Download Packages Grid */
-    .dl-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      margin-top: 24px;
+    /* Hero */
+    .hero {
+      padding: 68px 0 48px;
+      text-align: center;
     }
-    .dl-card {
-      background: rgba(10, 15, 28, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: all 0.25s ease;
-    }
-    .dl-card:hover {
-      border-color: var(--cyan);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 36px rgba(0, 240, 255, 0.15);
-    }
-    .dl-card.featured {
-      border: 1.5px solid var(--cyan);
-      box-shadow: 0 12px 32px rgba(0, 240, 255, 0.2);
-    }
-    .dl-ribbon {
-      position: absolute;
-      top: -12px;
-      right: 20px;
-      background: linear-gradient(135deg, var(--cyan), var(--blue));
-      color: #050814;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .dl-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
-    .dl-card p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px; flex: 1; }
-    .dl-specs {
-      display: flex;
-      flex-direction: column;
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
-      margin-bottom: 24px;
-      font-size: 13px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 22px;
     }
-    .dl-spec-row { display: flex; justify-content: space-between; }
-    .dl-spec-label { color: var(--text-muted); }
-    .dl-spec-val { font-weight: 600; color: #fff; }
 
-    /* Checksum copy bar */
-    .hash-box {
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 11px;
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      color: #fff;
+      max-width: 760px;
+      margin: 0 auto 16px;
+    }
+
+    .hero p {
+      font-size: 17px;
       color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 36px;
+    }
+
+    /* Download Cards */
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 860px;
+      margin: 0 auto 48px;
+      text-align: left;
+    }
+
+    .dl-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .dl-card:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .dl-card.highlight {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: linear-gradient(180deg, rgba(2, 132, 199, 0.08) 0%, var(--bg-surface) 100%);
+    }
+
+    .dl-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      width: fit-content;
+    }
+
+    .dl-card h3 {
+      font-size: 19px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .dl-card p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .dl-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* Live Interactive Video Inspector */
+    .inspector-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 860px;
+      margin: 0 auto 56px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+    }
+
+    .inspector-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 18px;
-      font-family: 'JetBrains Mono', monospace;
     }
-    .hash-text {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 200px;
-    }
-    .copy-btn {
-      background: transparent;
-      border: none;
-      color: var(--cyan);
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .copy-btn:hover { color: #fff; }
 
-    /* Browser Installation Tabs */
-    .tabs-header {
-      display: flex;
-      gap: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 12px;
-      margin-bottom: 24px;
-      overflow-x: auto;
-    }
-    .tab-btn {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-muted);
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: 14px;
+    .inspector-header h2 {
+      font-size: 17px;
       font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .tab-btn.active {
-      background: rgba(0, 240, 255, 0.15);
-      border-color: var(--cyan);
-      color: var(--cyan);
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; animation: tabFadeIn 0.3s ease; }
-    @keyframes tabFadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-    }
-    .step-card {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 22px;
-    }
-    .step-num {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--cyan), var(--blue));
-      color: #050814;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      font-size: 14px;
-    }
-    .step-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .step-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-
-    /* Complete Master Procedure Guide Styles */
-    .procedure-timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      margin-top: 24px;
-    }
-    .proc-phase {
-      background: rgba(10, 15, 30, 0.7);
-      border: 1px solid rgba(0, 240, 255, 0.2);
-      border-radius: 18px;
-      padding: 26px;
-      position: relative;
-    }
-    .proc-phase-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .proc-phase-title {
-      font-size: 19px;
-      font-weight: 800;
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
-    .proc-step-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
+
+    .inspector-tag {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 3px 8px;
+      border-radius: 4px;
     }
-    .proc-step-item {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 20px;
+
+    .input-box {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
     }
-    .proc-step-num {
+
+    .url-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .url-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .url-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Video Preview Card */
+    .preview-card {
+      display: none;
+      margin-top: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .preview-flex {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .preview-thumb {
+      width: 170px;
+      height: 96px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #000;
+      flex-shrink: 0;
+    }
+
+    .preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .preview-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .preview-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .quality-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      font-size: 12px;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chip:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* Live Progress Bar Simulation */
+    .progress-wrap {
+      display: none;
+      margin-top: 14px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 6px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      transition: width 0.2s linear;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    /* How It Works (3 Steps) */
+    .section-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 64px;
+    }
+
+    .step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .step-num {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       width: 28px;
       height: 28px;
-      border-radius: 7px;
-      background: linear-gradient(135deg, var(--cyan), var(--blue));
-      color: #050814;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      font-family: var(--font-mono);
       font-size: 13px;
-      font-weight: 900;
-      margin-bottom: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 14px;
     }
-    .proc-step-item h4 {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 8px;
+
+    .step-card h4 {
+      font-size: 16px;
+      font-weight: 600;
       color: #fff;
+      margin-bottom: 8px;
     }
-    .proc-step-item p {
+
+    .step-card p {
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.5;
-      margin-bottom: 12px;
     }
-    .url-bar-copy {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-family: 'JetBrains Mono', monospace;
+
+    .code-pill {
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 6px;
+      border-radius: 4px;
       font-size: 12px;
-      color: var(--cyan);
-      margin: 8px 0;
+      color: var(--accent);
     }
-    .pro-tip-box {
-      background: rgba(0, 240, 255, 0.08);
-      border-left: 4px solid var(--cyan);
-      border-radius: 10px;
-      padding: 14px 18px;
-      font-size: 13.5px;
-      color: #cbd5e1;
-      margin-top: 18px;
-      line-height: 1.6;
-    }
-    .pro-tip-box b { color: var(--cyan); }
 
     /* Comparison Table */
-    .table-wrap {
-      overflow-x: auto;
-      margin-top: 20px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .table-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 64px;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 13.5px;
       text-align: left;
-      font-size: 14px;
     }
-    th, td {
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
+
     th {
-      background: rgba(0,0,0,0.5);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px 20px;
       color: var(--text-muted);
-      font-weight: 700;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    th.highlight-col, td.highlight-col {
-      background: rgba(0, 240, 255, 0.06);
-      border-left: 1px solid rgba(0, 240, 255, 0.2);
-      border-right: 1px solid rgba(0, 240, 255, 0.2);
-    }
-    .check { color: var(--green); font-weight: 800; font-size: 16px; }
-    .cross { color: #ef4444; font-weight: 800; font-size: 16px; }
-
-    /* FAQ Accordion */
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 20px;
-    }
-    .faq-item {
-      background: rgba(10, 15, 28, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      overflow: hidden;
-      transition: all 0.2s;
-    }
-    .faq-question {
-      padding: 20px 24px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      user-select: none;
-    }
-    .faq-question:hover { color: var(--cyan); }
-    .faq-arrow { font-size: 14px; transition: transform 0.2s; color: var(--cyan); }
-    .faq-answer {
-      padding: 0 24px 20px;
-      color: var(--text-muted);
-      font-size: 14.5px;
-      line-height: 1.6;
-      display: none;
-    }
-    .faq-item.active .faq-answer { display: block; }
-    .faq-item.active .faq-arrow { transform: rotate(180deg); }
-
-    /* Security & Privacy Pillars */
-    .sec-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-      margin-top: 24px;
-    }
-    .sec-card {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 22px;
-    }
-    .sec-icon {
-      font-size: 26px;
-      margin-bottom: 12px;
-      display: inline-block;
-    }
-    .sec-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .sec-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #0f172a;
-      border: 1px solid var(--cyan);
-      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.4);
-      padding: 14px 22px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 9999;
-      transform: translateY(100px);
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      font-size: 14px;
       font-weight: 600;
+      border-bottom: 1px solid var(--border);
     }
-    .toast.show { transform: translateY(0); opacity: 1; }
+
+    td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .check {
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .cross {
+      color: var(--danger);
+      font-weight: bold;
+    }
+
+    /* FAQ */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+
+    .faq-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .faq-item h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .faq-item p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
 
     /* Footer */
     footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 48px;
-      margin-top: 60px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 13.5px;
-    }
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-    .footer-disclaimer {
-      max-width: 700px;
-      margin: 16px auto 0;
-      font-size: 12px;
-      line-height: 1.6;
-      color: #64748b;
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      font-size: 13px;
+      color: var(--text-dim);
     }
 
-    /* Mobile Responsive */
+    .footer-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      header { flex-direction: column; gap: 14px; }
-      nav { flex-wrap: wrap; justify-content: center; gap: 14px; }
-      .hero h1 { font-size: 34px; }
-      .hero p { font-size: 16px; }
-      .card { padding: 22px; }
-      .sim-action-bar { flex-direction: column; align-items: flex-start; }
-      .tg-sim-capsule { width: 100%; justify-content: space-between; }
+      .download-grid, .steps-grid, .faq-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+      .hero h1 {
+        font-size: 32px;
+      }
+      .preview-flex {
+        flex-direction: column;
+      }
+      .preview-thumb {
+        width: 100%;
+        height: 180px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- Navbar -->
-    <header>
-      <a href="/" class="brand">
-        <img src="icon.png" alt="TubeGrab 4K Logo" />
-        <span class="brand-title">TubeGrab 4K</span>
+  <!-- Navbar -->
+  <header>
+    <div class="container nav-wrap">
+      <a href="#" class="brand">
+        <img src="icon.png" alt="TubeGrab Logo">
+        <span>TubeGrab</span>
+        <span class="brand-tag">v2.2.5</span>
       </a>
-      <nav>
-        <a href="#simulator">Live Demo</a>
-        <a href="#downloads">Downloads</a>
-        <a href="#installation">Setup Guide</a>
-        <a href="#features">Comparison</a>
-        <a href="#security">Security</a>
+      <nav class="nav-links">
+        <a href="#extension">Extension</a>
+        <a href="#suite">Windows Suite</a>
+        <a href="#inspector">Web Inspector</a>
+        <a href="#how-it-works">How It Works</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <div style="display: flex; gap: 12px; align-items: center;">
-        <span class="badge badge-green"><span class="status-dot"></span> v2.2.0 Stable</span>
-        <a href="https://github.com/f2025cs024-star/Tubegrab-4K" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">GitHub ★</a>
+      <div class="nav-actions">
+        <a href="https://github.com/f2025cs024-star/Tubegrab-4K" target="_blank" class="btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+        <a href="tubegrab-windows-full.zip" class="btn-primary">Download Suite</a>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <!-- Hero Section -->
-      <section class="hero">
-        <div style="margin-bottom: 16px;">
-          <span class="badge">🔥 Modern YouTube 4K & MP3 Downloader</span>
-        </div>
-        <h1>Download YouTube Videos in <span class="highlight">True 4K 60FPS</span> with Synced Audio</h1>
-        <p>The only ultra-clean Chrome extension with a dedicated background muxing engine. Zero popups, zero rate limits, zero quality loss — embedded directly into your YouTube player.</p>
+  <main class="container">
 
-        <div class="hero-actions">
-          <a href="tubegrab-windows-full.zip" download="TubeGrab-4K-Windows-Suite.zip" class="btn btn-primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download Full Suite (Recommended)
-          </a>
-          <a href="extension.zip" download="TubeGrab-4K-Extension.zip" class="btn btn-secondary">
-            📦 Extension Only (.ZIP)
-          </a>
-          <a href="#simulator" class="btn btn-secondary">
-            ⚡ Try Interactive Demo
-          </a>
-        </div>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        Zero Ads • 100% Client-Side • Lossless Muxing
+      </div>
+      <h1>The Clean YouTube Downloader That Lives Inside Your Player</h1>
+      <p>Download original 1080p, 1440p, 4K UHD video and MP3 audio directly from YouTube with zero popup redirects, zero wait timers, and zero quality loss.</p>
 
-        <div class="hero-trust">
-          <span>🛡️ 100% Client-Side Privacy</span>
-          <span>⚡ Gigabyte Line Speeds</span>
-          <span>🎵 320kbps Lossless Audio</span>
-          <span>⭐ Open Source MIT</span>
-        </div>
-      </section>
-
-      <!-- Section: Interactive Live YouTube Simulator -->
-      <section class="card" id="simulator">
-        <div class="section-title">
-          <span>⚡ Interactive YouTube Player Simulator</span>
-          <span class="badge">Live Demo</span>
-        </div>
-        <p class="section-sub">Experience how TubeGrab 4K looks and works directly inside YouTube. Click the capsule button below to select a quality and watch the real-time download progress!</p>
-
-        <div class="simulator-container">
-          <!-- Mock Browser Top Bar -->
-          <div class="sim-topbar">
-            <div class="sim-dots">
-              <span class="sim-dot red"></span>
-              <span class="sim-dot yellow"></span>
-              <span class="sim-dot green"></span>
-            </div>
-            <div class="sim-url">https://www.youtube.com/watch?v=4K_UHD_DEMO</div>
-            <div style="font-size: 11px; color: var(--cyan); font-weight: 700;">TubeGrab Active</div>
+      <!-- Downloads -->
+      <div class="download-grid">
+        <!-- Card 1: Extension -->
+        <div class="dl-card highlight" id="extension">
+          <div>
+            <span class="dl-badge">Chrome • Edge • Brave • Opera</span>
+            <h3>Browser Extension</h3>
+            <p>Injects an ad-free quality picker directly into the YouTube player controls. Shows live electric-blue download progress without leaving the page.</p>
           </div>
-
-          <!-- Video Mock Screen -->
-          <div class="sim-player">
-            <div class="sim-overlay-badge">4K Ultra HD • 60 FPS • HDR</div>
-            <div class="sim-play-btn" onclick="startSimDownload('4K Ultra HD (2160p60)', '1.42 GB')">
-              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-            </div>
-          </div>
-
-          <!-- YouTube Player Action Bar with TubeGrab Capsule -->
-          <div class="sim-action-bar">
-            <div class="sim-video-info">
-              <h4>Costa Rica 4K 60FPS HDR (Ultra HD) - Wildlife Nature</h4>
-              <span>Jacob & Katie Schwarz • 18M views • 2 years ago</span>
-            </div>
-
-            <!-- TubeGrab Interactive Capsule -->
-            <div style="position: relative;">
-              <div class="tg-sim-capsule" id="simCapsule" onclick="toggleSimMenu()">
-                <img src="icon.png" class="tg-pill-logo" alt="logo" />
-                <div class="tg-pill-text">
-                  <span id="simCapsuleLabel">4K</span>
-                  <span class="tg-pill-badge">UHD</span>
-                </div>
-                <span class="tg-pill-arrow" id="simArrow">▼</span>
-              </div>
-
-              <!-- Simulator Dropdown Menu -->
-              <div class="tg-sim-menu" id="simMenu">
-                <div class="tg-sim-item" onclick="startSimDownload('4K 60FPS Ultra HD (2160p)', '1.42 GB')">
-                  <span class="tg-sim-item-name">💎 4K 60FPS (2160p)</span>
-                  <span class="tg-sim-item-badge hd">UHD • 1.4 GB</span>
-                </div>
-                <div class="tg-sim-item" onclick="startSimDownload('2K 60FPS Quad HD (1440p)', '720 MB')">
-                  <span class="tg-sim-item-name">⚡ 2K 60FPS (1440p)</span>
-                  <span class="tg-sim-item-badge hd">QHD • 720 MB</span>
-                </div>
-                <div class="tg-sim-item" onclick="startSimDownload('Full HD 60FPS (1080p)', '340 MB')">
-                  <span class="tg-sim-item-name">🎬 1080p 60FPS</span>
-                  <span class="tg-sim-item-badge hd">FHD • 340 MB</span>
-                </div>
-                <div class="tg-sim-item" onclick="startSimDownload('High Definition (720p)', '180 MB')">
-                  <span class="tg-sim-item-name">📺 720p HD</span>
-                  <span class="tg-sim-item-badge">180 MB</span>
-                </div>
-                <div class="tg-sim-item" onclick="startSimDownload('Standard Def (360p)', '65 MB')">
-                  <span class="tg-sim-item-name">📱 360p Mobile</span>
-                  <span class="tg-sim-item-badge">65 MB</span>
-                </div>
-                <div class="tg-sim-item" onclick="startSimDownload('Audio Only (MP3 320kbps)', '12 MB')">
-                  <span class="tg-sim-item-name">🎵 MP3 Audio (320kbps)</span>
-                  <span class="tg-sim-item-badge hd">Lossless</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Simulator Download Progress Card -->
-        <div class="sim-progress-box" id="simProgressBox">
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13.5px;">
-            <span style="font-weight: 700; color: #fff;" id="simStatusText">Downloading stream...</span>
-            <span style="color: var(--cyan); font-weight: 800;" id="simPercent">0%</span>
-          </div>
-          <div class="sim-progress-bar-bg">
-            <div class="sim-progress-bar-fill" id="simProgressFill"></div>
-          </div>
-          <div class="sim-progress-stats">
-            <span id="simSpeed">Speed: 48.6 MB/s</span>
-            <span id="simDownloaded">0 MB / 1.42 GB</span>
-            <span id="simEta">ETA: 00:24</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section: Download Center -->
-      <section class="card" id="downloads">
-        <div class="section-title">
-          <span>📦 Official Download Hub</span>
-          <span class="badge badge-green">Free & Open Source</span>
-        </div>
-        <p class="section-sub">Choose your installation flavor. All packages are cryptographically signed with SHA-256 hashes and 100% telemetry-free.</p>
-
-        <div class="dl-grid">
-          <!-- Card 1: Windows Full Suite -->
-          <div class="dl-card featured">
-            <span class="dl-ribbon">Most Popular</span>
-            <h3>Windows Full Suite</h3>
-            <p>Everything in one portable package: Browser extension + Silent background 4K auto-starter + Stream muxer.</p>
-            
-            <div class="hash-box">
-              <span class="hash-text" title="CC13C7864E5CE2F3CE07AA20B192417EC46877E287AEE89146DAEAC30285282B">SHA256: A7667C4A0AB3BAD3...</span>
-              <button class="copy-btn" onclick="copyHash('CC13C7864E5CE2F3CE07AA20B192417EC46877E287AEE89146DAEAC30285282B')">Copy</button>
-            </div>
-
-            <div class="dl-specs">
-              <div class="dl-spec-row"><span class="dl-spec-label">Version</span><span class="dl-spec-val">v2.2.0 Portable</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">File Size</span><span class="dl-spec-val">~36 KB (Ultra lightweight)</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">OS Compatibility</span><span class="dl-spec-val">Windows 10 / 11 (64-bit)</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">Silent Auto-Start</span><span class="dl-spec-val">Enabled (tubegrab://)</span></div>
-            </div>
-
-            <a href="tubegrab-windows-full.zip" download="TubeGrab-4K-Windows-Suite.zip" class="btn btn-primary" style="width: 100%;">
-              ⬇ Download Windows Suite (.zip)
+          <div>
+            <a href="extension.zip" class="btn-primary" style="width: 100%; justify-content: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Extension (.zip)
             </a>
+            <div class="dl-meta">
+              <span>Manifest V3 Compliant</span>
+              <span>18 KB • v2.2.5</span>
+            </div>
           </div>
+        </div>
 
-          <!-- Card 2: Browser Extension Only -->
-          <div class="dl-card">
-            <h3>Browser Extension Only</h3>
-            <p>Standalone unpacked extension for Chrome, Microsoft Edge, Brave, Opera, and Vivaldi browsers.</p>
-            
-            <div class="hash-box">
-              <span class="hash-text" title="C166B2826F7C5FEA76257610BE3E84DA1A34D965F6A685DBF2899385A6598893">SHA256: 40CC016200F11AB7...</span>
-              <button class="copy-btn" onclick="copyHash('C166B2826F7C5FEA76257610BE3E84DA1A34D965F6A685DBF2899385A6598893')">Copy</button>
-            </div>
-
-            <div class="dl-specs">
-              <div class="dl-spec-row"><span class="dl-spec-label">Manifest</span><span class="dl-spec-val">Chrome Manifest V3</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">File Size</span><span class="dl-spec-val">~16 KB</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">Browsers</span><span class="dl-spec-val">Chrome, Edge, Brave, Opera</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">CSP Protection</span><span class="dl-spec-val">Compliant</span></div>
-            </div>
-
-            <a href="extension.zip" download="TubeGrab-4K-Extension.zip" class="btn btn-secondary" style="width: 100%;">
-              ⬇ Download Extension (.zip)
+        <!-- Card 2: Windows Suite -->
+        <div class="dl-card" id="suite">
+          <div>
+            <span class="dl-badge">Windows 10 / 11 64-bit</span>
+            <h3>Windows Desktop Suite</h3>
+            <p>Complete package including the multi-threaded FFmpeg muxing engine, 1-click <code>install.bat</code>, and automatic <code>update.bat</code>. Idles at 0% CPU & 0 MB RAM.</p>
+          </div>
+          <div>
+            <a href="tubegrab-windows-full.zip" class="btn-ghost" style="width: 100%; justify-content: center; background: rgba(255,255,255,0.06);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Windows Suite (.zip)
             </a>
-          </div>
-
-          <!-- Card 3: GitHub Source & CLI -->
-          <div class="dl-card">
-            <h3>GitHub Repository</h3>
-            <p>Inspect the full source code, contribute, clone via Git, or report issues on GitHub.</p>
-            
-            <div class="hash-box">
-              <span class="hash-text">git clone https://github.com/f2025cs024-star/Tubegrab-4K.git</span>
-              <button class="copy-btn" onclick="copyHash('git clone https://github.com/f2025cs024-star/Tubegrab-4K.git')">Copy</button>
-            </div>
-
-            <div class="dl-specs">
-              <div class="dl-spec-row"><span class="dl-spec-label">License</span><span class="dl-spec-val">MIT Open Source</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">Branch</span><span class="dl-spec-val">main (Active)</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">Telemetry</span><span class="dl-spec-val">0% (Completely Private)</span></div>
-              <div class="dl-spec-row"><span class="dl-spec-label">Community</span><span class="dl-spec-val">Public Audited</span></div>
-            </div>
-
-            <a href="https://github.com/f2025cs024-star/Tubegrab-4K" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%;">
-              ⭐ View GitHub Repository
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section: Complete Master Procedure Guide -->
-      <section class="card" id="installation">
-        <div class="section-title">
-          <span>📘 Complete Step-by-Step Installation & Usage Master Guide</span>
-          <span class="badge badge-green">Foolproof • 60 Seconds</span>
-        </div>
-        <p class="section-sub">Follow this complete visual walkthrough to set up TubeGrab 4K on your computer. From downloading the package to downloading your first 4K video on YouTube with studio audio:</p>
-
-        <div class="procedure-timeline">
-          <!-- Phase 1: Download & Extract -->
-          <div class="proc-phase">
-            <div class="proc-phase-header">
-              <div class="proc-phase-title">
-                <span>📦 Phase 1: Download & Extract the Archive</span>
-              </div>
-              <span class="badge">Steps 1 - 2</span>
-            </div>
-
-            <div class="proc-step-list">
-              <div class="proc-step-item">
-                <div>
-                  <div class="proc-step-num">1</div>
-                  <h4>Download Windows Full Suite</h4>
-                  <p>Scroll up to the <b>Download Hub</b> and click <b>Download Windows Suite (.zip)</b> to save <code>tubegrab-windows-full.zip</code> (~36 KB) to your computer.</p>
-                </div>
-                <a href="tubegrab-windows-full.zip" download="TubeGrab-4K-Windows-Suite.zip" class="btn btn-secondary btn-sm" style="margin-top: 10px;">
-                  ⬇ Get tubegrab-windows-full.zip
-                </a>
-              </div>
-
-              <div class="proc-step-item">
-                <div>
-                  <div class="proc-step-num">2</div>
-                  <h4>Extract to a Permanent Folder</h4>
-                  <p>Right-click the downloaded <code>tubegrab-windows-full.zip</code> file and choose <b>Extract All...</b>.</p>
-                  <p>Choose a permanent location like <code>C:\TubeGrab-4K</code> or your personal Documents folder.</p>
-                </div>
-                <div class="tip-callout" style="margin-top: 8px; font-size: 12px; padding: 8px 12px;">
-                  ⚠️ <b>Do Not Move:</b> Keep this folder permanent; Chrome loads the extension directly from here.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Phase 2: One-Click Engine Activation -->
-          <div class="proc-phase">
-            <div class="proc-phase-header">
-              <div class="proc-phase-title">
-                <span>⚡ Phase 2: Activate Background 4K Engine (install.bat)</span>
-              </div>
-              <span class="badge">Step 3</span>
-            </div>
-
-            <div class="proc-step-list" style="grid-template-columns: 1fr;">
-              <div class="proc-step-item">
-                <div>
-                  <div class="proc-step-num">3</div>
-                  <h4>Double-Click "install.bat"</h4>
-                  <p>Open your extracted <code>Tubegrab-4K</code> folder and double-click <b><code>install.bat</code></b>. The script will automatically execute in seconds:</p>
-                  
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 14px 0;">
-                    <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); font-size: 12.5px;">
-                      <b style="color: var(--cyan);">1. Checks & Installs Python:</b> Automatically checks your environment. If Python is missing, it automatically installs Python 3.12 silently!
-                    </div>
-                    <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); font-size: 12.5px;">
-                      <b style="color: var(--cyan);">2. Installs FFmpeg & Engine:</b> Quietly installs <code>yt-dlp</code>, <code>fastapi</code>, and local stream muxer.
-                    </div>
-                    <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); font-size: 12.5px;">
-                      <b style="color: var(--cyan);">3. Registers Protocol:</b> Sets up <code>tubegrab://start</code> so Chrome can wake it silently without command prompts.
-                    </div>
-                    <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); font-size: 12.5px;">
-                      <b style="color: var(--cyan);">4. Silent Mode:</b> Runs in background mode via <code>silent_start.vbs</code>. Zero black terminal windows stay open!
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Phase 3: Browser Extension Loading -->
-          <div class="proc-phase">
-            <div class="proc-phase-header">
-              <div class="proc-phase-title">
-                <span>🧩 Phase 3: Load Extension in Your Browser</span>
-              </div>
-              <span class="badge">Steps 4 - 7</span>
-            </div>
-
-            <!-- Browser Tabs -->
-            <div class="tabs-header">
-              <button class="tab-btn active" onclick="switchTab('chrome')">Google Chrome</button>
-              <button class="tab-btn" onclick="switchTab('edge')">Microsoft Edge</button>
-              <button class="tab-btn" onclick="switchTab('brave')">Brave Browser</button>
-              <button class="tab-btn" onclick="switchTab('opera')">Opera / Vivaldi</button>
-            </div>
-
-            <!-- Tab 1: Chrome -->
-            <div class="tab-content active" id="tab-chrome">
-              <div class="proc-step-list">
-                <div class="proc-step-item">
-                  <div class="proc-step-num">4</div>
-                  <h4>Open Extensions Page</h4>
-                  <p>In Chrome's address bar, type or paste the extensions management URL:</p>
-                  <div class="url-bar-copy">
-                    <code>chrome://extensions</code>
-                    <button class="copy-btn" onclick="copyText('chrome://extensions', '✔ Chrome extensions URL copied!')">Copy URL</button>
-                  </div>
-                  <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Or click the 3 vertical dots ⋮ $\rightarrow$ Extensions $\rightarrow$ Manage Extensions.</p>
-                </div>
-
-                <div class="proc-step-item">
-                  <div class="proc-step-num">5</div>
-                  <h4>Enable Developer Mode</h4>
-                  <p>Look at the top-right corner of the <code>chrome://extensions</code> page.</p>
-                  <p>Toggle the <b>Developer mode</b> switch to <b>ON</b>. Three new action buttons will appear in the top-left corner.</p>
-                </div>
-
-                <div class="proc-step-item">
-                  <div class="proc-step-num">6</div>
-                  <h4>Click "Load unpacked"</h4>
-                  <p>In the top-left header, click the <b>Load unpacked</b> button.</p>
-                  <p>A Windows file browser dialog will pop up asking you to select a folder.</p>
-                </div>
-
-                <div class="proc-step-item">
-                  <div class="proc-step-num">7</div>
-                  <h4>Select the "extension" Folder</h4>
-                  <p>Navigate to your extracted <code>Tubegrab-4K</code> directory.</p>
-                  <p>Select the <b><code>extension</code></b> folder and click <b>Select Folder</b>. The <b>TubeGrab 4K</b> card will appear immediately!</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tab 2: Edge -->
-            <div class="tab-content" id="tab-edge">
-              <div class="proc-step-list">
-                <div class="proc-step-item">
-                  <div class="proc-step-num">4</div>
-                  <h4>Open Edge Extensions</h4>
-                  <p>In Microsoft Edge URL bar, paste:</p>
-                  <div class="url-bar-copy">
-                    <code>edge://extensions</code>
-                    <button class="copy-btn" onclick="copyText('edge://extensions', '✔ Edge extensions URL copied!')">Copy URL</button>
-                  </div>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">5</div>
-                  <h4>Toggle Developer Mode</h4>
-                  <p>In the left sidebar menu of Edge, toggle the <b>Developer mode</b> switch to <b>ON</b>.</p>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">6</div>
-                  <h4>Click "Load unpacked"</h4>
-                  <p>Click the <b>Load unpacked</b> button at the top of the page.</p>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">7</div>
-                  <h4>Pick "extension" Folder</h4>
-                  <p>Select the <code>extension</code> folder inside your extracted directory.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tab 3: Brave -->
-            <div class="tab-content" id="tab-brave">
-              <div class="proc-step-list">
-                <div class="proc-step-item">
-                  <div class="proc-step-num">4</div>
-                  <h4>Open Brave Extensions</h4>
-                  <p>In Brave's URL bar, navigate to:</p>
-                  <div class="url-bar-copy">
-                    <code>brave://extensions</code>
-                    <button class="copy-btn" onclick="copyText('brave://extensions', '✔ Brave extensions URL copied!')">Copy URL</button>
-                  </div>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">5</div>
-                  <h4>Enable Developer Mode</h4>
-                  <p>Switch on the <b>Developer mode</b> toggle in the top-right corner.</p>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">6</div>
-                  <h4>Load Unpacked</h4>
-                  <p>Click the <b>Load unpacked</b> button in the top left.</p>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">7</div>
-                  <h4>Select Folder</h4>
-                  <p>Choose the <code>extension</code> folder and click Select Folder.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tab 4: Opera -->
-            <div class="tab-content" id="tab-opera">
-              <div class="proc-step-list">
-                <div class="proc-step-item">
-                  <div class="proc-step-num">4</div>
-                  <h4>Open Opera Extensions</h4>
-                  <p>In Opera or Vivaldi, open:</p>
-                  <div class="url-bar-copy">
-                    <code>opera://extensions</code>
-                    <button class="copy-btn" onclick="copyText('opera://extensions', '✔ Opera extensions URL copied!')">Copy URL</button>
-                  </div>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">5</div>
-                  <h4>Developer Mode Switch</h4>
-                  <p>Turn on <b>Developer mode</b> in the upper-right corner.</p>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">6</div>
-                  <h4>Load Folder</h4>
-                  <p>Click <b>Load unpacked</b> and browse to the <code>extension</code> folder.</p>
-                </div>
-                <div class="proc-step-item">
-                  <div class="proc-step-num">7</div>
-                  <h4>Extension Ready</h4>
-                  <p>TubeGrab 4K is installed and will auto-dock on YouTube.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Phase 4: Download on YouTube -->
-          <div class="proc-phase">
-            <div class="proc-phase-header">
-              <div class="proc-phase-title">
-                <span>🎬 Phase 4: Grab 4K Videos & MP3s on YouTube</span>
-              </div>
-              <span class="badge">Steps 8 - 11</span>
-            </div>
-
-            <div class="proc-step-list">
-              <div class="proc-step-item">
-                <div class="proc-step-num">8</div>
-                <h4>Pin TubeGrab (Optional)</h4>
-                <p>Click the puzzle icon 🧩 in Chrome's top address bar $\rightarrow$ click the <b>Pin (📌)</b> icon next to TubeGrab 4K so it's always accessible.</p>
-              </div>
-
-              <div class="proc-step-item">
-                <div class="proc-step-num">9</div>
-                <h4>Open Any YouTube Video</h4>
-                <p>Navigate to <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube.com</a> and open any 4K/1080p video.</p>
-                <p>Beside the Subscribe and Like buttons, you will see the glowing <b>TubeGrab 4K</b> capsule: <code>[ ⠿ | 1080p ▾ | ✕ ]</code>.</p>
-              </div>
-
-              <div class="proc-step-item">
-                <div class="proc-step-num">10</div>
-                <h4>Select Resolution</h4>
-                <p>Click the <b><code>▾</code> arrow</b> on the capsule to see the video's exact available resolutions (4K UHD 60fps, 1440p, 1080p, 720p, or MP3 Audio 320kbps).</p>
-              </div>
-
-              <div class="proc-step-item">
-                <div class="proc-step-num">11</div>
-                <h4>Instant Download!</h4>
-                <p>Click your chosen quality! Watch the live glowing electric-blue progress bar and real-time speed ticker (`48.6 MB/s`).</p>
-                <p>When finished, your complete merged 4K video with synced audio is saved directly in your <b>Downloads</b> folder!</p>
-              </div>
-            </div>
-
-            <!-- Pro Tips & Maintenance -->
-            <div class="pro-tip-box">
-              💡 <b>Pro Tips & Troubleshooting:</b><br />
-              • <b>Refresh YouTube Once:</b> If you already had YouTube open when installing the extension, press <b>F5</b> to refresh the page once.<br />
-              • <b>Drag & Reposition:</b> Click and drag the <code>⠿</code> grip on the left of the capsule to place it anywhere on your screen. Double-click <code>⠿</code> to reset its position.<br />
-              • <b>How to Update:</b> Whenever a new update is released, extract the new files over your existing folder and click the <b>Reload icon (🔄)</b> on the TubeGrab 4K card in <code>chrome://extensions</code>.
+            <div class="dl-meta">
+              <span>Self-Healing Python Runner</span>
+              <span>28 KB • Recommended</span>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Section: Comparison Matrix -->
-      <section class="card" id="features">
-        <div class="section-title">
-          <span>⚖️ Technical Superiority Comparison</span>
-          <span class="badge">Unmatched Performance</span>
-        </div>
-        <p class="section-sub">Why TubeGrab 4K outperforms standard web-based converters, generic extensions, and conventional tools:</p>
+    <!-- Web Video Inspector (OneCompiler Style) -->
+    <section class="inspector-section" id="inspector">
+      <div class="inspector-header">
+        <h2>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          Quick Video Inspector
+        </h2>
+        <span class="inspector-tag" id="engineStatus">Checking local engine...</span>
+      </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Feature / Capability</th>
-                <th class="highlight-col">TubeGrab 4K</th>
-                <th>Web Converters (y2mate, etc.)</th>
-                <th>Standard Browser Extensions</th>
-                <th>Traditional IDM</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><b>True 4K & 1440p (60FPS UHD)</b></td>
-                <td class="highlight-col"><span class="check">✔ Full 4K 60FPS</span></td>
-                <td><span class="cross">✖ Mute / Fake 4K</span></td>
-                <td><span class="cross">✖ Capped at 720p/1080p</span></td>
-                <td><span class="check">✔ Yes (Needs Key)</span></td>
-              </tr>
-              <tr>
-                <td><b>Audio & Video DASH Muxing</b></td>
-                <td class="highlight-col"><span class="check">✔ Local FFmpeg Mux</span></td>
-                <td><span class="cross">✖ Mute Video</span></td>
-                <td><span class="cross">✖ Browser Split Streams</span></td>
-                <td><span class="check">✔ Built-in</span></td>
-              </tr>
-              <tr>
-                <td><b>Adware & Pop-Under Redirects</b></td>
-                <td class="highlight-col"><span class="check">✔ 0 Ads (Clean)</span></td>
-                <td><span class="cross">✖ Dangerous Popups</span></td>
-                <td><span class="cross">✖ Frequent Ads</span></td>
-                <td><span class="check">✔ Ad-free</span></td>
-              </tr>
-              <tr>
-                <td><b>Speed Limits / Throttling</b></td>
-                <td class="highlight-col"><span class="check">✔ Gigabit Uncapped</span></td>
-                <td><span class="cross">✖ Severe Throttle</span></td>
-                <td><span class="cross">✖ Browser Memory Limit</span></td>
-                <td><span class="check">✔ Fast</span></td>
-              </tr>
-              <tr>
-                <td><b>Cost & Licensing</b></td>
-                <td class="highlight-col"><span class="check">✔ 100% Free (MIT)</span></td>
-                <td><span class="cross">✖ Paywalls & Ads</span></td>
-                <td><span class="cross">✖ Freemium Nag</span></td>
-                <td><span class="cross">✖ \$24.95 Paid License</span></td>
-              </tr>
-              <tr>
-                <td><b>Background Auto-Launch</b></td>
-                <td class="highlight-col"><span class="check">✔ Silent (tubegrab://)</span></td>
-                <td><span class="cross">✖ None</span></td>
-                <td><span class="cross">✖ None</span></td>
-                <td><span class="check">✔ Background Service</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <div class="input-box">
+        <input type="text" id="videoUrlInput" class="url-input" placeholder="Paste YouTube link (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ)">
+        <button id="inspectBtn" class="btn-primary">Inspect</button>
+      </div>
 
-      <!-- Section: Security & Privacy Architecture -->
-      <section class="card" id="security">
-        <div class="section-title">
-          <span>🛡️ Bank-Grade Security & Privacy Architecture</span>
-          <span class="badge badge-green">Verified Clean</span>
-        </div>
-        <p class="section-sub">TubeGrab 4K is built on strict zero-telemetry principles. Unlike scam websites that re-encode your video on shady servers, TubeGrab works entirely locally.</p>
-
-        <div class="sec-grid">
-          <div class="sec-card">
-            <span class="sec-icon">🔒</span>
-            <h4>100% Local Execution</h4>
-            <p>Video streams flow directly between YouTube's CDN and your computer. No user data or download history ever touches external servers.</p>
-          </div>
-          <div class="sec-card">
-            <span class="sec-icon">🔍</span>
-            <h4>Fully Auditable Source</h4>
-            <p>Every line of code is open on GitHub. No obfuscated code, no hidden tracking scripts, and no background cryptocurrency miners.</p>
-          </div>
-          <div class="sec-card">
-            <span class="sec-icon">🚫</span>
-            <h4>Zero Analytics & Ad Networks</h4>
-            <p>We do not use Google Analytics, Facebook Pixels, or third-party ad networks. You enjoy complete privacy and anonymity.</p>
-          </div>
-          <div class="sec-card">
-            <span class="sec-icon">🔑</span>
-            <h4>SHA-256 Integrity Verified</h4>
-            <p>All binary releases are tagged with cryptographic hashes so you can independently verify that your downloads haven't been tampered with.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section: FAQ Accordion -->
-      <section class="card" id="faq">
-        <div class="section-title">
-          <span>❓ Frequently Asked Questions</span>
-          <span class="badge">FAQ</span>
-        </div>
-        <p class="section-sub">Have questions? Here are the most common inquiries regarding TubeGrab 4K installation and features:</p>
-
-        <div class="faq-list">
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span>Why isn't TubeGrab 4K listed on the official Chrome Web Store?</span>
-              <span class="faq-arrow">▼</span>
-            </div>
-            <div class="faq-answer">
-              Google strictly forbids any YouTube downloaders from being hosted on the Chrome Web Store. Any extension offering YouTube downloads is systematically rejected or removed. TubeGrab 4K is distributed as an unpacked open-source extension, which gives you complete control without arbitrary platform bans.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span>How does TubeGrab 4K download 4K videos with audio when YouTube splits them?</span>
-              <span class="faq-arrow">▼</span>
-            </div>
-            <div class="faq-answer">
-              YouTube uses adaptive DASH streaming, meaning high-definition video (1080p, 1440p, 4K) is stored as video-only files, while the audio is stored separately. Web converters struggle or produce mute videos. TubeGrab 4K downloads both the best video stream and best audio stream simultaneously, and then uses a lightweight local FFmpeg muxer to combine them in seconds into a pristine `.mp4` file.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span>Do I need to keep a command prompt or terminal window open?</span>
-              <span class="faq-arrow">▼</span>
-            </div>
-            <div class="faq-answer">
-              No! TubeGrab 4K uses a Windows custom protocol handler (<code>tubegrab://start</code>). When you click the download button on YouTube, the browser communicates seamlessly with the local helper via <code>silent_start.vbs</code>, running completely invisibly in the background.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span>Will this work on Mac or Linux?</span>
-              <span class="faq-arrow">▼</span>
-            </div>
-            <div class="faq-answer">
-              Yes! The browser extension runs on any Chromium browser (Chrome, Edge, Brave, Opera) on Windows, macOS, and Linux. On macOS and Linux, simply run <code>python idm_4k_app.py</code> or install the service via systemd/launchd.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span>Is downloading YouTube videos legal?</span>
-              <span class="faq-arrow">▼</span>
-            </div>
-            <div class="faq-answer">
-              Downloading YouTube videos for personal, fair-use, or educational purposes is generally protected in most jurisdictions. TubeGrab 4K is intended strictly for personal archival, creative fair use, and offline viewing of content you have permission to download.
+      <!-- Preview Output -->
+      <div id="previewCard" class="preview-card">
+        <div class="preview-flex">
+          <img id="thumbImg" src="" alt="Thumbnail" class="preview-thumb">
+          <div class="preview-info">
+            <h4 id="videoTitle" class="preview-title">Video Title</h4>
+            <div id="videoMeta" class="preview-meta">Duration: --:-- • YouTube Video</div>
+            <div class="quality-chips" id="qualityChips">
+              <span class="chip active" data-q="max">Best Quality (UHD)</span>
+              <span class="chip" data-q="1080">1080p Full HD</span>
+              <span class="chip" data-q="720">720p HD</span>
+              <span class="chip" data-q="mp3">MP3 Audio</span>
             </div>
           </div>
         </div>
-      </section>
-    </main>
 
-    <!-- Footer -->
-    <footer>
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button id="startDownloadBtn" class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Send to TubeGrab Engine
+          </button>
+        </div>
+
+        <!-- Live Progress -->
+        <div id="progressWrap" class="progress-wrap">
+          <div class="progress-bar-bg">
+            <div id="progressFill" class="progress-bar-fill"></div>
+          </div>
+          <div class="progress-text">
+            <span id="progressStatus">Downloading stream...</span>
+            <span id="progressPercent">0%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" style="margin-bottom: 64px;">
+      <h3 class="section-title">Setup In 3 Simple Steps</h3>
+      <p class="section-subtitle">No installer wizards, no account creation, and zero background telemetry.</p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h4>Extract the Suite</h4>
+          <p>Unzip <code>tubegrab-windows-full.zip</code> and run <code>install.bat</code>. It configures Python and registers the background helper automatically.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h4>Load Extension</h4>
+          <p>In Chrome or Edge, go to <span class="code-pill">chrome://extensions</span>, toggle <b>Developer mode</b> ON, and click <b>Load unpacked</b> on the <code>extension</code> folder.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h4>Download Directly</h4>
+          <p>Open any video on YouTube. Select your preferred resolution from the quality dropdown right beside the video title and click Download.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="table-section">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>TubeGrab</th>
+            <th>Web Converters (y2mate, etc.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Popup Ads & Suspicious Redirects</td>
+            <td><span class="check">None (Clean Player UI)</span></td>
+            <td><span class="cross">Aggressive Ads & Malicious Popups</span></td>
+          </tr>
+          <tr>
+            <td>Original 1080p, 1440p & 4K Quality</td>
+            <td><span class="check">Lossless Direct FFmpeg Muxing</span></td>
+            <td><span class="cross">Heavy Re-compression (Blury)</span></td>
+          </tr>
+          <tr>
+            <td>Idle System Resource Consumption</td>
+            <td><span class="check">0% CPU & 0 MB RAM (Auto-Shutdown)</span></td>
+            <td><span class="cross">High Browser Memory Usage</span></td>
+          </tr>
+          <tr>
+            <td>Open Source & Self-Updating</td>
+            <td><span class="check">100% Open Source on GitHub</span></td>
+            <td><span class="cross">Closed Source / Shady Scripts</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <h3 class="section-title">Frequently Asked Questions</h3>
+      <p class="section-subtitle">Everything you need to know about TubeGrab.</p>
+
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h4>Why does TubeGrab use a desktop helper?</h4>
+          <p>YouTube streams 1080p, 1440p, and 4K video separate from audio. A standard browser extension cannot merge high-bitrate video and audio streams at full speed without freezing the tab. TubeGrab's tiny helper merges them instantly using FFmpeg.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Does the desktop helper run in the background forever?</h4>
+          <p>No. TubeGrab uses an intelligent auto-shutdown timer. 5 seconds after your downloads finish, the helper completely terminates itself, leaving 0% CPU and 0 MB RAM usage.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How do I update TubeGrab when YouTube changes?</h4>
+          <p>Inside your Windows Suite folder, simply double-click <code>update.bat</code>. It pulls the latest YouTube extraction algorithms and engine scripts in 3 seconds.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Is TubeGrab safe and free?</h4>
+          <p>Yes. TubeGrab is 100% free and open-source under the MIT License. It does not collect cookies, browsing data, or telemetry.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-wrap">
+      <div>
+        <b>TubeGrab</b> • Free & Open-Source Media Downloader
+      </div>
       <div class="footer-links">
-        <a href="#simulator">Live Demo</a>
-        <a href="#downloads">Download Hub</a>
-        <a href="#installation">Installation</a>
-        <a href="https://github.com/f2025cs024-star/Tubegrab-4K" target="_blank" rel="noopener noreferrer">GitHub Source</a>
-        <a href="https://github.com/f2025cs024-star/Tubegrab-4K/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>
-        <a href="#security">Privacy Guarantee</a>
+        <a href="https://github.com/f2025cs024-star/Tubegrab-4K" target="_blank">GitHub</a>
+        <a href="version.json" target="_blank">Version Info</a>
+        <a href="sitemap.xml" target="_blank">Sitemap</a>
       </div>
-      <p>TubeGrab 4K • Engineered for High-Speed 4K Video Archival • Released under the MIT Open Source License.</p>
-      <p class="footer-disclaimer">
-        Disclaimer: TubeGrab 4K is not affiliated with, endorsed by, or associated with Google LLC or YouTube. All trademarks and brand names belong to their respective owners. TubeGrab 4K is an open-source tool designed for educational, research, and personal offline backup purposes.
-      </p>
-    </footer>
-  </div>
-
-  <!-- Toast Notification -->
-  <div class="toast" id="toast">
-    <span id="toastIcon">✔</span>
-    <span id="toastMsg">Notification message</span>
-  </div>
+    </div>
+  </footer>
 
   <script>
-    // Copy Hash to Clipboard
-    function copyHash(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast("✔ Hash copied to clipboard!");
-      }).catch(() => {
-        showToast("ℹ Failed to copy automatically.");
-      });
+    // Live Inspector Client Logic
+    const inspectBtn = document.getElementById('inspectBtn');
+    const urlInput = document.getElementById('videoUrlInput');
+    const previewCard = document.getElementById('previewCard');
+    const thumbImg = document.getElementById('thumbImg');
+    const videoTitle = document.getElementById('videoTitle');
+    const videoMeta = document.getElementById('videoMeta');
+    const startDownloadBtn = document.getElementById('startDownloadBtn');
+    const progressWrap = document.getElementById('progressWrap');
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressStatus = document.getElementById('progressStatus');
+    const engineStatus = document.getElementById('engineStatus');
+
+    let selectedQuality = "max";
+    let activeVideoId = "";
+
+    // Check Local Engine Status
+    function checkEngine() {
+      fetch("http://127.0.0.1:19876/status", { signal: AbortSignal.timeout(1200) })
+        .then(r => r.json())
+        .then(d => {
+          engineStatus.textContent = "● Local Engine Active";
+          engineStatus.style.color = "#10b981";
+        })
+        .catch(() => {
+          engineStatus.textContent = "○ Standalone Mode";
+          engineStatus.style.color = "#94a3b8";
+        });
+    }
+    checkEngine();
+
+    // Parse YouTube ID
+    function extractYouTubeId(url) {
+      const reg = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const match = url.match(reg);
+      return match ? match[1] : null;
     }
 
-    // Show Toast
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      const toastMsg = document.getElementById("toastMsg");
-      toastMsg.textContent = msg;
-      toast.classList.add("show");
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 3000);
-    }
+    // Handle Inspect Click
+    inspectBtn.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (!url) return;
 
-    // Simulator Interactive Menu
-    function toggleSimMenu() {
-      const menu = document.getElementById("simMenu");
-      const arrow = document.getElementById("simArrow");
-      menu.classList.toggle("open");
-      if (menu.classList.contains("open")) {
-        arrow.style.transform = "rotate(180deg)";
-      } else {
-        arrow.style.transform = "rotate(0deg)";
+      const id = extractYouTubeId(url);
+      if (!id) {
+        alert("Please enter a valid YouTube video URL.");
+        return;
       }
-    }
 
-    // Close Simulator Menu on outside click
-    document.addEventListener("click", function(e) {
-      const capsule = document.getElementById("simCapsule");
-      const menu = document.getElementById("simMenu");
-      if (capsule && menu && !capsule.contains(e.target) && !menu.contains(e.target)) {
-        menu.classList.remove("open");
-        document.getElementById("simArrow").style.transform = "rotate(0deg)";
-      }
+      activeVideoId = id;
+      thumbImg.src = `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
+      videoTitle.textContent = "YouTube Video (" + id + ")";
+      videoMeta.textContent = "Detected stream: Ready for multi-resolution extraction";
+      previewCard.style.display = "block";
+      progressWrap.style.display = "none";
+
+      // Try fetching live title from YouTube oEmbed
+      fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${id}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.title) {
+            videoTitle.textContent = data.title;
+            videoMeta.textContent = `Author: ${data.author_name || 'YouTube Creator'} • Ready`;
+          }
+        })
+        .catch(() => {});
     });
 
-    // Start Simulator Download Animation
-    let simInterval = null;
-    function startSimDownload(quality, size) {
-      toggleSimMenu();
-      const pBox = document.getElementById("simProgressBox");
-      const pFill = document.getElementById("simProgressFill");
-      const pText = document.getElementById("simStatusText");
-      const pPercent = document.getElementById("simPercent");
-      const pSpeed = document.getElementById("simSpeed");
-      const pDownloaded = document.getElementById("simDownloaded");
-      const pEta = document.getElementById("simEta");
-
-      pBox.style.display = "block";
-      pText.textContent = `Streaming & Muxing ${quality}...`;
-      pFill.style.width = "0%";
-      pPercent.textContent = "0%";
-
-      if (simInterval) clearInterval(simInterval);
-
-      let current = 0;
-      const totalMb = parseFloat(size) * (size.includes("GB") ? 1024 : 1);
-      
-      simInterval = setInterval(() => {
-        current += Math.random() * 7 + 5;
-        if (current >= 100) {
-          current = 100;
-          clearInterval(simInterval);
-          pFill.style.width = "100%";
-          pPercent.textContent = "100%";
-          pText.textContent = `✔ Complete: ${quality} saved!`;
-          pSpeed.textContent = "Speed: Finished";
-          pDownloaded.textContent = `${size} / ${size}`;
-          pEta.textContent = "ETA: 00:00";
-          showToast(`🎉 Download Complete: Saved in Downloads!`);
-        } else {
-          pFill.style.width = current + "%";
-          pPercent.textContent = Math.round(current) + "%";
-          const currentMb = ((current / 100) * totalMb).toFixed(1);
-          pDownloaded.textContent = `${currentMb} MB / ${size}`;
-          const currentSpeed = (Math.random() * 15 + 45).toFixed(1);
-          pSpeed.textContent = `Speed: ${currentSpeed} MB/s`;
-          const remainingSec = Math.max(1, Math.round(((100 - current) / 100) * 12));
-          pEta.textContent = `ETA: 00:${remainingSec < 10 ? '0' + remainingSec : remainingSec}`;
-        }
-      }, 160);
-    }
-
-    // Switch Installation Tabs
-    function switchTab(tabId) {
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
-      
-      event.target.classList.add("active");
-      const activeContent = document.getElementById("tab-" + tabId);
-      if (activeContent) activeContent.classList.add("active");
-    }
-
-    // Copy text to clipboard with custom message
-    function copyText(text, msg) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast(msg || "✔ Copied to clipboard!");
-      }).catch(() => {
-        showToast("ℹ Failed to copy automatically.");
+    // Quality chip toggle
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedQuality = chip.getAttribute('data-q');
       });
+    });
+
+    // Handle Download Action
+    startDownloadBtn.addEventListener('click', () => {
+      const fullUrl = `https://www.youtube.com/watch?v=${activeVideoId}`;
+      progressWrap.style.display = "block";
+      progressFill.style.width = "15%";
+      progressPercent.textContent = "15%";
+      progressStatus.textContent = "Connecting to TubeGrab engine...";
+
+      fetch("http://127.0.0.1:19876/trigger", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: fullUrl,
+          title: videoTitle.textContent,
+          quality: selectedQuality
+        })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res && res.task_id) {
+          trackTask(res.task_id);
+        } else {
+          simulateDemo();
+        }
+      })
+      .catch(() => {
+        simulateDemo();
+      });
+    });
+
+    function trackTask(taskId) {
+      const poll = setInterval(() => {
+        fetch(`http://127.0.0.1:19876/progress?id=${taskId}`)
+          .then(r => r.json())
+          .then(data => {
+            if (data.percent) {
+              const p = Math.round(data.percent);
+              progressFill.style.width = `${p}%`;
+              progressPercent.textContent = `${p}%`;
+              progressStatus.textContent = data.speed ? `${data.speed} • ${data.downloaded || ''}` : "Downloading...";
+            }
+            if (data.status === "finished") {
+              clearInterval(poll);
+              progressFill.style.width = "100%";
+              progressPercent.textContent = "100%";
+              progressStatus.textContent = "✓ Completed! Saved to Downloads folder.";
+            } else if (data.status === "error") {
+              clearInterval(poll);
+              progressStatus.textContent = "Download failed. Check engine logs.";
+            }
+          })
+          .catch(() => clearInterval(poll));
+      }, 500);
     }
 
-    // Toggle FAQ Accordion
-    function toggleFaq(el) {
-      const item = el.parentElement;
-      const wasActive = item.classList.contains("active");
-      document.querySelectorAll(".faq-item").forEach(i => i.classList.remove("active"));
-      if (!wasActive) {
-        item.classList.add("active");
-      }
+    function simulateDemo() {
+      progressStatus.textContent = "Local engine helper not running. Start via install.bat to download directly.";
+      let p = 20;
+      const t = setInterval(() => {
+        p += 20;
+        if (p <= 100) {
+          progressFill.style.width = `${p}%`;
+          progressPercent.textContent = `${p}%`;
+        } else {
+          clearInterval(t);
+          progressStatus.textContent = "Install the Windows Suite to save 4K files directly to your PC!";
+        }
+      }, 400);
     }
   </script>
 </body>

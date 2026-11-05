@@ -8,8 +8,8 @@ from pydantic import BaseModel
 import yt_dlp
 
 app = FastAPI(
-    title="TubeGrab 4K Cloud & Hub API",
-    description="Official API for TubeGrab 4K YouTube Video Downloader Extension",
+    title="TubeGrab Cloud & Hub API",
+    description="Official API for TubeGrab YouTube Video Downloader Extension",
     version="2.2.5"
 )
 
