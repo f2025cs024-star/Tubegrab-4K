@@ -258,72 +258,81 @@
       margin: 0 auto 36px;
     }
 
-    /* Download Cards */
-    .download-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      max-width: 860px;
+    /* Single Hero CTA */
+    .hero-cta-box {
+      max-width: 620px;
       margin: 0 auto 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+      padding: 16px 28px;
+      background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+      color: #fff !important;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      text-decoration: none !important;
+    }
+
+    .btn-hero-primary:hover {
+      background: linear-gradient(180deg, #0369a1 0%, #075985 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(2, 132, 199, 0.5);
+      color: #fff !important;
+    }
+
+    .btn-hero-primary svg {
+      flex-shrink: 0;
+    }
+
+    .btn-text-wrap {
+      display: flex;
+      flex-direction: column;
       text-align: left;
     }
 
-    .dl-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      transition: all 0.2s;
-    }
-
-    .dl-card:hover {
-      border-color: rgba(56, 189, 248, 0.3);
-      transform: translateY(-2px);
-    }
-
-    .dl-card.highlight {
-      border-color: rgba(56, 189, 248, 0.4);
-      background: linear-gradient(180deg, rgba(2, 132, 199, 0.08) 0%, var(--bg-surface) 100%);
-    }
-
-    .dl-badge {
-      display: inline-block;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      font-weight: 600;
-      color: var(--accent);
-      background: rgba(56, 189, 248, 0.1);
-      padding: 3px 8px;
-      border-radius: 4px;
-      margin-bottom: 12px;
-      width: fit-content;
-    }
-
-    .dl-card h3 {
-      font-size: 19px;
+    .btn-title {
+      font-size: 18px;
       font-weight: 700;
-      color: #fff;
-      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
     }
 
-    .dl-card p {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      line-height: 1.5;
+    .btn-sub {
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 400;
+      margin-top: 2px;
     }
 
-    .dl-meta {
+    .hero-meta-badges {
       display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px 18px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .meta-item {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      margin-top: 16px;
-      font-size: 12px;
-      color: var(--text-dim);
+      gap: 6px;
+    }
+
+    .meta-item svg {
+      color: var(--accent);
     }
 
     /* Live Interactive Video Inspector */
@@ -705,8 +714,7 @@
         <span class="brand-tag">v2.2.5</span>
       </a>
       <nav class="nav-links">
-        <a href="#extension">Extension</a>
-        <a href="#suite">Windows Suite</a>
+        <a href="#download">Download</a>
         <a href="#inspector">Web Inspector</a>
         <a href="#how-it-works">How It Works</a>
         <a href="#faq">FAQ</a>
@@ -732,44 +740,35 @@
       <h1>The Clean YouTube Downloader That Lives Inside Your Player</h1>
       <p>Download original 1080p, 1440p, 4K UHD video and MP3 audio directly from YouTube with zero popup redirects, zero wait timers, and zero quality loss.</p>
 
-      <!-- Downloads -->
-      <div class="download-grid">
-        <!-- Card 1: Extension -->
-        <div class="dl-card highlight" id="extension">
-          <div>
-            <span class="dl-badge">Chrome • Edge • Brave • Opera</span>
-            <h3>Browser Extension</h3>
-            <p>Injects an ad-free quality picker directly into the YouTube player controls. Shows live electric-blue download progress without leaving the page.</p>
+      <!-- Single Focused Call to Action -->
+      <div class="hero-cta-box" id="download">
+        <a href="tubegrab-windows-full.zip" class="btn-hero-primary">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.902-1.799"/>
+          </svg>
+          <div class="btn-text-wrap">
+            <span class="btn-title">Download TubeGrab for Windows</span>
+            <span class="btn-sub">Complete Suite (.zip) • Includes Extension & Background Engine</span>
           </div>
-          <div>
-            <a href="extension.zip" class="btn-primary" style="width: 100%; justify-content: center;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download Extension (.zip)
-            </a>
-            <div class="dl-meta">
-              <span>Manifest V3 Compliant</span>
-              <span>18 KB • v2.2.5</span>
-            </div>
-          </div>
-        </div>
+        </a>
 
-        <!-- Card 2: Windows Suite -->
-        <div class="dl-card" id="suite">
-          <div>
-            <span class="dl-badge">Windows 10 / 11 64-bit</span>
-            <h3>Windows Desktop Suite</h3>
-            <p>Complete package including the multi-threaded FFmpeg muxing engine, 1-click <code>install.bat</code>, and automatic <code>update.bat</code>. Idles at 0% CPU & 0 MB RAM.</p>
-          </div>
-          <div>
-            <a href="tubegrab-windows-full.zip" class="btn-ghost" style="width: 100%; justify-content: center; background: rgba(255,255,255,0.06);">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download Windows Suite (.zip)
-            </a>
-            <div class="dl-meta">
-              <span>Self-Healing Python Runner</span>
-              <span>28 KB • Recommended</span>
-            </div>
-          </div>
+        <div class="hero-meta-badges">
+          <span class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Windows 10 / 11 64-bit
+          </span>
+          <span class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Chrome & Edge Extension Included
+          </span>
+          <span class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            1-Click <code>install.bat</code> & <code>update.bat</code>
+          </span>
+          <span class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            0% CPU / 0 MB RAM Idle Auto-Shutdown
+          </span>
         </div>
       </div>
     </section>
