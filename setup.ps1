@@ -142,6 +142,36 @@ try {
     Write-Host "[3/4] Registering Windows background auto-start..." -ForegroundColor White
     $vbsPath = Join-Path $scriptDir "silent_start.vbs"
 
+    # Resolve exact pythonw.exe or python.exe path for windowless background execution
+    $pyExePath = $pyInfo.Path
+    $pyDir = Split-Path -Parent $pyExePath
+    $resolvedPyw = $null
+
+    $pywCandidates = @(
+        (Join-Path $pyDir "pythonw.exe"),
+        (Join-Path $pyDir "pyw.exe"),
+        "$env:LOCALAPPDATA\Microsoft\WindowsApps\pythonw.exe",
+        "$env:LOCALAPPDATA\Programs\Python\Python313\pythonw.exe",
+        "$env:LOCALAPPDATA\Programs\Python\Python312\pythonw.exe",
+        "$env:LOCALAPPDATA\Programs\Python\Python311\pythonw.exe",
+        "$env:LOCALAPPDATA\Programs\Python\Python310\pythonw.exe",
+        "C:\Program Files\Python312\pythonw.exe",
+        "C:\Program Files\Python311\pythonw.exe",
+        $pyExePath
+    )
+
+    foreach ($cand in $pywCandidates) {
+        if ($cand -and (Test-Path $cand)) {
+            $resolvedPyw = $cand
+            break
+        }
+    }
+    if (-not $resolvedPyw) { $resolvedPyw = "pythonw.exe" }
+
+    # Save exact resolved python path to python_path.txt so silent_start.vbs never fails on any PC
+    Set-Content -Path (Join-Path $scriptDir "python_path.txt") -Value $resolvedPyw -Force
+    Write-Host "      [OK] Engine launcher bound to: $resolvedPyw" -ForegroundColor Gray
+
     # Register custom URI protocol: tubegrab://
     $regKey = "HKCU:\Software\Classes\tubegrab"
     if (-not (Test-Path $regKey)) { New-Item -Path $regKey -Force | Out-Null }

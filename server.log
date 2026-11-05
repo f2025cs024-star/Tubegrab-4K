@@ -4,3 +4,6 @@
 [2026-11-04 13:56:55] Task 6f2f4a3f completed successfully!
 [2026-11-04 13:59:11] Triggered task e4bcad28 for https://www.youtube.com/watch?v=fdhbRLdrVzA (720)
 [2026-11-04 13:59:27] Task e4bcad28 completed successfully!
+[2026-11-05 15:40:39] TubeGrab 4K engine listening on port 19876. Ready for instant downloads.
+[2026-11-05 15:40:39] [AutoStop] All downloads finished. Scheduling auto-stop in 60.0s to free RAM & CPU...
+[2026-11-05 15:40:54] [AutoStop] Auto-stop executed. Engine terminating cleanly to 0% CPU & 0 MB RAM.
