@@ -270,7 +270,7 @@ function isNewerVersion(remote, local) {
 
 function checkForUpdates() {
   // Check official cloud release endpoint first
-  fetch("https://tubegrab-premium-yt-download-talha-950a.vercel.app/version.json")
+  fetch("https://streamforge-talha-950a.vercel.app/version.json")
     .then((res) => res.json())
     .then((data) => handleVersionData(data))
     .catch(() => {

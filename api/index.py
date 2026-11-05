@@ -128,7 +128,7 @@ def get_version():
         "app": "TubeGrab 4K",
         "changelog": "Auto-shutdown zero-resource engine, instant wake-up, 144p to 4K UHD quality picker.",
         "release_url": "https://github.com/f2025cs024-star/Tubegrab-4K",
-        "download_url": "https://tubegrab-premium-yt-download-talha-950a.vercel.app/tubegrab-windows-full.zip"
+        "download_url": "https://streamforge-talha-950a.vercel.app/tubegrab-windows-full.zip"
     }
 
 
