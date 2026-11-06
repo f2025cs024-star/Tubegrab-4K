@@ -1,4 +1,4 @@
-﻿{
+{
   "manifest_version": 3,
   "name": "TubeGrab - YouTube Video Downloader Extension",
   "version": "2.2.5",
@@ -45,6 +45,12 @@
       "js": ["page_bridge.js"],
       "world": "MAIN",
       "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["page_bridge.js", "icon.png"],
+      "matches": ["*://*.youtube.com/*"]
     }
   ]
 }
