@@ -1,6 +1,6 @@
-{
+﻿{
   "manifest_version": 3,
-  "name": "StreamForge - YouTube Video Downloader Extension",
+  "name": "TubeGrab - YouTube Video Downloader Extension",
   "version": "2.2.5",
   "description": "Clean, ad-free YouTube video downloader extension with dynamic quality dropdown, live progress bar, and high-speed downloading.",
   "permissions": [
@@ -17,7 +17,7 @@
     "128": "icon.png"
   },
   "action": {
-    "default_title": "StreamForge Downloader",
+    "default_title": "TubeGrab Downloader",
     "default_icon": "icon.png"
   },
   "options_ui": {

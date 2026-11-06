@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TubeGrab - Clean, High-Speed YouTube Downloader &amp; Desktop Suite</title>
-  <meta name="description" content="TubeGrab is a high-speed, ad-free YouTube video and audio downloader desktop suite. Download original 1080p, 1440p, 4K UHD 60FPS video and 320kbps MP3 audio with lossless local muxing.">
+  <meta name="description" content="TubeGrab is a high-speed, ad-free YouTube video and audio downloader desktop suite for Windows. Download original 1080p, 1440p, 4K UHD 60FPS video and 320kbps MP3 audio with lossless local FFmpeg muxing.">
   <meta name="keywords" content="tubegrab, tubegrab 4k, youtube downloader, yt downloader, 1080p youtube download, 4k video download, mp3 audio extractor, open source youtube downloader, windows youtube downloader">
   <meta name="author" content="TubeGrab Team">
   <meta name="google-site-verification" content="googleea333b6af960c847" />
@@ -12,7 +12,7 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="TubeGrab - Clean YouTube Downloader &amp; Desktop Suite">
-  <meta property="og:description" content="Download YouTube videos directly in original quality with zero ads and lossless local speed.">
+  <meta property="og:description" content="Download YouTube videos directly in original 4K and 1080p quality with zero ads, lossless local speed, and 0% CPU idle.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tubegrab-4k.vercel.app/">
   <meta property="og:image" content="https://tubegrab-4k.vercel.app/icon.png">
@@ -27,12 +27,12 @@
         "@id": "https://tubegrab-4k.vercel.app/#website",
         "url": "https://tubegrab-4k.vercel.app/",
         "name": "TubeGrab",
-        "description": "High-performance YouTube video and audio downloader desktop suite."
+        "description": "High-performance YouTube video and audio downloader desktop suite for Windows."
       },
       {
         "@type": "SoftwareApplication",
         "name": "TubeGrab",
-        "operatingSystem": "Windows 10, Windows 11, Chromium Browsers",
+        "operatingSystem": "Windows 10, Windows 11",
         "applicationCategory": "MultimediaApplication",
         "offers": {
           "@type": "Offer",
@@ -47,7 +47,7 @@
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -208,7 +208,7 @@
 
     /* Hero */
     .hero {
-      padding: 76px 0 44px;
+      padding: 80px 0 48px;
       text-align: center;
       position: relative;
     }
@@ -237,27 +237,27 @@
     }
 
     .hero h1 {
-      font-size: 44px;
+      font-size: 46px;
       font-weight: 800;
       letter-spacing: -0.035em;
       line-height: 1.15;
       background: linear-gradient(180deg, #FFFFFF 20%, #94A3B8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .hero p {
-      font-size: 17px;
+      font-size: 17.5px;
       color: var(--text-muted);
-      max-width: 600px;
+      max-width: 620px;
       margin: 0 auto 36px;
       line-height: 1.6;
     }
 
     /* Hero Main CTA (Crisp Stealth Tech) */
     .hero-download-box {
-      margin-bottom: 56px;
+      margin-bottom: 48px;
     }
 
     .btn-download-main {
@@ -307,194 +307,38 @@
       color: var(--text-dim);
     }
 
-    /* Clean Interactive Tool */
-    .tool-box {
+    /* Clean Engine Specs Banner */
+    .engine-badge-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 24px;
+      padding: 20px 24px;
       margin-bottom: 56px;
-      text-align: left;
+      text-align: center;
     }
 
-    .tool-header {
+    .engine-stat {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .tool-header h3 {
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .engine-pill {
-      font-size: 11.5px;
+    .stat-label {
+      font-size: 11px;
       font-family: var(--font-mono);
       color: var(--text-dim);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
-    .input-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .url-input {
-      flex: 1;
-      background: #090b10;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      color: #fff;
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    .url-input:focus {
-      border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .url-input::placeholder {
-      color: var(--text-dim);
-    }
-
-    .btn-inspect {
-      display: inline-flex;
-      align-items: center;
-      padding: 0 18px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--border);
-      color: #fff;
-      font-size: 13.5px;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .btn-inspect:hover {
-      background: #fff;
-      color: #000;
-    }
-
-    /* Video Preview */
-    .preview-card {
-      display: none;
-      margin-top: 18px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-    }
-
-    .preview-flex {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    .preview-thumb {
-      width: 160px;
-      height: 90px;
-      border-radius: 6px;
-      object-fit: cover;
-      background: #000;
-      flex-shrink: 0;
-      border: 1px solid var(--border);
-    }
-
-    .preview-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .preview-title {
+    .stat-val {
       font-size: 14.5px;
-      font-weight: 600;
+      font-weight: 700;
       color: #fff;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .preview-meta {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 12px;
       font-family: var(--font-mono);
-    }
-
-    .quality-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .chip {
-      font-size: 11.5px;
-      font-family: var(--font-mono);
-      padding: 4px 10px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .chip:hover {
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    .chip.active {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: #ffffff;
-      color: #ffffff;
-      font-weight: 600;
-    }
-
-    .progress-box {
-      display: none;
-      margin-top: 14px;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 6px;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-    }
-
-    .progress-bar-bg {
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 6px;
-    }
-
-    .progress-bar-fill {
-      width: 0%;
-      height: 100%;
-      background: #ffffff;
-      transition: width 0.2s linear;
-    }
-
-    .progress-text {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11.5px;
-      font-family: var(--font-mono);
-      color: var(--text-muted);
     }
 
     /* 3 Clean Cards */
@@ -509,7 +353,7 @@
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 22px;
+      padding: 24px;
       text-align: left;
       transition: border-color 0.2s;
     }
@@ -519,16 +363,16 @@
     }
 
     .feature-card h4 {
-      font-size: 15px;
+      font-size: 15.5px;
       font-weight: 600;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .feature-card p {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     /* 3 Steps Setup */
@@ -536,39 +380,39 @@
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 28px;
+      padding: 30px;
       margin-bottom: 56px;
       text-align: left;
     }
 
     .steps-title {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .step-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
     }
 
     .step-item {
       display: flex;
       align-items: flex-start;
-      gap: 14px;
+      gap: 16px;
     }
 
     .step-badge {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 6px;
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border);
       color: #fff;
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -578,10 +422,10 @@
     }
 
     .step-content h5 {
-      font-size: 14px;
+      font-size: 14.5px;
       font-weight: 600;
       color: #fff;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
 
     .step-content p {
@@ -606,23 +450,23 @@
     }
 
     .faq-title {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .faq-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .faq-card {
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 18px 20px;
+      padding: 20px 22px;
     }
 
     .faq-card h5 {
@@ -635,7 +479,7 @@
     .faq-card p {
       font-size: 13px;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     /* Footer */
@@ -666,18 +510,14 @@
     }
 
     @media (max-width: 640px) {
+      .engine-badge-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
       .features-grid {
         grid-template-columns: 1fr;
       }
       .hero h1 {
-        font-size: 30px;
-      }
-      .preview-flex {
-        flex-direction: column;
-      }
-      .preview-thumb {
-        width: 100%;
-        height: 160px;
+        font-size: 32px;
       }
       .footer-wrap {
         flex-direction: column;
@@ -718,8 +558,8 @@
         <span class="status-dot-emerald"></span>
         Zero Ads &bull; Lossless FFmpeg Muxing &bull; 0% CPU Idle
       </div>
-      <h1>High-Speed YouTube Downloader.<br>Built for Your Desktop.</h1>
-      <p>Download original 1080p, 1440p, 4K UHD video and MP3 audio directly from YouTube with zero popup ads, zero waiting, and lossless local speed.</p>
+      <h1>High-Speed 4K YouTube Downloader.<br>Built for Your Desktop.</h1>
+      <p>Download original 1080p, 1440p, 4K UHD 60FPS video and 320kbps MP3 audio directly from YouTube with zero popup ads, zero waiting, and lossless local speed.</p>
 
       <!-- Single Primary CTA (Pure Stealth Monochrome Tech) -->
       <div class="hero-download-box">
@@ -733,7 +573,7 @@
         <div class="download-meta">
           <span>Windows 10 / 11 64-bit</span>
           <span>&bull;</span>
-          <span>Chrome &amp; Edge Extension Included</span>
+          <span>Complete Automated Suite</span>
           <span>&bull;</span>
           <span>100% Free &amp; Open Source</span>
         </div>
@@ -746,58 +586,25 @@
       </div>
     </section>
 
-    <!-- Clean Video Inspector (OneCompiler Style) -->
-    <section class="tool-box">
-      <div class="tool-header">
-        <h3>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-          Video Inspector &amp; Stream Extractor
-        </h3>
-        <span class="engine-pill" id="engineStatus">
-          <span class="status-dot-emerald"></span>
-          Checking local engine...
-        </span>
+    <!-- Suite Engine Spec Preview -->
+    <div class="engine-badge-bar">
+      <div class="engine-stat">
+        <span class="stat-label">MAX RESOLUTION</span>
+        <span class="stat-val">4K UHD 60FPS</span>
       </div>
-
-      <div class="input-row">
-        <input type="text" id="videoUrlInput" class="url-input" placeholder="Paste YouTube link (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ)">
-        <button id="inspectBtn" class="btn-inspect">Inspect</button>
+      <div class="engine-stat">
+        <span class="stat-label">AUDIO BITRATE</span>
+        <span class="stat-val">320 KBPS MP3</span>
       </div>
-
-      <!-- Preview Output -->
-      <div id="previewCard" class="preview-card">
-        <div class="preview-flex">
-          <img id="thumbImg" src="" alt="Thumbnail" class="preview-thumb">
-          <div class="preview-info">
-            <h4 id="videoTitle" class="preview-title">Video Title</h4>
-            <div id="videoMeta" class="preview-meta">Detected Stream &bull; Ready</div>
-            <div class="quality-chips" id="qualityChips">
-              <span class="chip active" data-q="max">Best Quality (UHD)</span>
-              <span class="chip" data-q="1080">1080p Full HD</span>
-              <span class="chip" data-q="720">720p HD</span>
-              <span class="chip" data-q="mp3">MP3 Audio</span>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
-          <button id="startDownloadBtn" class="btn-nav-download" style="padding: 10px 20px;">
-            Send to TubeGrab Engine
-          </button>
-        </div>
-
-        <!-- Progress -->
-        <div id="progressWrap" class="progress-box">
-          <div class="progress-bar-bg">
-            <div id="progressFill" class="progress-bar-fill"></div>
-          </div>
-          <div class="progress-text">
-            <span id="progressStatus">Downloading...</span>
-            <span id="progressPercent">0%</span>
-          </div>
-        </div>
+      <div class="engine-stat">
+        <span class="stat-label">MUXING ENGINE</span>
+        <span class="stat-val">Local FFmpeg</span>
       </div>
-    </section>
+      <div class="engine-stat">
+        <span class="stat-label">IDLE OVERHEAD</span>
+        <span class="stat-val">0% CPU &bull; 0 MB RAM</span>
+      </div>
+    </div>
 
     <!-- 3 Clean Feature Cards -->
     <section class="features-grid">
@@ -822,22 +629,22 @@
         <div class="step-item">
           <div class="step-badge">1</div>
           <div class="step-content">
-            <h5>Unpack &amp; Run Installer</h5>
-            <p>Extract <code>tubegrab-windows-full.zip</code> and double-click <code>install.bat</code>. It automatically sets up Python and registers the helper.</p>
+            <h5>Unpack the Suite</h5>
+            <p>Download and extract <code>tubegrab-windows-full.zip</code> to your computer.</p>
           </div>
         </div>
         <div class="step-item">
           <div class="step-badge">2</div>
           <div class="step-content">
-            <h5>Load Extension in Browser</h5>
-            <p>Go to <span class="code-tag">chrome://extensions</span> (or <span class="code-tag">edge://extensions</span>), enable <b>Developer mode</b>, and click <b>Load unpacked</b> on the included <code>extension</code> folder.</p>
+            <h5>Run Automated Installer</h5>
+            <p>Double-click <code>install.bat</code>. It automatically sets up Python, dependencies, and registers the background helper.</p>
           </div>
         </div>
         <div class="step-item">
           <div class="step-badge">3</div>
           <div class="step-content">
-            <h5>Download in 1 Click</h5>
-            <p>Open any YouTube video. The TubeGrab quality button appears beside the video player controls ready for instant download.</p>
+            <h5>Download in 1 Click on YouTube</h5>
+            <p>Load the included <code>extension</code> folder in Chrome or Edge (<span class="code-tag">chrome://extensions</span> &rarr; <b>Load unpacked</b>). The TubeGrab quality button appears right beside the player controls!</p>
           </div>
         </div>
       </div>
@@ -882,149 +689,5 @@
     </div>
   </footer>
 
-  <script>
-    // Local Engine Check
-    function checkEngine() {
-      const statusTag = document.getElementById('engineStatus');
-      fetch("http://127.0.0.1:19876/status", { signal: AbortSignal.timeout(1200) })
-        .then(r => r.json())
-        .then(d => {
-          statusTag.innerHTML = '<span class="status-dot-emerald"></span> Local Engine Active';
-          statusTag.style.color = "#10b981";
-        })
-        .catch(() => {
-          statusTag.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#64748b;margin-right:6px;"></span> Standalone Mode';
-          statusTag.style.color = "#94a3b8";
-        });
-    }
-    checkEngine();
-
-    // YouTube URL Extractor
-    function extractYouTubeId(url) {
-      const reg = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-      const match = url.match(reg);
-      return match ? match[1] : null;
-    }
-
-    const inspectBtn = document.getElementById('inspectBtn');
-    const urlInput = document.getElementById('videoUrlInput');
-    const previewCard = document.getElementById('previewCard');
-    const thumbImg = document.getElementById('thumbImg');
-    const videoTitle = document.getElementById('videoTitle');
-    const videoMeta = document.getElementById('videoMeta');
-    const startDownloadBtn = document.getElementById('startDownloadBtn');
-    const progressWrap = document.getElementById('progressWrap');
-    const progressFill = document.getElementById('progressFill');
-    const progressPercent = document.getElementById('progressPercent');
-    const progressStatus = document.getElementById('progressStatus');
-
-    let selectedQuality = "max";
-    let activeVideoId = "";
-
-    inspectBtn.addEventListener('click', () => {
-      const url = urlInput.value.trim();
-      if (!url) return;
-
-      const id = extractYouTubeId(url);
-      if (!id) {
-        alert("Please enter a valid YouTube video URL.");
-        return;
-      }
-
-      activeVideoId = id;
-      thumbImg.src = `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
-      videoTitle.textContent = "YouTube Video (" + id + ")";
-      videoMeta.textContent = "Stream Ready for Multi-Resolution Extraction";
-      previewCard.style.display = "block";
-      progressWrap.style.display = "none";
-
-      fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${id}`)
-        .then(r => r.json())
-        .then(data => {
-          if (data && data.title) {
-            videoTitle.textContent = data.title;
-            videoMeta.textContent = `Author: ${data.author_name || 'YouTube Creator'} • Ready`;
-          }
-        })
-        .catch(() => {});
-    });
-
-    document.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        selectedQuality = chip.getAttribute('data-q');
-      });
-    });
-
-    startDownloadBtn.addEventListener('click', () => {
-      const fullUrl = `https://www.youtube.com/watch?v=${activeVideoId}`;
-      progressWrap.style.display = "block";
-      progressFill.style.width = "20%";
-      progressPercent.textContent = "20%";
-      progressStatus.textContent = "Connecting to TubeGrab engine...";
-
-      fetch("http://127.0.0.1:19876/trigger", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          url: fullUrl,
-          title: videoTitle.textContent,
-          quality: selectedQuality
-        })
-      })
-      .then(r => r.json())
-      .then(res => {
-        if (res && res.task_id) {
-          trackTask(res.task_id);
-        } else {
-          simulateDemo();
-        }
-      })
-      .catch(() => {
-        simulateDemo();
-      });
-    });
-
-    function trackTask(taskId) {
-      const poll = setInterval(() => {
-        fetch(`http://127.0.0.1:19876/progress?id=${taskId}`)
-          .then(r => r.json())
-          .then(data => {
-            if (data.percent) {
-              const p = Math.round(data.percent);
-              progressFill.style.width = `${p}%`;
-              progressPercent.textContent = `${p}%`;
-              progressStatus.textContent = data.speed ? `${data.speed} • ${data.downloaded || ''}` : "Downloading...";
-            }
-            if (data.status === "finished") {
-              clearInterval(poll);
-              progressFill.style.width = "100%";
-              progressPercent.textContent = "100%";
-              progressStatus.textContent = "✓ Completed! Saved to Downloads folder.";
-            } else if (data.status === "error") {
-              clearInterval(poll);
-              progressStatus.textContent = "Download failed. Check engine logs.";
-            }
-          })
-          .catch(() => clearInterval(poll));
-      }, 500);
-    }
-
-    function simulateDemo() {
-      progressStatus.textContent = "Local engine helper not running. Start via install.bat to download directly.";
-      let p = 25;
-      const t = setInterval(() => {
-        p += 25;
-        if (p <= 100) {
-          progressFill.style.width = `${p}%`;
-          progressPercent.textContent = `${p}%`;
-        } else {
-          clearInterval(t);
-          progressStatus.textContent = "Install TubeGrab Suite to save files directly to your PC!";
-        }
-      }, 350);
-    }
-  </script>
 </body>
 </html>

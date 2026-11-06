@@ -535,17 +535,20 @@
   }
 
   function toggleDropdown() {
-    let menu = getMenu();
-    if (!menu) {
-      menu = document.createElement("div");
-      menu.id = MENU_ID;
-      if (document.body) document.body.appendChild(menu);
-    }
-
     if (isMenuOpen) {
       closeDropdown();
       return;
     }
+
+    let menu = getMenu();
+    if (!menu) {
+      menu = document.createElement("div");
+      menu.id = MENU_ID;
+      menu.className = "tubegrab-active";
+      if (document.body) document.body.appendChild(menu);
+    }
+    menu.classList.remove("tubegrab-hidden");
+    menu.classList.add("tubegrab-active");
 
     requestImmediateProbe();
     renderDropdownItems();
@@ -591,7 +594,9 @@
     `;
 
     menu.innerHTML = itemsHtml;
-    menu.style.display = "flex";
+    menu.classList.remove("tubegrab-hidden");
+    menu.classList.add("tubegrab-active");
+    menu.style.setProperty("display", "flex", "important");
     isMenuOpen = true;
 
     menu.querySelectorAll(".omni-menu-item").forEach((el) => {
@@ -603,9 +608,14 @@
   }
 
   function closeDropdown() {
-    const menu = getMenu();
-    if (menu) menu.style.display = "none";
     isMenuOpen = false;
+    const menu = getMenu();
+    if (menu) {
+      menu.classList.remove("tubegrab-active");
+      menu.classList.add("tubegrab-hidden");
+      menu.style.setProperty("display", "none", "important");
+      try { menu.remove(); } catch (e) {}
+    }
   }
 
   function makeDraggable(el) {
@@ -665,48 +675,74 @@
   }
 
   function isActivelyWatchingVideo() {
-    // 1. Must be on a video watch page (/watch?v=...) or shorts (/shorts/...)
-    const isWatchPath = window.location.pathname === "/watch" && new URLSearchParams(window.location.search).has("v");
-    const isShortsPath = window.location.pathname.startsWith("/shorts/");
-    if (!isWatchPath && !isShortsPath) return false;
+    try {
+      // 1. Must be on a video watch page (/watch?v=...) or shorts (/shorts/...)
+      const pathname = window.location.pathname;
+      const search = window.location.search;
+      const isWatch = pathname === "/watch" && Boolean(new URLSearchParams(search).get("v"));
+      const isShorts = pathname.startsWith("/shorts/") && pathname.length > 8;
 
-    // 2. If in miniplayer mode, watch page is inactive / closed
-    const miniplayer = document.querySelector("ytd-miniplayer[active]");
-    if (miniplayer) return false;
-
-    // 3. On YouTube desktop, <ytd-watch-flexy> is hidden when navigating away or closing video
-    const watchFlexy = document.querySelector("ytd-watch-flexy");
-    if (watchFlexy) {
-      if (watchFlexy.hasAttribute("hidden") || watchFlexy.style.display === "none") {
+      if (!isWatch && !isShorts) {
         return false;
       }
-    }
 
-    // 4. Player must exist and be visibly on the screen in the viewport
-    const player =
-      document.querySelector("#movie_player") ||
-      document.querySelector("ytd-player") ||
-      document.querySelector("video");
+      // 2. If in miniplayer mode, watch page is inactive / closed
+      const miniplayer = document.querySelector("ytd-miniplayer[active], ytd-miniplayer:not([hidden])");
+      if (miniplayer && miniplayer.offsetParent !== null) {
+        return false;
+      }
 
-    if (!player) return false;
+      // 3. On YouTube desktop, watch container must exist and be visible
+      if (isWatch) {
+        const watchContainer = document.querySelector("ytd-watch-flexy, ytd-watch-grid");
+        if (watchContainer) {
+          if (
+            watchContainer.hasAttribute("hidden") ||
+            watchContainer.style.display === "none" ||
+            watchContainer.offsetParent === null
+          ) {
+            return false;
+          }
+        }
+      }
 
-    const rect = player.getBoundingClientRect();
-    if (rect.width < 120 || rect.height < 60) {
+      // 4. Player must exist and be visibly on the screen in the viewport
+      const player =
+        (isWatch ? document.querySelector("ytd-watch-flexy #movie_player, ytd-watch-grid #movie_player, #movie_player") : null) ||
+        document.querySelector("ytd-player") ||
+        document.querySelector("video");
+
+      if (!player) return false;
+
+      if (typeof player.checkVisibility === "function") {
+        if (!player.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) {
+          return false;
+        }
+      } else if (player.offsetParent === null) {
+        return false;
+      }
+
+      const rect = player.getBoundingClientRect();
+      if (rect.width < 120 || rect.height < 60) {
+        return false;
+      }
+
+      // If the video player has scrolled off the top or bottom of the screen, it's not active
+      if (rect.top < -60 || rect.bottom < 100 || rect.top > (window.innerHeight - 60)) {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
       return false;
     }
-
-    // If the video player has scrolled off the top or bottom of the screen, it's not active
-    if (rect.bottom < 80 || rect.top > window.innerHeight) {
-      return false;
-    }
-
-    return true;
   }
 
   function positionPillAtVideoSide(pill) {
+    if (!pill) return;
+
     if (isFullscreen() || !isActivelyWatchingVideo()) {
-      pill.style.display = "none";
-      closeDropdown();
+      hideUiImmediately();
       return;
     }
 
@@ -720,30 +756,37 @@
           pill.style.left = pos.left;
           pill.style.top = pos.top;
           hasUserDragged = true;
+          pill.classList.remove("tubegrab-hidden");
+          pill.classList.add("tubegrab-active");
           return;
         }
       }
     } catch (e) {}
 
     const player =
-      document.querySelector("#movie_player") ||
+      document.querySelector("ytd-watch-flexy #movie_player, ytd-watch-grid #movie_player, #movie_player") ||
       document.querySelector("ytd-player") ||
       document.querySelector("video");
 
     if (player) {
       const rect = player.getBoundingClientRect();
-      if (rect.width > 200 && rect.height > 100 && rect.bottom > 80 && rect.top < window.innerHeight) {
-        const topPos = Math.max(60, rect.top + 10);
-        const leftPos = Math.max(10, rect.right - pill.offsetWidth - 12);
+      if (rect.top < -60 || rect.bottom < 100 || rect.top > (window.innerHeight - 60)) {
+        hideUiImmediately();
+        return;
+      }
+
+      if (rect.width > 200 && rect.height > 100) {
+        const topPos = rect.top + 12;
+        const leftPos = Math.max(10, rect.right - pill.offsetWidth - 14);
         pill.style.top = `${topPos}px`;
         pill.style.left = `${leftPos}px`;
+        pill.classList.remove("tubegrab-hidden");
+        pill.classList.add("tubegrab-active");
         return;
       }
     }
 
-    // If player is not visible or video is closed, hide pill immediately (never float at top right)
-    pill.style.display = "none";
-    closeDropdown();
+    hideUiImmediately();
   }
 
   function rebuildPill() {
@@ -795,8 +838,7 @@
       closeBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         isPillClosedByUser = true;
-        closeDropdown();
-        pill.style.display = "none";
+        hideUiImmediately();
       });
     }
 
@@ -810,6 +852,7 @@
 
     pill = document.createElement("div");
     pill.id = PILL_ID;
+    pill.className = "tubegrab-active";
     document.body.appendChild(pill);
 
     rebuildPill();
@@ -818,16 +861,31 @@
   }
 
   function hideUiImmediately() {
-    const pill = getPill();
-    if (pill) pill.style.display = "none";
-    const menu = getMenu();
-    if (menu) menu.style.display = "none";
     isMenuOpen = false;
+
+    const menu = getMenu();
+    if (menu) {
+      menu.classList.remove("tubegrab-active");
+      menu.classList.add("tubegrab-hidden");
+      menu.style.setProperty("display", "none", "important");
+      menu.style.setProperty("visibility", "hidden", "important");
+      menu.style.setProperty("opacity", "0", "important");
+      try { menu.remove(); } catch (e) {}
+    }
+
+    const pill = getPill();
+    if (pill) {
+      pill.classList.remove("tubegrab-active");
+      pill.classList.add("tubegrab-hidden");
+      pill.style.setProperty("display", "none", "important");
+      pill.style.setProperty("visibility", "hidden", "important");
+      pill.style.setProperty("opacity", "0", "important");
+      pill.style.setProperty("pointer-events", "none", "important");
+      try { pill.remove(); } catch (e) {}
+    }
   }
 
   function updateUi() {
-    let pill = getPill();
-
     if (!isActivelyWatchingVideo() || isFullscreen()) {
       hideUiImmediately();
       return;
@@ -848,9 +906,12 @@
     }
 
     if (!isPillClosedByUser) {
-      if (!pill) pill = createPill();
-      if (pill) {
-        pill.style.display = "flex";
+      let pill = getPill();
+      if (!pill) {
+        pill = createPill();
+      } else {
+        pill.classList.remove("tubegrab-hidden");
+        pill.classList.add("tubegrab-active");
         positionPillAtVideoSide(pill);
       }
 
@@ -866,6 +927,8 @@
           );
         } catch (e) {}
       }
+    } else {
+      hideUiImmediately();
     }
   }
 
@@ -903,6 +966,7 @@
 
   // Instant hiding when navigating away or closing video
   window.addEventListener("yt-navigate-start", hideUiImmediately);
+  window.addEventListener("yt-page-type-changed", hideUiImmediately);
   window.addEventListener("popstate", () => {
     hideUiImmediately();
     setTimeout(updateUi, 80);
@@ -922,10 +986,10 @@
           hideUiImmediately();
         }
       });
-      observer.observe(appEl, { attributes: true, subtree: true, attributeFilter: ["hidden", "style"] });
+      observer.observe(appEl, { attributes: true, subtree: true, attributeFilter: ["hidden", "style", "is-two-columns_", "active"] });
     }
   } catch (e) {}
 
-  // Snappy 250ms polling loop (replaces 800ms)
-  setInterval(updateUi, 250);
+  // Snappy 200ms polling loop
+  setInterval(updateUi, 200);
 })();

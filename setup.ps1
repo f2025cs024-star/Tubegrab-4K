@@ -1,10 +1,10 @@
-# StreamForge - Automated Self-Healing Setup Script
+﻿# TubeGrab - Automated Self-Healing Setup Script
 $ErrorActionPreference = "Stop"
 
 function Write-Header {
     Clear-Host
     Write-Host "========================================================" -ForegroundColor Cyan
-    Write-Host "       StreamForge - Automated YouTube Downloader Setup            " -ForegroundColor White
+    Write-Host "       TubeGrab - Automated YouTube Downloader Setup            " -ForegroundColor White
     Write-Host "========================================================" -ForegroundColor Cyan
     Write-Host ""
 }
@@ -207,7 +207,7 @@ try {
     Write-Host ""
 
     # 4. Launch and Health Check Engine
-    Write-Host "[4/4] Starting StreamForge silent background helper..." -ForegroundColor White
+    Write-Host "[4/4] Starting TubeGrab silent background helper..." -ForegroundColor White
     Start-Process "wscript.exe" -ArgumentList "`"$vbsPath`""
 
     # Wait and verify engine responds on port 19876
@@ -241,7 +241,7 @@ try {
 
     # Success Summary
     Write-Host "========================================================" -ForegroundColor Green
-    Write-Host "   SUCCESS! StreamForge is completely configured!       " -ForegroundColor White
+    Write-Host "   SUCCESS! TubeGrab is completely configured!       " -ForegroundColor White
     Write-Host "========================================================" -ForegroundColor Green
     Write-Host ""
     Write-Host "FINAL STEP: Load the extension in your browser (Takes 15s):" -ForegroundColor Cyan

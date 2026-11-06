@@ -1,4 +1,4 @@
-const LOCAL_SERVER = "http://127.0.0.1:19876";
+﻿const LOCAL_SERVER = "http://127.0.0.1:19876";
 const CLOUD_SERVER = "https://tubegrab-4k.onrender.com";
 const activeBgTasks = new Map();
 
@@ -270,7 +270,7 @@ function isNewerVersion(remote, local) {
 
 function checkForUpdates() {
   // Check official cloud release endpoint first
-  fetch("https://streamforge-talha-950a.vercel.app/version.json")
+  fetch("https://tubegrab-4k.vercel.app/version.json")
     .then((res) => res.json())
     .then((data) => handleVersionData(data))
     .catch(() => {
@@ -301,7 +301,7 @@ function handleVersionData(data) {
           chrome.notifications.create("tubegrab_update_" + data.version, {
             type: "basic",
             iconUrl: chrome.runtime.getURL("icon.png"),
-            title: `⚡ TubeGrab 4K Update (v${data.version}) Available!`,
+            title: `âš¡ TubeGrab 4K Update (v${data.version}) Available!`,
             message: changeSummary,
             priority: 2
           });
