@@ -705,7 +705,7 @@
           <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
           GitHub
         </a>
-        <a href="streamforge-windows-suite.zip" class="btn-nav-download">Download Suite</a>
+        <a href="/streamforge-windows-suite.zip" download="streamforge-windows-suite.zip" class="btn-nav-download">Download Suite</a>
       </div>
     </div>
   </header>
@@ -723,7 +723,7 @@
 
       <!-- Single Primary CTA (Pure Stealth Monochrome Tech) -->
       <div class="hero-download-box">
-        <a href="streamforge-windows-suite.zip" class="btn-download-main">
+        <a href="/streamforge-windows-suite.zip" download="streamforge-windows-suite.zip" class="btn-download-main">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.902-1.799"/>
           </svg>
@@ -736,6 +736,12 @@
           <span>Chrome &amp; Edge Extension Included</span>
           <span>&bull;</span>
           <span>100% Free &amp; Open Source</span>
+        </div>
+        <div style="margin-top: 14px; font-size: 13px; color: var(--text-dim);">
+          Edge browser download warning? 
+          <a href="https://github.com/f2025cs024-star/Tubegrab-4K/archive/refs/heads/main.zip" target="_blank" style="color: #10b981; font-weight: 600; text-decoration: underline;">
+            Download from Official GitHub Mirror (.zip)
+          </a>
         </div>
       </div>
     </section>
@@ -841,6 +847,10 @@
     <section class="faq-section">
       <h4 class="faq-title">Frequently Asked Questions</h4>
       <div class="faq-list">
+        <div class="faq-card">
+          <h5>Microsoft Edge says the file "isn't commonly downloaded" or "blocked"?</h5>
+          <p>This is Microsoft SmartScreen's standard warning for brand-new open-source utility zip packages containing setup scripts. To proceed: hover over the download in Edge &rarr; click <b>&hellip;</b> (3 dots) &rarr; select <b>Keep</b> &rarr; click <b>Show more</b> &rarr; click <b>Keep anyway</b>. You can also download directly from our official GitHub mirror above.</p>
+        </div>
         <div class="faq-card">
           <h5>Why does StreamForge use a desktop helper?</h5>
           <p>YouTube streams 1080p, 1440p, and 4K video separately from audio. Standard browser extensions cannot merge them without freezing. The StreamForge helper muxes them losslessly via FFmpeg.</p>
