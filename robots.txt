@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://streamforge-talha-950a.vercel.app/sitemap.xml
+Sitemap: https://tubegrab-4k.vercel.app/sitemap.xml
 
 # Fast crawling optimizations
 User-agent: Googlebot

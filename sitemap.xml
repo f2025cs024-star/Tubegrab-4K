@@ -2,48 +2,48 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://streamforge-talha-950a.vercel.app/</loc>
-    <lastmod>2026-11-04</lastmod>
+    <loc>https://tubegrab-4k.vercel.app/</loc>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://streamforge-talha-950a.vercel.app/icon.png</image:loc>
-      <image:title>StreamForge - YouTube Video Downloader</image:title>
+      <image:loc>https://tubegrab-4k.vercel.app/icon.png</image:loc>
+      <image:title>TubeGrab - YouTube Video Downloader</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://streamforge-talha-950a.vercel.app/#downloads</loc>
-    <lastmod>2026-11-04</lastmod>
+    <loc>https://tubegrab-4k.vercel.app/#downloads</loc>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://streamforge-talha-950a.vercel.app/#simulator</loc>
-    <lastmod>2026-11-04</lastmod>
+    <loc>https://tubegrab-4k.vercel.app/#simulator</loc>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://streamforge-talha-950a.vercel.app/#installation</loc>
-    <lastmod>2026-11-04</lastmod>
+    <loc>https://tubegrab-4k.vercel.app/#installation</loc>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://streamforge-talha-950a.vercel.app/#features</loc>
-    <lastmod>2026-11-04</lastmod>
+    <loc>https://tubegrab-4k.vercel.app/#features</loc>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://streamforge-talha-950a.vercel.app/#faq</loc>
-    <lastmod>2026-11-04</lastmod>
+    <loc>https://tubegrab-4k.vercel.app/#faq</loc>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://streamforge-talha-950a.vercel.app/#security</loc>
-    <lastmod>2026-11-04</lastmod>
+    <loc>https://tubegrab-4k.vercel.app/#security</loc>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

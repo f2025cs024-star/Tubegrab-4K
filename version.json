@@ -1,17 +1,17 @@
 {
   "version": "2.2.5",
-  "name": "StreamForge - YouTube Downloader",
-  "release_date": "2026-11-04",
+  "name": "TubeGrab - YouTube Downloader",
+  "release_date": "2026-11-06",
   "min_supported_version": "2.0.0",
   "changelog": [
     "Automatic zero-resource shutdown after download finishes (0% CPU & 0 MB RAM idle)",
     "Instant on-demand wake-up poller (<150ms)",
     "Dynamic 144p to 4K UHD quality dropdown",
-    "Live electric blue progress bar"
+    "Lossless multi-threaded local FFmpeg muxing"
   ],
   "download_urls": {
-    "extension_zip": "https://streamforge-talha-950a.vercel.app/extension.zip",
-    "windows_suite_zip": "https://streamforge-talha-950a.vercel.app/tubegrab-windows-full.zip",
+    "extension_zip": "https://tubegrab-4k.vercel.app/extension.zip",
+    "windows_suite_zip": "https://tubegrab-4k.vercel.app/tubegrab-windows-full.zip",
     "github_repo": "https://github.com/f2025cs024-star/Tubegrab-4K",
     "raw_app_py": "https://raw.githubusercontent.com/f2025cs024-star/Tubegrab-4K/main/idm_4k_app.py",
     "raw_content_js": "https://raw.githubusercontent.com/f2025cs024-star/Tubegrab-4K/main/content.js"
