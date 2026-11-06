@@ -1,4 +1,4 @@
-{
+﻿{
   "version": "2.2.5",
   "name": "TubeGrab - YouTube Downloader",
   "release_date": "2026-11-06",
@@ -10,8 +10,8 @@
     "Lossless multi-threaded local FFmpeg muxing"
   ],
   "download_urls": {
-    "extension_zip": "https://tubegrab-4k.vercel.app/extension.zip",
-    "windows_suite_zip": "https://tubegrab-4k.vercel.app/tubegrab-windows-full.zip",
+    "extension_zip": "https://tubegrab-4k-talha-950a.vercel.app/extension.zip",
+    "windows_suite_zip": "https://tubegrab-4k-talha-950a.vercel.app/tubegrab-windows-full.zip",
     "github_repo": "https://github.com/f2025cs024-star/Tubegrab-4K",
     "raw_app_py": "https://raw.githubusercontent.com/f2025cs024-star/Tubegrab-4K/main/idm_4k_app.py",
     "raw_content_js": "https://raw.githubusercontent.com/f2025cs024-star/Tubegrab-4K/main/content.js"
