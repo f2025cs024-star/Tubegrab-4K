@@ -54,9 +54,12 @@ def cancel_shutdown():
                 pass
             SHUTDOWN_TIMER = None
 
-def check_auto_shutdown(delay=5.0):
-    """Checks if all downloads are finished and schedules auto-exit to free 100% RAM/CPU."""
+def check_auto_shutdown(delay=7200.0):
+    """Keeps engine persistent in background for instant 0ms responses.
+    Only terminates if TUBEGRAB_PERSISTENT=0 is explicitly configured."""
     global SHUTDOWN_TIMER
+    if os.environ.get("TUBEGRAB_PERSISTENT", "1") == "1":
+        return
     with SHUTDOWN_LOCK:
         active = any(
             t.get("status") in ("starting", "downloading", "merging")
@@ -64,7 +67,7 @@ def check_auto_shutdown(delay=5.0):
         )
         if not active:
             if SHUTDOWN_TIMER is None:
-                log(f"[AutoStop] All downloads finished. Scheduling auto-stop in {delay}s to free RAM & CPU...")
+                log(f"[AutoStop] Inactivity detected. Scheduling auto-stop in {delay}s...")
                 SHUTDOWN_TIMER = threading.Timer(delay, perform_shutdown)
                 SHUTDOWN_TIMER.daemon = True
                 SHUTDOWN_TIMER.start()
@@ -277,7 +280,7 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         info_dict["error"] = str(e)
         log(f"Task {task_id} ERROR: {e}")
     finally:
-        check_auto_shutdown(delay=6.0)
+        check_auto_shutdown(delay=7200.0)
 
 
 class TubeGrabServer(BaseHTTPRequestHandler):
@@ -420,8 +423,7 @@ def main():
         SERVER_INSTANCE = server
         log(f"TubeGrab 4K engine listening on port {PORT}. Ready for instant downloads.")
 
-        # Initial idle timeout: If launched and no download triggered within 60s, exit cleanly to free RAM/CPU
-        check_auto_shutdown(delay=60.0)
+        # Persistent resident helper - ready for instant 0ms requests
 
         server.serve_forever()
     except OSError:

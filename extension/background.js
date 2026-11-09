@@ -7,15 +7,14 @@ function wakeLocalHelper() {
     chrome.tabs.create({ url: "tubegrab://start", active: false }, (tab) => {
       setTimeout(() => {
         if (tab && tab.id) chrome.tabs.remove(tab.id);
-      }, 500);
+      }, 1500);
     });
   } catch (e) {}
 }
 
 function getServerUrl(callback) {
-  // Always prefer local desktop engine if online (zero bot checks, max home internet speed)
   const ctrl = new AbortController();
-  const tid = setTimeout(() => ctrl.abort(), 600);
+  const tid = setTimeout(() => ctrl.abort(), 800);
   fetch("http://127.0.0.1:19876/status", { signal: ctrl.signal })
     .then((r) => {
       clearTimeout(tid);
@@ -44,20 +43,16 @@ function attemptWakeAndCallback(callback) {
           callback(LOCAL_SERVER);
         } else if (attempts >= 25) {
           clearInterval(poll);
-          chrome.storage.sync.get(["serverUrl"], (res) => {
-            callback(res.serverUrl || LOCAL_SERVER);
-          });
+          callback(null);
         }
       })
       .catch(() => {
         if (attempts >= 25) {
           clearInterval(poll);
-          chrome.storage.sync.get(["serverUrl"], (res) => {
-            callback(res.serverUrl || LOCAL_SERVER);
-          });
+          callback(null);
         }
       });
-  }, 150);
+  }, 200);
 }
 
 function getYouTubeCookies(callback) {
@@ -140,6 +135,16 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
 
 function sendDownloadTrigger(url, title, quality, sendResponse) {
   getServerUrl((serverUrl) => {
+    if (!serverUrl) {
+      try {
+        sendResponse({
+          ok: false,
+          error: "TubeGrab engine is not running. Please start TubeGrab on your PC."
+        });
+      } catch (e) {}
+      return;
+    }
+
     getYouTubeCookies((cookies) => {
       const payload = {
         url: url,
@@ -168,26 +173,12 @@ function sendDownloadTrigger(url, title, quality, sendResponse) {
         })
         .catch((err) => {
           clearTimeout(tid);
-          if (serverUrl !== CLOUD_SERVER) {
-            fetch(`${CLOUD_SERVER}/trigger`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-            })
-              .then((r) => r.json())
-              .then((data) => {
-                if (data && data.task_id) {
-                  activeBgTasks.set(data.task_id, { url, title, quality, serverUrl: CLOUD_SERVER, monitoring: false });
-                  monitorTaskInBackground(data.task_id, title, CLOUD_SERVER);
-                }
-                try { sendResponse({ ok: true, data, serverUrl: CLOUD_SERVER }); } catch (e) {}
-              })
-              .catch((e2) => {
-                try { sendResponse({ ok: false, error: e2.message }); } catch (e3) {}
-              });
-          } else {
-            try { sendResponse({ ok: false, error: err.message }); } catch (e) {}
-          }
+          try {
+            sendResponse({
+              ok: false,
+              error: "Cannot connect to TubeGrab engine. Please start TubeGrab on your PC."
+            });
+          } catch (e) {}
         });
     });
   });

@@ -7,3 +7,6 @@
 [2026-11-05 15:40:39] TubeGrab 4K engine listening on port 19876. Ready for instant downloads.
 [2026-11-05 15:40:39] [AutoStop] All downloads finished. Scheduling auto-stop in 60.0s to free RAM & CPU...
 [2026-11-05 15:40:54] [AutoStop] Auto-stop executed. Engine terminating cleanly to 0% CPU & 0 MB RAM.
+[2026-11-09 13:58:40] Triggered task test_local_1 for https://youtu.be/9-QCQX9DYEs?si=C3TwgBM1uNIQXgXO (1080)
+[2026-11-09 13:59:16] Task test_local_1 completed successfully!
+[2026-11-09 13:59:16] [AutoStop] All downloads finished. Scheduling auto-stop in 6.0s to free RAM & CPU...

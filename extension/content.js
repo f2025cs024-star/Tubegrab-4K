@@ -396,7 +396,13 @@
         },
         (response) => {
           if (chrome.runtime.lastError || !response || !response.ok) {
-            showToast("Connecting to engine...", false);
+            const errMsg = (response && response.error) ? response.error : "Please start TubeGrab Desktop Engine";
+            showToast(errMsg, true);
+            const pill = getPill();
+            if (pill) {
+              pill.classList.remove("omni-is-downloading");
+              rebuildPill();
+            }
           } else {
             showToast(`⏬ Downloading in ${labelTag}!`, false);
             if (response.data && response.data.task_id) {
