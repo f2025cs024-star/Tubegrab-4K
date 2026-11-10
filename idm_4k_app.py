@@ -232,17 +232,12 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         "overwrites": True,
         "noplaylist": True,
         "progress_hooks": [progress_hook],
-        "concurrent_fragment_downloads": 8,
         "merge_output_format": "mp4",
         "quiet": True,
         "no_warnings": True,
-        "socket_timeout": 30,
-        "retries": 10,
-        "fragment_retries": 10,
-        "http_headers": {
-            "X-Forwarded-For": "8.8.8.8",
-            "Client-IP": "8.8.8.8"
-        },
+        "socket_timeout": 15,
+        "retries": 3,
+        "fragment_retries": 3,
         "js_runtimes": {"node": {"path": NODE_PATH}}
     }
 
@@ -283,9 +278,17 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
             pass
 
     except Exception as e:
+        err_msg = str(e)
+        if "timed out" in err_msg.lower() and "googlevideo.com" in err_msg.lower():
+            friendly_err = "Download timed out: Your local ISP cache node for this specific video is temporarily unreachable. Switching to a mobile hotspot or turning on a VPN (such as 1.1.1.1 WARP) bypasses this immediately."
+        elif "sign in to confirm" in err_msg.lower():
+            friendly_err = "YouTube bot verification triggered. Please ensure you are logged into YouTube in Chrome so TubeGrab can use your active session cookies."
+        else:
+            friendly_err = err_msg
+
         info_dict["status"] = "error"
-        info_dict["error"] = str(e)
-        log(f"Task {task_id} ERROR: {e}")
+        info_dict["error"] = friendly_err
+        log(f"Task {task_id} ERROR: {friendly_err}")
     finally:
         check_auto_shutdown(delay=7200.0)
 
@@ -361,9 +364,13 @@ class TubeGrabServer(BaseHTTPRequestHandler):
             return
 
         if parsed.path == "/shutdown":
-            self._send_cors(200)
-            self.wfile.write(json.dumps({"ok": True, "message": "Engine shutting down"}).encode("utf-8"))
-            threading.Timer(0.8, perform_shutdown).start()
+            if params.get("force", ["0"])[0] == "1":
+                self._send_cors(200)
+                self.wfile.write(json.dumps({"ok": True, "message": "Engine shutting down"}).encode("utf-8"))
+                threading.Timer(0.8, perform_shutdown).start()
+            else:
+                self._send_cors(200)
+                self.wfile.write(json.dumps({"ok": False, "message": "Ignored: pass ?force=1 to shutdown"}).encode("utf-8"))
             return
 
         if parsed.path == "/open_folder":
