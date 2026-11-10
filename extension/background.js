@@ -107,26 +107,9 @@ function monitorTaskInBackground(taskId, title, serverUrl) {
           }
 
           notifyCompletion(data.title || title);
-
-          // If all downloads are finished and using local engine, signal clean shutdown
-          if (activeBgTasks.size === 0 && (serverUrl.includes("127.0.0.1") || serverUrl.includes("localhost"))) {
-            setTimeout(() => {
-              if (activeBgTasks.size === 0) {
-                fetch(`${serverUrl}/shutdown`).catch(() => {});
-              }
-            }, 5000);
-          }
         } else if (data.status === "error") {
           clearInterval(timer);
           activeBgTasks.delete(taskId);
-
-          if (activeBgTasks.size === 0 && (serverUrl.includes("127.0.0.1") || serverUrl.includes("localhost"))) {
-            setTimeout(() => {
-              if (activeBgTasks.size === 0) {
-                fetch(`${serverUrl}/shutdown`).catch(() => {});
-              }
-            }, 5000);
-          }
         }
       })
       .catch(() => {});

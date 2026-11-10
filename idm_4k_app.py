@@ -236,6 +236,13 @@ def run_download_task(task_id: str, url: str, title: str, quality: str, cookies_
         "merge_output_format": "mp4",
         "quiet": True,
         "no_warnings": True,
+        "socket_timeout": 30,
+        "retries": 10,
+        "fragment_retries": 10,
+        "http_headers": {
+            "X-Forwarded-For": "8.8.8.8",
+            "Client-IP": "8.8.8.8"
+        },
         "js_runtimes": {"node": {"path": NODE_PATH}}
     }
 
